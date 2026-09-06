@@ -40,7 +40,7 @@ function checkAuthentication() {
 
 async function loadHospitalProfile() {
   try {
-    const response = await fetch(`${API_BASE_URL}/my-profile`, {
+    const response = await fetch(`${API_BASE_URL}/api/hospitals/my-profile`, {
       headers: getHeaders(),
     });
 
