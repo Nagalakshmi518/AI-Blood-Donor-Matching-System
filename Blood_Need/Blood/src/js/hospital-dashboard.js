@@ -1,4 +1,4 @@
-const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
+const API_BASE_URL = "https://ai-blood-donor-matching-system.onrender.com";
 
 // ==========================================
 // GET JWT TOKEN
@@ -40,7 +40,7 @@ function checkAuthentication() {
 
 async function loadHospitalProfile() {
   try {
-    const response = await fetch(`${API_URL}/my-profile`, {
+    const response = await fetch(`${API_BASE_URL}/my-profile`, {
       headers: getHeaders(),
     });
 
