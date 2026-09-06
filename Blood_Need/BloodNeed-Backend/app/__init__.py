@@ -41,23 +41,19 @@ def create_app():
 
     CORS(
         app,
-        resources={
-            r"/api/*": {
-                "origins": cors_origins,
-                "methods": [
-                    "GET",
-                    "POST",
-                    "PUT",
-                    "PATCH",
-                    "DELETE",
-                    "OPTIONS"
-                ],
-                "allow_headers": [
-                    "Content-Type",
-                    "Authorization"
-                ]
-            }
-        }
+        origins=cors_origins,
+        methods=[
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "OPTIONS"
+        ],
+        allow_headers=[
+            "Content-Type",
+            "Authorization"
+        ]
     )
     # ==========================================
     # IMPORT BLUEPRINTS
