@@ -215,11 +215,28 @@ if (logoutBtn) {
     safeLogout();
   });
 }
+// ==========================================
+// INITIAL LOAD
+// ==========================================
 
-loadDashboard();
-loadRequests();
+async function initializeDashboard() {
+  await Promise.all([
+    loadDashboard(),
+    loadRequests()
+  ]);
+}
+
+initializeDashboard();
+
+
+// ==========================================
+// AUTO REFRESH DASHBOARD STATS
+// ==========================================
+
+// Refresh only dashboard statistics every 30 seconds.
+// Full request data is not repeatedly fetched to reduce
+// unnecessary database and server load.
 
 setInterval(() => {
   loadDashboard();
-  loadRequests();
-}, 5000);
+}, 30000);
