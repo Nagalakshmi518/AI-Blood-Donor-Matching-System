@@ -101,7 +101,7 @@ async function loadInventory() {
             </tr>
         `;
 
-    const response = await fetch(`${API_BASE_URL}/${hospitalId}/inventory`, {
+    const response = await fetch(`${API_BASE_URL}/api/hospitals/${hospitalId}/inventory/add`, {
       headers: getHeaders(),
     });
 
@@ -289,7 +289,7 @@ async function useBloodUnits() {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/${hospitalId}/inventory/use`,
+     `${API_BASE_URL}/api/hospitals/${hospitalId}/inventory/use`,
       {
         method: "POST",
 
