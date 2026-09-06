@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
 const API_BASE_URL = window.location.origin;
 function getStoredRole() {
   return String(localStorage.getItem("role") || "")

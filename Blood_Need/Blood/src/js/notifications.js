@@ -1,10 +1,14 @@
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
 function getStoredRole() {
-  return String(localStorage.getItem("role") || "").trim().toUpperCase();
+  return String(localStorage.getItem("role") || "")
+    .trim()
+    .toUpperCase();
 }
 
 function getDashboardForRole(role) {
-  const normalizedRole = String(role || "").trim().toUpperCase();
+  const normalizedRole = String(role || "")
+    .trim()
+    .toUpperCase();
 
   if (normalizedRole === "DONOR") {
     return "donor-dashboard.html";
@@ -35,7 +39,13 @@ if (!token) {
 }
 
 const role = getStoredRole();
-if (role && role !== "PATIENT" && role !== "DONOR" && role !== "ADMIN"&& role !== "HOSPITAL") {
+if (
+  role &&
+  role !== "PATIENT" &&
+  role !== "DONOR" &&
+  role !== "ADMIN" &&
+  role !== "HOSPITAL"
+) {
   window.location.href = getDashboardForRole(role || "PATIENT");
 }
 
@@ -99,26 +109,26 @@ async function loadNotifications() {
 
       let icon = "🔔";
 
-switch (notification.type || notification.notification_type) {
-  case "SUCCESS":
-    icon = "✅";
-    break;
+      switch (notification.type || notification.notification_type) {
+        case "SUCCESS":
+          icon = "✅";
+          break;
 
-  case "WARNING":
-    icon = "⚠️";
-    break;
+        case "WARNING":
+          icon = "⚠️";
+          break;
 
-  case "ERROR":
-    icon = "❌";
-    break;
+        case "ERROR":
+          icon = "❌";
+          break;
 
-  case "INFO":
-    icon = "ℹ️";
-    break;
+        case "INFO":
+          icon = "ℹ️";
+          break;
 
-  default:
-    icon = "🔔";
-}
+        default:
+          icon = "🔔";
+      }
 
       card.innerHTML = `
 
@@ -200,11 +210,11 @@ async function markAsRead(notificationId) {
         },
       },
     );
-if (response.status === 401) {
-  console.warn("Notification API session expired or invalid.");
-  window.location.href = "login.html";
-  return;
-}
+    if (response.status === 401) {
+      console.warn("Notification API session expired or invalid.");
+      window.location.href = "login.html";
+      return;
+    }
     const data = await response.json();
 
     if (response.ok) {
@@ -241,12 +251,10 @@ function goBack() {
     window.location.href = "admin-dashboard.html";
   } else if (role === "HOSPITAL") {
     window.location.href = "hospital-dashboard.html";
-  }
-  else {
+  } else {
     window.location.href = "login.html";
   }
 }
-
 
 // =======================================
 // INITIAL LOAD

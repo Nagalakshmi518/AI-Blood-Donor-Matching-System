@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:5000";
+const API_BASE = "https://ai-blood-donor-matching-system.onrender.com";
 const API_URL = `${API_BASE}/api/admin`;
 const HOSPITAL_API_URL = `${API_BASE}/api/hospitals`;
 

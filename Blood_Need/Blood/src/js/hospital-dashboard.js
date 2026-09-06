@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:5000/api/hospitals";
+const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
 
 // ==========================================
 // GET JWT TOKEN

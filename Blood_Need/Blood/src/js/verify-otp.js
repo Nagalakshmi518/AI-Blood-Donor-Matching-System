@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
 const form = document.getElementById("verifyOtpForm");
 const emailInput = document.getElementById("email");
 const otpInput = document.getElementById("otp");

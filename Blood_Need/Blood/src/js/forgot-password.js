@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
 const forgotForm = document.getElementById("forgotForm");
 const forgotMessage = document.getElementById("forgotMessage");
 const successMessage = document.getElementById("successMessage");
