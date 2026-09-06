@@ -1,0 +1,503 @@
+/* =========================================
+   HOSPITAL DASHBOARD - BLOODNEED
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+}
+
+
+/* =========================================
+   DASHBOARD LAYOUT
+========================================= */
+
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #b91c1c, #7f1d1d);
+    color: white;
+    padding: 30px 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar-logo {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.sidebar-role {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    opacity: 0.75;
+    margin-bottom: 40px;
+}
+
+
+/* =========================================
+   SIDEBAR NAVIGATION
+========================================= */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-link.active {
+    background: white;
+    color: #b91c1c;
+    font-weight: bold;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.main-content {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 35px 45px;
+}
+
+
+/* =========================================
+   DASHBOARD HEADER
+========================================= */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.dashboard-header h1 {
+    font-size: 32px;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.dashboard-header p {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+
+/* =========================================
+   HOSPITAL STATUS
+========================================= */
+
+.hospital-status {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 10px 16px;
+    border-radius: 25px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    background: #22c55e;
+    border-radius: 50%;
+}
+
+
+/* =========================================
+   DASHBOARD SECTIONS
+========================================= */
+
+.dashboard-section {
+    margin-bottom: 32px;
+}
+
+.dashboard-section > h2 {
+    font-size: 23px;
+    margin-bottom: 18px;
+    color: #1f2937;
+}
+
+
+/* =========================================
+   HOSPITAL PROFILE
+========================================= */
+
+.profile-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.profile-item {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #eef0f3;
+}
+
+.profile-item span {
+    display: block;
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.profile-item strong {
+    font-size: 16px;
+    color: #1f2937;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+
+/* =========================================
+   INVENTORY STATS
+========================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    transition: 0.25s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+.stat-label {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.stat-card h2 {
+    margin-top: 10px;
+    font-size: 32px;
+    color: #b91c1c;
+}
+/* =========================================
+   NOTIFICATIONS
+========================================= */
+
+.notifications-section {
+    margin-top: 32px;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.notification-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 20px;
+    border-left: 5px solid #b91c1c;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    transition: 0.25s;
+}
+
+.notification-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.10);
+}
+
+.notification-card.unread {
+    background: #fff7f7;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.notification-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: #991b1b;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.notification-message {
+    color: #374151;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.no-notifications {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    text-align: center;
+    color: #6b7280;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================
+   INVENTORY ACTIONS
+========================================= */
+
+.inventory-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.action-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.action-card h3 {
+    margin-bottom: 20px;
+    font-size: 19px;
+    color: #1f2937;
+}
+
+
+/* =========================================
+   INPUTS
+========================================= */
+
+.action-card select,
+.action-card input {
+    width: 100%;
+    padding: 13px 14px;
+    margin-bottom: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 15px;
+    background: white;
+}
+
+.action-card select:focus,
+.action-card input:focus {
+    outline: none;
+    border-color: #b91c1c;
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1);
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.action-card button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 9px;
+    background: #b91c1c;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.action-card button:hover {
+    background: #991b1b;
+    transform: translateY(-2px);
+}
+
+/* Use button different color */
+
+#useUnitsBtn {
+    background: #374151;
+}
+
+#useUnitsBtn:hover {
+    background: #111827;
+}
+
+
+/* =========================================
+   INVENTORY TABLE
+========================================= */
+
+.table-container {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    overflow-x: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f9fafb;
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+td {
+    padding: 16px 15px;
+    border-top: 1px solid #eef0f3;
+    color: #374151;
+}
+
+tbody tr {
+    transition: 0.2s;
+}
+
+tbody tr:hover {
+    background: #f9fafb;
+}
+
+
+/* =========================================
+   INVENTORY STATUS
+========================================= */
+
+.inventory-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.inventory-status.success {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.inventory-status.warning {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.inventory-status.danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .inventory-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .main-content {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+        padding: 25px 20px;
+    }
+
+    .profile-card {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+}

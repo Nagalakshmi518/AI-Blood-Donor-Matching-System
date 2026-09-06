@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Analytics Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="../src/assets/css/analytics.css"
+    >
+
+</head>
+
+<body>
+
+<div class="analytics-page">
+
+    <header class="analytics-header">
+
+        <h1>
+            Blood Donation Analytics
+        </h1>
+
+        <div>
+
+            <button
+                id="backBtn"
+                onclick="window.location.href='admin-dashboard.html'"
+            >
+                Dashboard
+            </button>
+
+            <button
+                id="logoutBtn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+    <section
+        id="analyticsContainer"
+    >
+
+        Loading Analytics...
+
+    </section>
+
+</div>
+
+<script>
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+
+    localStorage.clear();
+
+    window.location.href = "login.html";
+
+});
+
+</script>
+
+<script src="../src/js/analytics.js"></script>
+
+</body>
+
+</html>

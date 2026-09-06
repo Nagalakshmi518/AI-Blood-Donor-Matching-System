@@ -1,0 +1,523 @@
+/* ==========================================
+   PATIENT DASHBOARD
+========================================== */
+
+.dashboard {
+    max-width: 1200px;
+    margin: auto;
+    padding: 24px;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 28px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    color: #1f2937;
+}
+
+.dashboard-header p {
+    margin-top: 8px;
+    color: #6b7280;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.header-actions button,
+#logoutBtn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#notificationBtn {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+#logoutBtn {
+    background: #dc2626;
+    color: white;
+}
+
+#notificationBtn:hover,
+#logoutBtn:hover {
+    opacity: 0.85;
+}
+
+/* ==========================================
+   WELCOME
+========================================== */
+
+.welcome {
+    margin-top: 28px;
+    padding: 28px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.welcome h2 {
+    margin: 0;
+    color: #1f2937;
+}
+
+.welcome p {
+    color: #6b7280;
+}
+
+/* ==========================================
+   STATISTICS CARDS
+========================================== */
+
+.cards{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+
+gap:20px;
+
+margin-top:30px;
+
+}
+
+.card{
+
+background:#fff;
+
+border-radius:16px;
+
+padding:22px;
+
+display:flex;
+
+align-items:center;
+
+gap:18px;
+
+box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+transition:.3s;
+
+cursor:pointer;
+
+border:none;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
+
+box-shadow:0 15px 35px rgba(0,0,0,.12);
+
+}
+
+.card h3 {
+    margin: 0 0 8px;
+    color: #6b7280;
+}
+
+.card h1 {
+    margin: 0;
+    color: #1f2937;
+}
+
+.card-icon {
+    font-size: 32px;
+}
+
+.total-card {
+    border-left-color: #2563eb;
+}
+
+.pending-card {
+    border-left-color: #f59e0b;
+}
+
+.completed-card {
+    border-left-color: #16a34a;
+}
+.card-icon{
+
+width:65px;
+
+height:65px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:32px;
+
+border-radius:50%;
+
+color:white;
+
+flex-shrink:0;
+
+}
+.card-content h3{
+
+margin:0;
+
+font-size:16px;
+
+color:#777;
+
+font-weight:600;
+
+}
+
+.card-content h1{
+
+margin-top:8px;
+
+font-size:34px;
+
+font-weight:700;
+
+}
+.total-card .card-icon{
+
+background:#2563eb;
+
+}
+
+.pending-card .card-icon{
+
+background:#f59e0b;
+
+}
+
+.matched-card .card-icon{
+
+background:#8b5cf6;
+
+}
+
+.accepted-card .card-icon{
+
+background:#10b981;
+
+}
+
+.completed-card .card-icon{
+
+background:#16a34a;
+
+}
+
+.rejected-card .card-icon{
+
+background:#ef4444;
+
+}
+
+.cancelled-card .card-icon{
+
+background:#6b7280;
+
+}
+/* ==========================================
+   QUICK ACTIONS
+========================================== */
+
+.actions-section {
+    margin-top: 32px;
+}
+
+.actions-section h2 {
+    margin-bottom: 18px;
+}
+
+.actions{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:20px;
+
+margin-top:25px;
+
+}
+
+.actions button{
+
+padding:18px;
+
+font-size:17px;
+
+font-weight:600;
+
+border-radius:12px;
+
+border:none;
+
+background:white;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+transition:.3s;
+
+cursor:pointer;
+
+}
+
+.actions button:hover{
+
+transform:translateY(-4px);
+
+}
+
+.actions button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.actions .primary-action {
+    background: #dc2626;
+    color: white;
+}
+
+/* ==========================================
+   RECENT ACTIVITY
+========================================== */
+.recent-activity{
+
+margin-top:35px;
+
+padding:28px;
+
+background:white;
+
+border-radius:16px;
+
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.recent-activity h2 {
+    margin-bottom: 16px;
+}
+
+#recentActivity{
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+}
+.activity-card{
+
+padding:18px;
+
+border-left:5px solid #16a34a;
+
+background:#f8fafc;
+
+border-radius:10px;
+
+line-height:1.8;
+
+}
+
+/* ==========================================
+   MOBILE RESPONSIVE
+========================================== */
+
+@media (max-width: 768px) {
+
+    .dashboard {
+        padding: 16px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-actions {
+        flex-direction: column;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        grid-template-columns: 1fr;
+    }
+
+}
+/* ==========================================
+SECTION HEADER
+========================================== */
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+/* ==========================================
+REQUEST GRID
+========================================== */
+
+.request-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+    gap:20px;
+    margin-top:20px;
+}
+
+/* ==========================================
+REQUEST CARD
+========================================== */
+
+.request-card{
+    background:#fff;
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    border-left:6px solid #dc2626;
+    transition:.3s;
+}
+
+.request-card:hover{
+    transform:translateY(-5px);
+}
+
+.request-card h3{
+    color:#dc2626;
+    margin-bottom:15px;
+}
+
+.request-card p{
+    margin:8px 0;
+    color:#444;
+}
+
+.request-card hr{
+    margin:15px 0;
+    border:none;
+    border-top:1px solid #eee;
+}
+
+/* ==========================================
+DONOR CARD
+========================================== */
+
+.donor-card{
+    margin-top:15px;
+    background:#f8fafc;
+    border-radius:10px;
+    padding:15px;
+    border-left:4px solid #2563eb;
+}
+
+.donor-card h4{
+    color:#2563eb;
+    margin-bottom:10px;
+}
+
+.donor-card p{
+    margin:6px 0;
+    font-size:14px;
+}
+
+/* ==========================================
+ACTIVITY
+========================================== */
+
+.activity-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.activity-card{
+    background:#f8fafc;
+    border-left:5px solid #16a34a;
+    border-radius:10px;
+    padding:16px;
+}
+
+.activity-card h4{
+    margin-bottom:10px;
+}
+
+.activity-card p{
+    margin:6px 0;
+}
+
+.activity-card small{
+    color:#666;
+}
+
+/* ==========================================
+STATUS COLORS
+========================================== */
+
+.status-pending{
+    color:#f59e0b;
+    font-weight:bold;
+}
+
+.status-accepted{
+    color:#16a34a;
+    font-weight:bold;
+}
+
+.status-rejected{
+    color:#dc2626;
+    font-weight:bold;
+}
+
+.status-completed{
+    color:#2563eb;
+    font-weight:bold;
+}
+
+/* ==========================================
+RESPONSIVE
+========================================== */
+
+@media(max-width:768px){
+
+    .request-grid{
+        grid-template-columns:1fr;
+    }
+
+    .request-card{
+        padding:16px;
+    }
+
+    .donor-card{
+        padding:12px;
+    }
+}

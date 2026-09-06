@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Donor Dashboard</title>
+
+    <link rel="stylesheet"
+          href="../src/assets/css/common.css">
+
+    <link rel="stylesheet"
+          href="../src/assets/css/donor-dashboard.css">
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+</head>
+
+<body>
+
+<main class="donor-dashboard">
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
+    <header class="dashboard-header">
+
+        <div>
+
+            <h1>🩸 Donor Dashboard</h1>
+
+            <p>
+                Help Save Lives By Responding To Blood Requests
+            </p>
+
+        </div>
+
+        <div class="dashboard-actions">
+
+            <button type="button"
+                    class="secondary-action"
+                    onclick="window.location.href='donor-profile.html'">
+
+                My Profile
+
+            </button>
+
+            <button id="notificationsButton"
+                    class="primary-action"
+                    onclick="window.location.href='notifications.html'">
+
+                🔔 Notifications
+
+            </button>
+
+            <button id="logoutButton"
+                    class="danger-action">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ========================= -->
+    <!-- DONOR PROFILE -->
+    <!-- ========================= -->
+
+    <section class="donor-info-card">
+
+        <h2>My Donor Profile</h2>
+
+        <div id="donorInfo">
+
+            Loading Profile...
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- SUMMARY CARDS -->
+    <!-- ========================= -->
+
+    <section class="dashboard-cards">
+
+        <div class="info-card">
+
+            <h3>🏅 Badge</h3>
+
+            <p id="badgeCard">
+
+                Loading...
+
+            </p>
+
+        </div>
+
+        <div class="info-card">
+
+            <h3>⭐ Reward Points</h3>
+
+            <p id="pointsCard">
+
+                Loading...
+
+            </p>
+
+        </div>
+
+        <div class="info-card">
+
+            <h3>📅 Next Eligible Date</h3>
+
+            <p id="eligibleCard">
+
+                Loading...
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- AVAILABILITY -->
+    <!-- ========================= -->
+
+    <section class="availability-section">
+
+        <div id="availabilityControl">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- PERFORMANCE -->
+    <!-- ========================= -->
+
+    <section class="performance-section">
+
+        <div id="performanceStats">
+
+            Loading Performance...
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- REWARDS -->
+    <!-- ========================= -->
+
+    <section class="reward-section">
+
+        <div id="rewardStats">
+
+            Loading Rewards...
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- RECENT DONATIONS -->
+    <!-- ========================= -->
+
+    <section class="recent-donations">
+
+        <h2>
+
+            ❤️ Recent Donations
+
+        </h2>
+
+        <div id="recentDonations">
+
+            No Donations Yet.
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- BLOOD REQUESTS -->
+    <!-- ========================= -->
+
+    <section class="requests-section">
+
+        <h2>
+
+            🚨 Incoming Blood Requests
+
+        </h2>
+
+        <div id="requestsContainer">
+
+            Loading Requests...
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="../src/js/donor-dashboard.js"></script>
+
+</body>
+
+</html>

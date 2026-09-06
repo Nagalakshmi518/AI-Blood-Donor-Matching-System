@@ -1,0 +1,343 @@
+.profile-page {
+
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    background: #f5f7fb;
+
+}
+
+
+.profile-card {
+
+    width: 100%;
+    max-width: 900px;
+    background-color: white;
+    padding: 32px;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.08);
+    border: 1px solid #edf2f7;
+
+}
+
+
+.profile-card h1 {
+
+    text-align: center;
+    color: #b91c1c;
+    margin-bottom: 8px;
+    font-size: clamp(2rem, 3vw, 2.5rem);
+
+}
+
+
+.profile-card > p {
+
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 28px;
+    font-size: 1rem;
+
+}
+
+
+#profileForm {
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 22px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+}
+
+
+.form-group.full-width,
+.form-actions.full-width,
+#profileMessage.full-width {
+
+    grid-column: 1 / -1;
+
+}
+
+
+#profileForm label {
+
+    font-weight: 700;
+    color: #334155;
+
+}
+
+
+#profileForm input,
+#profileForm select {
+
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 14px;
+    border: 1px solid #dbe3ee;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+}
+
+
+#profileForm input:focus,
+#profileForm select:focus {
+
+    outline: none;
+    border-color: #b91c1c;
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.12);
+
+}
+
+
+#updateLocationButton,
+#profileForm button[type="submit"],
+.dashboard-link-btn {
+
+    min-height: 46px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.97rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+}
+
+
+#updateLocationButton,
+.secondary-btn {
+
+    background: #e0f2fe;
+    color: #0f172a;
+    border: 1px solid #bae6fd;
+
+}
+
+
+#updateLocationButton:hover,
+.secondary-btn:hover {
+
+    background: #bae6fd;
+    transform: translateY(-1px);
+
+}
+
+
+#profileForm button[type="submit"],
+.primary-btn {
+
+    background-color: #b91c1c;
+    color: white;
+    width: 100%;
+
+}
+
+
+#profileForm button[type="submit"]:hover,
+.primary-btn:hover {
+
+    background-color: #991b1b;
+    transform: translateY(-1px);
+
+}
+
+
+#locationMessage,
+#profileMessage {
+
+    margin-top: 4px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+
+}
+
+
+#locationMessage {
+
+    color: #15803d;
+    min-height: 24px;
+
+}
+
+
+#profileMessage {
+
+    color: #b91c1c;
+    font-weight: 700;
+    min-height: 24px;
+
+}
+
+
+.back-button-wrap {
+
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+
+}
+
+
+.dashboard-link-btn {
+
+    background: #2563eb;
+    color: white;
+    padding: 12px 20px;
+    min-width: 220px;
+
+}
+
+
+.dashboard-link-btn:hover {
+
+    background: #1d4ed8;
+    transform: translateY(-1px);
+
+}
+
+
+@media (max-width: 768px) {
+
+    .profile-page {
+
+        padding: 20px;
+
+    }
+
+    .profile-card {
+
+        padding: 24px 20px;
+
+    }
+
+    #profileForm {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .dashboard-link-btn {
+
+        width: 100%;
+
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .profile-page {
+
+        padding: 15px;
+
+    }
+
+    .profile-card {
+
+        padding: 20px 16px;
+
+    }
+
+    #updateLocationButton,
+    #profileForm button[type="submit"],
+    .dashboard-link-btn {
+
+        font-size: 0.92rem;
+
+    }
+
+}
+
+
+.profile-card > button {
+    text-align: center;
+    font-weight: bold;
+
+    width: 100%;
+    margin-top: 15px;
+
+    padding: 11px;
+
+    border: 1px solid #b91c1c;
+    border-radius: 6px;
+
+    background-color: rgb(227, 94, 94)
+    ;
+    color: #ed5d5d;
+
+    cursor: pointer;
+
+}
+
+
+.profile-card > button:hover {
+
+    background-color: #fef2f2;
+
+}
+#updateLocationButton {
+
+    margin-top: 15px;
+
+    padding: 11px;
+
+    border: 1px solid #b91c1c;
+
+    border-radius: 6px;
+
+    background-color: white;
+
+    color: #b91c1c;
+
+    cursor: pointer;
+
+}
+
+
+#updateLocationButton:hover {
+
+    background-color: #fef2f2;
+
+}
+
+
+#locationMessage {
+
+    text-align: center;
+
+    color: #15803d;
+
+}
+.back-dashboard-btn {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 13px 20px;
+    border: 1px solid #c91c1c;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #c91c1c;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-dashboard-btn:hover {
+    background: #c91c1c;
+    color: #ffffff;
+}

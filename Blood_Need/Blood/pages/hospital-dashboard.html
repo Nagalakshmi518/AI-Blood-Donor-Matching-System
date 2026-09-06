@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospital Dashboard | BloodNeed</title>
+
+
+    <link rel="stylesheet" href="../src/assets/css/hospital-dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+                🩸 BloodNeed
+            </div>
+
+            <div class="sidebar-role">
+                HOSPITAL PORTAL
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="hospital-dashboard.html" class="nav-link active">
+                    🏥 Dashboard
+                </a>
+
+                <a href="notifications.html" class="nav-link">
+                    🔔 Notifications
+                </a>
+
+                <a href="#" class="nav-link" id="logoutBtn">
+                    🚪 Logout
+                </a>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- HEADER -->
+            <div class="dashboard-header">
+
+                <div>
+                    <h1>Hospital Dashboard</h1>
+                    <p>Manage hospital blood inventory</p>
+                </div>
+
+                <div class="hospital-status">
+                    <span class="status-dot"></span>
+                    Active
+                </div>
+
+            </div>
+
+
+            <!-- HOSPITAL PROFILE -->
+            <section class="dashboard-section">
+
+                <h2>🏥 Hospital Information</h2>
+
+                <div class="profile-card">
+
+                    <div class="profile-item">
+                        <span>Hospital Name</span>
+                        <strong id="hospitalName">Loading...</strong>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>City</span>
+                        <strong id="hospitalCity">-</strong>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Phone</span>
+                        <strong id="hospitalPhone">-</strong>
+                    </div>
+
+                    <div class="profile-item">
+                        <span>Email</span>
+                        <strong id="hospitalEmail">-</strong>
+                    </div>
+
+                    <div class="profile-item full-width">
+                        <span>Address</span>
+                        <strong id="hospitalAddress">-</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INVENTORY SUMMARY -->
+            <section class="dashboard-section">
+
+                <h2>🩸 Blood Inventory Overview</h2>
+
+                <div class="stats-grid">
+
+                    <div class="stat-card">
+                        <span class="stat-label">Blood Groups</span>
+                        <h2 id="bloodGroupsCount">0</h2>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Total Units Available</span>
+                        <h2 id="totalUnits">0</h2>
+                    </div>
+
+                    <div class="stat-card">
+                        <span class="stat-label">Low Stock Groups</span>
+                        <h2 id="lowStockCount">0</h2>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INVENTORY ACTION -->
+            <section class="dashboard-section">
+
+                <h2>⚙️ Manage Blood Inventory</h2>
+
+                <div class="inventory-actions">
+
+                    <!-- ADD UNITS -->
+                    <div class="action-card">
+
+                        <h3>➕ Add Blood Units</h3>
+
+                        <select id="addBloodGroup">
+                            <option value="">Select Blood Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+
+                        <input
+                            type="number"
+                            id="addUnits"
+                            placeholder="Enter units"
+                            min="1"
+                        >
+
+                        <button id="addUnitsBtn">
+                            Add Units
+                        </button>
+
+                    </div>
+
+
+                    <!-- USE UNITS -->
+                    <div class="action-card">
+
+                        <h3>➖ Use Blood Units</h3>
+
+                        <select id="useBloodGroup">
+                            <option value="">Select Blood Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+
+                        <input
+                            type="number"
+                            id="useUnits"
+                            placeholder="Enter units"
+                            min="1"
+                        >
+
+                        <button id="useUnitsBtn">
+                            Use Units
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INVENTORY TABLE -->
+            <section class="dashboard-section">
+
+                <h2>📦 Current Blood Inventory</h2>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Blood Group</th>
+                                <th>Available Units</th>
+                                <th>Last Updated</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="inventoryTableBody">
+
+                            <tr>
+                                <td colspan="4">
+                                    Loading inventory...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="../src/js/hospital-dashboard.js"></script>
+
+</body>
+
+</html>

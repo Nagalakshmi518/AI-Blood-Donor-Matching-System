@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="../src/assets/css/admin-dashboard.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>🩸 Admin Dashboard</h1>
+
+        <div>
+
+            <button id="refreshBtn">
+                Refresh
+            </button>
+
+            <button id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- SUMMARY -->
+
+    <section>
+
+        <h2>Dashboard Summary</h2>
+
+        <div
+            id="summaryCards"
+            class="summary-grid">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- ANALYTICS -->
+
+   
+
+
+    <!-- SEARCH -->
+
+    <section>
+
+        <input
+            type="text"
+            id="searchUser"
+            placeholder="Search User..."
+        >
+
+    </section>
+
+
+    <!-- USERS -->
+
+    <section>
+
+        <h2>Users</h2>
+
+        <div id="usersTable">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- DONORS -->
+
+    <section>
+
+        <h2>Donors</h2>
+
+        <div id="donorsTable">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- PATIENTS -->
+
+    <section>
+
+        <h2>Patients</h2>
+
+        <div id="patientsTable">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- BLOOD REQUESTS -->
+
+    <section>
+
+        <h2>Blood Requests</h2>
+
+        <div id="requestsTable">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- DONATIONS -->
+
+    <section>
+
+        <h2>Donations</h2>
+
+        <div id="donationsTable">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- MATCHES -->
+
+    <section>
+
+        <h2>Donor Matches</h2>
+
+        <div id="matchesTable">
+
+            Loading...
+
+        </div>
+
+    </section>
+
+
+    <!-- HOSPITAL INVENTORY -->
+
+    <section>
+
+        <h2>Hospital Inventory</h2>
+
+        <div id="inventoryTable">
+
+            Loading inventory...
+
+        </div>
+
+    </section>
+
+
+    <!-- REPORTS -->
+
+    <section>
+
+        <h2>Reports</h2>
+
+        <div class="report-buttons">
+
+            <button id="downloadDonorReport">
+                Download Donor Report
+            </button>
+
+            <button id="downloadPatientReport">
+                Download Patient Report
+            </button>
+
+            <button id="downloadRequestReport">
+                Download Request Report
+            </button>
+
+            <button id="downloadDonationReport">
+                Download Donation Report
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        AI Based Blood Donor Matching & Response Optimization System
+
+    </footer>
+
+</div>
+
+<script src="../src/js/admin-dashboard.js"></script>
+
+</body>
+
+</html>

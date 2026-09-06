@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Blood Donor Matching System</title>
+    <link rel="stylesheet" href="../src/assets/css/common.css">
+    <link rel="stylesheet" href="../src/assets/css/auth.css">
+</head>
+
+<body>
+    <main class="auth-page">
+        <section class="auth-card auth-card--large">
+            <div class="auth-header">
+                <div class="blood-icon">🩸</div>
+                <h1>Create Account</h1>
+                <p>Register to join the blood donor matching system</p>
+            </div>
+
+            <form id="registerForm" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+                        <div class="field-error" id="full_name_error" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <div class="field-error" id="email_error" aria-live="polite"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                        <div class="field-error" id="phone_error" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Role</label>
+                        <select id="role" name="role" required>
+                            <option value="">Select role</option>
+                            <option value="PATIENT">Patient</option>
+                            <option value="DONOR">Donor</option>
+                             <option value="HOSPITAL">Hospital</option>
+                        </select>
+                        <div class="field-error" id="role_error" aria-live="polite"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <div class="field-error" id="password_error" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                        <div class="field-error" id="confirm_password_error" aria-live="polite"></div>
+                    </div>
+                </div>
+
+                <div id="donorFields" class="donor-fields" hidden>
+                    <h2 class="section-title">Donor Details</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" min="18" placeholder="Enter your age">
+                            <div class="field-error" id="age_error" aria-live="polite"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender">
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="field-error" id="gender_error" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" id="weight" name="weight" min="50" step="0.1" placeholder="Enter weight">
+                            <div class="field-error" id="weight_error" aria-live="polite"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blood_group">Blood Group</label>
+                            <select id="blood_group" name="blood_group">
+                                <option value="">Select blood group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                            <div class="field-error" id="blood_group_error" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" placeholder="Enter your address">
+                        <div class="field-error" id="address_error" aria-live="polite"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="availability">Availability</label>
+                        <select id="availability" name="availability">
+                            <option value="true" selected>Available</option>
+                            <option value="false">Unavailable</option>
+                        </select>
+                    </div>
+
+                    <div class="location-actions">
+                        <button type="button" id="getLocation" class="secondary-button">Get Current Location</button>
+                        <button type="button" id="retryLocation" class="secondary-button secondary-button--muted">Try Again</button>
+                    </div>
+
+                    <p id="locationMessage" class="location-message info" aria-live="polite">Location is optional. You can enter your address manually.</p>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="latitude">Latitude</label>
+                            <input type="number" id="latitude" name="latitude" step="any" placeholder="Latitude">
+                            <div class="field-error" id="latitude_error" aria-live="polite"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="longitude">Longitude</label>
+                            <input type="number" id="longitude" name="longitude" step="any" placeholder="Longitude">
+                            <div class="field-error" id="longitude_error" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+<!-- Hospital Fields -->
+<div id="hospitalFields" class="donor-fields" hidden>
+    <h2 class="section-title">Hospital Details</h2>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="hospital_name">Hospital Name</label>
+            <input
+                type="text"
+                id="hospital_name"
+                name="hospital_name"
+                placeholder="Enter hospital name"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="hospital_phone">Hospital Phone</label>
+            <input
+                type="tel"
+                id="hospital_phone"
+                name="hospital_phone"
+                placeholder="Enter hospital phone"
+            >
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="hospital_address">Hospital Address</label>
+        <input
+            type="text"
+            id="hospital_address"
+            name="hospital_address"
+            placeholder="Enter hospital address"
+        >
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="hospital_city">City</label>
+            <input
+                type="text"
+                id="hospital_city"
+                name="hospital_city"
+                placeholder="Enter city"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="hospital_state">State</label>
+            <input
+                type="text"
+                id="hospital_state"
+                name="hospital_state"
+                placeholder="Enter state"
+            >
+        </div>
+    </div>
+<div class="location-actions">
+    <button type="button" id="getHospitalLocation" class="secondary-button">
+        Get Hospital Location
+    </button>
+</div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="hospital_latitude">Latitude</label>
+            <input
+                type="number"
+                id="hospital_latitude"
+                name="hospital_latitude"
+                step="any"
+                placeholder="Latitude"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="hospital_longitude">Longitude</label>
+            <input
+                type="number"
+                id="hospital_longitude"
+                name="hospital_longitude"
+                step="any"
+                placeholder="Longitude"
+            >
+        </div>
+    </div>
+</div>
+                <button type="submit" class="primary-button" id="registerButton">Register</button>
+                <p id="formMessage" class="form-message" role="alert" aria-live="polite"></p>
+                <p id="successMessage" class="success-message" role="alert" aria-live="polite"></p>
+            </form>
+
+            <div class="auth-footer">
+                <p>
+                    Already have an account?
+                    <a href="login.html">Login</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../src/js/register.js"></script>
+</body>
+
+</html>

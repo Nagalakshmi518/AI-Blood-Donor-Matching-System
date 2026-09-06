@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>My Blood Requests</title>
+
+<button id="backBtn" onclick="goBackToDashboard()">
+    ← Back to Dashboard
+</button>
+<link
+    rel="stylesheet"
+    href="../src/assets/css/common.css"
+>
+
+
+<link
+    rel="stylesheet"
+    href="../src/assets/css/my-requests.css"
+>
+
+
+<!-- Leaflet Map CSS -->
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+>
+
+
+</head>
+
+<body>
+
+<main class="requests-page">
+
+
+    <div class="requests-header">
+
+
+        <div>
+
+
+            <h1>
+                My Blood Requests
+            </h1>
+
+
+            <p>
+                View and track your blood requests
+            </p>
+
+
+        </div>
+
+
+        <button
+            onclick="window.location.href='request-blood.html'"
+        >
+
+            + New Request
+
+        </button>
+
+
+    </div>
+
+
+    <div
+        id="requestsContainer"
+        class="requests-container"
+    >
+
+        <p class="loading">
+
+            Loading requests...
+
+        </p>
+
+    </div>
+
+
+</main>
+
+
+<!-- Leaflet Map JavaScript -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+
+<!-- Your JavaScript -->
+
+<script
+    src="../src/js/my-requests.js"
+></script>
+
+
+</body>
+
+</html>

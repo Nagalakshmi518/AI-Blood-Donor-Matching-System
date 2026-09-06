@@ -1,0 +1,234 @@
+/* ==========================================
+   GLOBAL
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial,sans-serif;
+
+    background:#f4f6f9;
+
+    color:#333;
+
+}
+
+.analytics-page{
+
+    width:95%;
+
+    max-width:1400px;
+
+    margin:30px auto;
+
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.analytics-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+
+}
+
+.analytics-header h1{
+
+    color:#c62828;
+
+    font-size:30px;
+
+}
+
+.analytics-header button{
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+#backBtn{
+
+    background:#1565c0;
+
+}
+
+#backBtn:hover{
+
+    background:#0d47a1;
+
+}
+
+#logoutBtn{
+
+    background:#c62828;
+
+}
+
+#logoutBtn:hover{
+
+    background:#b71c1c;
+
+}
+
+/* ==========================================
+   ANALYTICS GRID
+========================================== */
+
+.analytics-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+
+}
+
+/* ==========================================
+   CARD
+========================================== */
+
+.analytics-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    text-align:center;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    border-top:5px solid #c62828;
+
+}
+
+.analytics-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+
+}
+
+.analytics-card h3{
+
+    color:#666;
+
+    font-size:18px;
+
+    margin-bottom:15px;
+
+}
+
+.analytics-card h2{
+
+    color:#c62828;
+
+    font-size:38px;
+
+    font-weight:bold;
+
+}
+
+/* ==========================================
+   LOADING / ERROR
+========================================== */
+
+.loading,
+.error{
+
+    background:white;
+
+    padding:30px;
+
+    text-align:center;
+
+    border-radius:10px;
+
+    font-size:18px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+
+}
+
+.error{
+
+    color:#d32f2f;
+
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:768px){
+
+.analytics-header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:15px;
+
+}
+
+.analytics-header div{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+.analytics-header button{
+
+    margin:0;
+
+}
+
+.analytics-card h2{
+
+    font-size:30px;
+
+}
+
+}

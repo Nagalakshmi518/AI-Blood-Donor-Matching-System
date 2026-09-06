@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Blood Request</title>
+
+    <link
+        rel="stylesheet"
+        href="../src/assets/css/common.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../src/assets/css/request.css"
+    >
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+</head>
+
+<body>
+
+    <main class="request-page">
+
+        <section class="request-card">
+
+            <h1>Create Blood Request</h1>
+
+            <p>
+                Submit a request to find compatible blood donors.
+            </p>
+
+
+            <form id="requestForm">
+
+
+                <label for="blood_group">
+                    Required Blood Group
+                </label>
+
+                <select
+                    id="blood_group"
+                    required
+                >
+
+                    <option value="">
+                        Select Blood Group
+                    </option>
+
+                    <option value="A+">A+</option>
+
+                    <option value="A-">A-</option>
+
+                    <option value="B+">B+</option>
+
+                    <option value="B-">B-</option>
+
+                    <option value="AB+">AB+</option>
+
+                    <option value="AB-">AB-</option>
+
+                    <option value="O+">O+</option>
+
+                    <option value="O-">O-</option>
+
+                </select>
+
+
+                <label for="units_needed">
+                    Units Needed
+                </label>
+
+                <input
+                    type="number"
+                    id="units_needed"
+                    min="1"
+                    value="1"
+                    required
+                >
+
+
+                <label for="emergency_level">
+                    Emergency Level
+                </label>
+
+                <select
+                    id="emergency_level"
+                    required
+                >
+
+                    <option value="">
+                        Select Emergency Level
+                    </option>
+
+                    <option value="LOW">
+                        Low
+                    </option>
+
+                    <option value="MEDIUM">
+                        Medium
+                    </option>
+
+                    <option value="HIGH">
+                        High
+                    </option>
+
+                    <option value="CRITICAL">
+                        Critical
+                    </option>
+
+                </select>
+
+
+               <label for="hospital_name">
+    Hospital Name
+</label>
+<label for="hospital_name">
+    Hospital Name
+</label>
+
+<input
+    type="text"
+    id="hospital_name"
+    placeholder="Enter Hospital Name"
+    required
+>
+
+<label>
+    Select Hospital Location
+</label>
+
+<div
+    id="map"
+    style="
+        height:350px;
+        width:100%;
+        margin-bottom:15px;
+        border-radius:8px;
+    "
+></div>
+
+<input
+    type="hidden"
+    id="hospital_latitude"
+>
+
+<input
+    type="hidden"
+    id="hospital_longitude"
+>
+  <label for="notes">
+                    Additional Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    rows="4"
+                    placeholder="Optional information"
+                ></textarea>
+
+
+                <button
+                    type="submit"
+                >
+                    Submit Blood Request
+                </button>
+
+
+                <p
+                    id="requestMessage"
+                ></p>
+
+            </form>
+
+
+            <button
+                type="button"
+                onclick="window.location.href='patient-dashboard.html'"
+            >
+                Back to Dashboard
+            </button>
+
+        </section>
+
+    </main>
+
+
+   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="../src/js/create-request.js"></script>
+</body>
+
+</html>

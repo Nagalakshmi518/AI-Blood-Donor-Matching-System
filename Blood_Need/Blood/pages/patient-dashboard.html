@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Patient Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="../src/assets/css/common.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="dashboard.css"
+    >
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Header -->
+
+    <header class="dashboard-header">
+
+        <div>
+
+            <h1>🩸 Blood Donor Matching System</h1>
+
+            <p>
+                Find compatible blood donors quickly
+            </p>
+
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                id="notificationBtn"
+                onclick="location.href='notifications.html'"
+            >
+                🔔 Notifications
+            </button>
+
+            <button
+                id="logoutBtn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- Welcome -->
+
+    <section class="welcome">
+
+        <h2 id="patientName">
+            Welcome
+        </h2>
+
+        <p>
+            Manage your blood requests and donor responses
+        </p>
+
+    </section>
+
+
+    <!-- Statistics -->
+<section class="cards">
+
+    <div class="card total-card">
+        <div class="card-icon">📋</div>
+        <div class="card-content">
+            <h3>Total Requests</h3>
+            <h1 id="totalRequests">0</h1>
+        </div>
+    </div>
+
+    <div class="card pending-card">
+        <div class="card-icon">⏳</div>
+        <div class="card-content">
+            <h3>Pending</h3>
+            <h1 id="pendingRequests">0</h1>
+        </div>
+    </div>
+
+    <div class="card matched-card">
+        <div class="card-icon">🎯</div>
+        <div class="card-content">
+            <h3>Matched</h3>
+            <h1 id="matchedRequests">0</h1>
+        </div>
+    </div>
+
+    <div class="card accepted-card">
+        <div class="card-icon">🤝</div>
+        <div class="card-content">
+            <h3>Accepted</h3>
+            <h1 id="acceptedRequests">0</h1>
+        </div>
+    </div>
+
+    <div class="card completed-card">
+        <div class="card-icon">✅</div>
+        <div class="card-content">
+            <h3>Completed</h3>
+            <h1 id="completedRequests">0</h1>
+        </div>
+    </div>
+
+    <div class="card rejected-card">
+        <div class="card-icon">❌</div>
+        <div class="card-content">
+            <h3>Rejected</h3>
+            <h1 id="rejectedRequests">0</h1>
+        </div>
+    </div>
+
+    <div class="card cancelled-card">
+        <div class="card-icon">🚫</div>
+        <div class="card-content">
+            <h3>Cancelled</h3>
+            <h1 id="cancelledRequests">0</h1>
+        </div>
+    </div>
+
+</section>
+    <!-- Quick Actions -->
+
+    <section class="actions-section">
+
+        <h2>
+            Quick Actions
+        </h2>
+
+        <div class="actions">
+
+            <button
+                class="primary-action"
+                onclick="window.location.href='request-blood.html'"
+            >
+
+                🩸 Create Blood Request
+
+            </button>
+
+
+            <button
+                onclick="location.href='my-requests.html'"
+            >
+
+                📋 My Requests
+
+            </button>
+
+
+            <button
+                onclick="location.href='notifications.html'"
+            >
+
+                🔔 Notifications
+
+            </button>
+
+
+            <button
+                onclick="window.location.href='profile.html'"
+            >
+
+                👤 My Profile
+
+            </button>
+
+        </div>
+
+    </section>
+<section class="my-requests">
+    
+    <br><br>
+
+   <div class="section-header">
+    <h2>🩸 My Blood Requests</h2>
+</div>
+
+<div id="requestContainer" class="request-grid">
+
+</div>
+
+</section>
+
+    <!-- Recent Activity --><section class="recent-activity">
+
+<div class="section-header">
+    <h2>📋 Recent Activity</h2>
+</div>
+
+<div id="recentActivity" class="activity-list">
+    Loading recent activity...
+</div>
+
+</section>
+
+</div>
+
+
+<script
+    src="../src/js/patient.js"
+></script>
+
+</body>
+
+</html>
