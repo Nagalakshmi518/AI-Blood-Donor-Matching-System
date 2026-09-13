@@ -1,43 +1,68 @@
 import os
-import smtplib
-from email.mime.text import MIMEText
+import json
+import urllib.request
+import urllib.error
 from dotenv import load_dotenv
 
 load_dotenv()
 
-EMAIL = os.getenv("MAIL_USERNAME")
-EMAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+APPS_SCRIPT_URL = os.getenv(
+    "OTP_EMAIL_SCRIPT_URL",
+    "https://script.google.com/macros/s/AKfycbxmP2HdZQHgruSHihnp-3iKG8gE5Rut4ZDyEcgma-gcxuKH1Qh1KvGCEJ63HkKYdFOi/exec"
+)
+
+SECRET_TOKEN = os.getenv(
+    "OTP_EMAIL_SECRET",
+    "BloodNeed_OTP_2026"
+)
 
 
 def send_email(receiver, otp=None, subject="BloodNeed OTP", body=None):
-    if not EMAIL or not EMAIL_PASSWORD:
-        raise Exception("MAIL_USERNAME or MAIL_PASSWORD missing in .env")
 
-    if body is None:
-        if otp is None:
-            body = "Hello,\n\nThis is a BloodNeed message.\n\nRegards,\nBloodNeed Team\n"
-        else:
-            body = f"""Hello,
-Your BloodNeed OTP is: {otp}
+    if not receiver:
+        raise Exception("Receiver email is required")
 
-This OTP is valid for 15 minutes.
+    if not otp:
+        raise Exception("OTP is required")
 
-Regards,
-BloodNeed Team
-"""
+    payload = {
+        "token": SECRET_TOKEN,
+        "email": receiver,
+        "otp": str(otp)
+    }
 
-    msg = MIMEText(body)
-    msg["Subject"] = subject
-    msg["From"] = EMAIL
-    msg["To"] = receiver
+    data = json.dumps(payload).encode("utf-8")
 
-    server = smtplib.SMTP("smtp.gmail.com", 587, timeout=10)
+    request = urllib.request.Request(
+        APPS_SCRIPT_URL,
+        data=data,
+        headers={
+            "Content-Type": "application/json"
+        },
+        method="POST"
+    )
+
     try:
-        server.starttls()
-        server.login(EMAIL, EMAIL_PASSWORD)
-        server.sendmail(EMAIL, receiver, msg.as_string())
-    finally:
-        try:
-            server.quit()
-        except Exception:
-            pass
+        with urllib.request.urlopen(request, timeout=20) as response:
+            response_data = response.read().decode("utf-8")
+
+        result = json.loads(response_data)
+
+        print("GOOGLE APPS SCRIPT RESPONSE:", result)
+
+        if not result.get("success"):
+            raise Exception(
+                result.get("message", "Email sending failed")
+            )
+
+        print("OTP EMAIL SENT SUCCESSFULLY:", receiver)
+        return True
+
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8", errors="ignore")
+        print("EMAIL HTTP ERROR:", e.code, error_body)
+        raise Exception(f"Email service HTTP error: {e.code}")
+
+    except Exception as e:
+        print("EMAIL SERVICE ERROR:", e)
+        raise

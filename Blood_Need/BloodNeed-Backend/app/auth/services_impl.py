@@ -78,6 +78,10 @@ def register_user(data):
                     "success": False,
                     "message": f"{field} is required for hospital registration."
                 }
+    print("REGISTER EMAIL:", repr(data.get("email")))
+    print("REGISTER PHONE:", repr(data.get("phone")))
+    print("EMAIL FOUND:", User.query.filter_by(email=data.get("email")).first())
+    print("PHONE FOUND:", User.query.filter_by(phone=data.get("phone")).first())
     if User.query.filter_by(email=data["email"]).first():
         return {
             "success": False,
