@@ -95,19 +95,19 @@ class Config:
 
     SQLALCHEMY_ENGINE_OPTIONS = {
 
-        # Keep database connections alive
+        # Check connection before using it
         "pool_pre_ping": True,
 
-        # Recycle connections periodically
-        "pool_recycle": 1800,
+        # Recycle old connections periodically
+        "pool_recycle": 280,
 
-        # Keep connections ready
+        # Maintain a small connection pool
         "pool_size": 5,
 
-        # Maximum extra connections
+        # Allow a few additional connections when required
         "max_overflow": 5,
 
-        # Prevent infinite waiting
+        # Maximum time to wait for a connection
         "pool_timeout": 30,
 
         "connect_args": {
@@ -120,7 +120,7 @@ class Config:
                 )
             },
 
-            # Faster connection timeout
+            # Connection establishment timeout
             "connect_timeout": 10
         }
     }

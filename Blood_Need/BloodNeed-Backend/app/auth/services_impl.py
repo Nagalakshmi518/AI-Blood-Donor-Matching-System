@@ -162,7 +162,7 @@ def register_user(data):
         # CREATE OTP
         # =====================================
         otp = generate_verification_code()
-
+        print("GENERATED OTP:", otp)
         # Delete previous OTP for same email
         PasswordReset.query.filter_by(
             email=user.email
@@ -204,6 +204,8 @@ def verify_email(data):
 
     email = (data or {}).get("email")
     otp = str((data or {}).get("otp", "")).strip()
+    print("VERIFY EMAIL:", repr(email))
+    print("VERIFY OTP:", repr(otp))
 
     if not email or not otp:
         return {
@@ -213,7 +215,7 @@ def verify_email(data):
 
     # Check user
     user = User.query.filter_by(email=email).first()
-
+    print("VERIFY USER:", user)
     if user is None:
         return {
             "success": False,
@@ -227,13 +229,13 @@ def verify_email(data):
     ).order_by(
         PasswordReset.reset_id.desc()
     ).first()
-
+    print("VERIFY OTP RECORD:", reset_record)
     if reset_record is None:
         return {
             "success": False,
             "message": "OTP not found. Please register again."
         }
-
+    print("DB OTP:", repr(str(reset_record.otp).strip()))
     # Compare OTP
     if str(reset_record.otp).strip() != otp:
         return {

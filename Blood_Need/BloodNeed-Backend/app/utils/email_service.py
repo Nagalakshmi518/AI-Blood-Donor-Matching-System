@@ -18,7 +18,6 @@ def send_email(receiver, otp=None, subject="BloodNeed OTP", body=None):
             body = "Hello,\n\nThis is a BloodNeed message.\n\nRegards,\nBloodNeed Team\n"
         else:
             body = f"""Hello,
-
 Your BloodNeed OTP is: {otp}
 
 This OTP is valid for 15 minutes.
