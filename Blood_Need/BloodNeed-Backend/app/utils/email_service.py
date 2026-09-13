@@ -10,7 +10,7 @@ load_dotenv()
 
 APPS_SCRIPT_URL = os.getenv(
     "OTP_EMAIL_SCRIPT_URL",
-    "<YOUR_APPS_SCRIPT_EXEC_URL>"
+    "https://script.google.com/macros/s/AKfycbwoeLnpm94Bk2j937Fq2deVzhw57cV2pWiGrdNn6Hyldu6kPKlTfX1B8yyGV5HTMkgB/exec"
 )
 
 SECRET_TOKEN = os.getenv(
