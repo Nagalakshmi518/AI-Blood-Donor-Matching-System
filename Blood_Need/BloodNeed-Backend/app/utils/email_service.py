@@ -7,11 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
-APPS_SCRIPT_URL = os.getenv(
-    "OTP_EMAIL_SCRIPT_URL",
-    "https://script.google.com/macros/s/AKfycbwoeLnpm94Bk2j937Fq2deVzhw57cV2pWiGrdNn6Hyldu6kPKlTfX1B8yyGV5HTMkgB/exec"
-)
+APPS_SCRIPT_URL = os.getenv("OTP_EMAIL_SCRIPT_URL")
 
 SECRET_TOKEN = os.getenv(
     "OTP_EMAIL_SECRET",
@@ -34,6 +30,9 @@ def send_email(
     3. Other normal project emails
     """
 
+    if not APPS_SCRIPT_URL:
+        raise Exception("OTP_EMAIL_SCRIPT_URL is missing")
+
     if not receiver:
         raise Exception("Receiver email is required")
 
@@ -44,7 +43,6 @@ def send_email(
     if body is None:
 
         if otp is not None:
-
             body = f"""Hello,
 
 Your BloodNeed OTP is: {otp}
@@ -58,7 +56,6 @@ BloodNeed Team
 """
 
         else:
-
             body = """Hello,
 
 This is a message from BloodNeed.
@@ -68,7 +65,7 @@ BloodNeed Team
 """
 
     # --------------------------------------
-    # Prepare request for Google Apps Script
+    # Prepare request
     # --------------------------------------
 
     payload = {
@@ -101,9 +98,7 @@ BloodNeed Team
             timeout=20
         ) as response:
 
-            response_data = response.read().decode(
-                "utf-8"
-            )
+            response_data = response.read().decode("utf-8")
 
         result = json.loads(response_data)
 
@@ -113,7 +108,6 @@ BloodNeed Team
         )
 
         if not result.get("success"):
-
             raise Exception(
                 result.get(
                     "message",
