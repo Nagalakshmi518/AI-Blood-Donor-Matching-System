@@ -23,12 +23,13 @@ def generate_verification_code():
 def send_verification_code(email, otp, subject=None):
     try:
         from app.utils.email_service import send_email
-
+        print("CALLING EMAIL SERVICE:", email, otp)
         send_email(
             receiver=email,
             otp=otp,
             subject=subject or "BloodNeed OTP"
         )
+        print("EMAIL SERVICE RETURNED SUCCESS")
 
         return True
 
