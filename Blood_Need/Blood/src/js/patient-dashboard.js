@@ -236,7 +236,3 @@ initializeDashboard();
 // Refresh only dashboard statistics every 30 seconds.
 // Full request data is not repeatedly fetched to reduce
 // unnecessary database and server load.
-
-setInterval(() => {
-  loadDashboard();
-}, 30000);
