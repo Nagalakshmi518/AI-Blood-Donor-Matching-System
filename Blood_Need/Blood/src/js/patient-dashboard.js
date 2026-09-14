@@ -37,18 +37,16 @@ function getStatusColor(status) {
   if (value === "Matched") return "purple";
   return "gray";
 }
-
 async function loadDashboard() {
   try {
     const response = await fetch(`${API_URL}/api/patients/dashboard`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (response.status === 401) {
-      // Token is invalid/expired - redirect to login but do NOT clear localStorage
-      // The token will be replaced when user logs in again
       window.location.href = "login.html";
       return;
     }
@@ -56,65 +54,80 @@ async function loadDashboard() {
     const data = await response.json();
 
     if (!response.ok) {
-      alert(data.message || "Unable to load dashboard.");
-      return;
+      throw new Error(data.message || "Unable to load dashboard.");
     }
 
     if (patientName && data.patient) {
-      patientName.innerHTML = `Welcome ${data.patient.full_name || ""}`;
+      patientName.textContent = `Welcome ${data.patient.full_name || ""}`;
     }
 
-    if (totalRequests) totalRequests.innerHTML = data.statistics.total_requests;
-    if (pendingRequests) pendingRequests.innerHTML = data.statistics.pending;
-    if (completedRequests)
-      completedRequests.innerHTML = data.statistics.completed;
-    if (acceptedRequests) acceptedRequests.innerHTML = data.statistics.accepted;
-    if (rejectedRequests) rejectedRequests.innerHTML = data.statistics.rejected;
-    if (matchedRequests) matchedRequests.innerHTML = data.statistics.matched;
-    if (cancelledRequests)
-      cancelledRequests.innerHTML = data.statistics.cancelled;
+    const stats = data.statistics || {};
 
-    recentActivity.innerHTML = "";
-    if (!data.recent_activities || data.recent_activities.length === 0) {
+    if (totalRequests) totalRequests.textContent = stats.total_requests || 0;
+
+    if (pendingRequests) pendingRequests.textContent = stats.pending || 0;
+
+    if (completedRequests) completedRequests.textContent = stats.completed || 0;
+
+    if (acceptedRequests) acceptedRequests.textContent = stats.accepted || 0;
+
+    if (rejectedRequests) rejectedRequests.textContent = stats.rejected || 0;
+
+    if (matchedRequests) matchedRequests.textContent = stats.matched || 0;
+
+    if (cancelledRequests) cancelledRequests.textContent = stats.cancelled || 0;
+
+    if (!recentActivity) return;
+
+    const activities = data.recent_activities || [];
+
+    if (activities.length === 0) {
       recentActivity.innerHTML = "<p>No recent activity.</p>";
-    } else {
-      data.recent_activities.forEach((activity) => {
-        recentActivity.innerHTML += `
-          <div class="activity-card">
-            <h4>🩸 Request #${activity.request_id}</h4>
-            <p><strong>${activity.activity}</strong></p>
-            <p>Blood Group: ${activity.blood_group}</p>
-            <p>Hospital: ${activity.hospital}</p>
-            <p>
-              Status:
-              <strong style="color:${getStatusColor(activity.status)};">
-                ${getStatusDisplay(activity.status)}
-              </strong>
-            </p>
-            <small>${activity.request_time}</small>
-            <hr>
-          </div>
-        `;
-      });
+      return;
     }
+
+    // Build HTML first
+    const activityHTML = activities
+      .map(
+        (activity) => `
+      <div class="activity-card">
+        <h4>🩸 Request #${activity.request_id}</h4>
+        <p><strong>${activity.activity}</strong></p>
+        <p>Blood Group: ${activity.blood_group}</p>
+        <p>Hospital: ${activity.hospital}</p>
+        <p>
+          Status:
+          <strong style="color:${getStatusColor(activity.status)};">
+            ${getStatusDisplay(activity.status)}
+          </strong>
+        </p>
+        <small>${activity.request_time}</small>
+        <hr>
+      </div>
+    `,
+      )
+      .join("");
+
+    // ONE DOM update
+    recentActivity.innerHTML = activityHTML;
   } catch (error) {
-    console.log(error);
-    if (recentActivity)
-      recentActivity.innerHTML = "<p>Unable to connect to backend.</p>";
+    console.error("Dashboard Error:", error);
+
+    if (recentActivity) {
+      recentActivity.innerHTML = `<p>Unable to load dashboard: ${error.message}</p>`;
+    }
   }
 }
-
 async function loadRequests() {
   try {
     const response = await fetch(`${API_URL}/api/patients/requests`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      cache: "no-store",
     });
 
     if (response.status === 401) {
-      // Token is invalid/expired - redirect to login but do NOT clear localStorage
-      // The token will be replaced when user logs in again
       window.location.href = "login.html";
       return;
     }
@@ -122,98 +135,163 @@ async function loadRequests() {
     const requests = await response.json();
 
     if (!response.ok) {
-      if (requestContainer)
-        requestContainer.innerHTML = `<p>${requests.message || "Unable to load requests."}</p>`;
+      throw new Error(requests.message || "Unable to load requests.");
+    }
+
+    if (!requestContainer) return;
+
+    if (!Array.isArray(requests) || requests.length === 0) {
+      requestContainer.innerHTML = "<p>No blood requests found.</p>";
       return;
     }
 
-    if (!requests || requests.length === 0) {
-      if (requestContainer)
-        requestContainer.innerHTML = "<p>No blood requests found.</p>";
-      return;
-    }
+    // Build EVERYTHING in memory first
+    const requestsHTML = requests
+      .map((request) => {
+        const donorItems = Array.isArray(request.matched_donors)
+          ? request.matched_donors
+          : [];
 
-    requestContainer.innerHTML = "";
+        let donorHTML;
 
-    requests.forEach((request) => {
-      const donorItems = Array.isArray(request.matched_donors)
-        ? request.matched_donors
-        : [];
-      let donorHTML = "";
-
-      if (donorItems.length === 0) {
-        donorHTML = `
+        if (donorItems.length === 0) {
+          donorHTML = `
           <p>
-            ${request.status === "Pending" ? "No matched donors yet. Request is still active and waiting for donor or inventory fulfillment." : "No donor response information available."}
+            ${
+              request.status === "Pending"
+                ? "No matched donors yet. Request is still active and waiting for donor or inventory fulfillment."
+                : "No donor response information available."
+            }
           </p>
         `;
-      } else {
-        donorItems.forEach((donor) => {
-          const donorName = donor.full_name || "Donor";
-          const donorPhone = donor.phone || "N/A";
-          const donorEmail = donor.email || "N/A";
+        } else {
+          donorHTML = donorItems
+            .map((donor) => {
+              const donorName = donor.full_name || "Donor";
 
-          donorHTML += `
-            <div class="donor-card" style="border:2px solid ${donor.donor_response === "Accepted" ? "green" : "#ddd"}; background:${donor.donor_response === "Accepted" ? "#e8ffe8" : "#fff"};">
-              <h4>${donorName}${donor.donor_response === "Accepted" ? " ✅ Accepted Donor" : ""}</h4>
+              const donorPhone = donor.phone || "N/A";
+
+              const donorEmail = donor.email || "N/A";
+
+              const accepted = donor.donor_response === "Accepted";
+
+              return `
+            <div class="donor-card"
+              style="
+                border:2px solid ${accepted ? "green" : "#ddd"};
+                background:${accepted ? "#e8ffe8" : "#fff"};
+              ">
+
+              <h4>
+                ${donorName}
+                ${accepted ? " ✅ Accepted Donor" : ""}
+              </h4>
+
               <p>📞 ${donorPhone}</p>
               <p>📧 ${donorEmail}</p>
-              <p>Blood: ${donor.blood_group || "N/A"}</p>
-              <p>Distance: ${donor.distance_km != null ? `${donor.distance_km} km` : "N/A"}</p>
-              <p>Ranking: ${donor.ranking_score != null ? donor.ranking_score : "N/A"}</p>
-              <p>Reliability: ${donor.reliability_score != null ? donor.reliability_score : "N/A"}</p>
+
+              <p>
+                Blood: ${donor.blood_group || "N/A"}
+              </p>
+
+              <p>
+                Distance:
+                ${donor.distance_km != null ? `${donor.distance_km} km` : "N/A"}
+              </p>
+
+              <p>
+                Ranking:
+                ${donor.ranking_score != null ? donor.ranking_score : "N/A"}
+              </p>
+
+              <p>
+                Reliability:
+                ${
+                  donor.reliability_score != null
+                    ? donor.reliability_score
+                    : "N/A"
+                }
+              </p>
+
               <p>
                 Response:
-                <strong style="color:${getStatusColor(donor.donor_response)};">
+                <strong
+                  style="color:${getStatusColor(donor.donor_response)};"
+                >
                   ${donor.donor_response || "Pending"}
                 </strong>
               </p>
+
             </div>
           `;
-        });
-      }
+            })
+            .join("");
+        }
 
-      const requestStatusDisplay = getStatusDisplay(request.status);
-      const requestStatusColor = getStatusColor(request.status);
+        const requestStatusDisplay = getStatusDisplay(request.status);
 
-      requestContainer.innerHTML += `
+        const requestStatusColor = getStatusColor(request.status);
+
+        const inventoryFallback =
+          request.status === "Completed" && donorItems.length === 0
+            ? "Used"
+            : donorItems.length === 0
+              ? "Awaiting donor or inventory"
+              : "Not required";
+
+        return `
         <div class="request-card">
-          <h3>Blood Request #${request.request_id}</h3>
-          <p>Blood Group: ${request.blood_group}</p>
-          <p>Hospital: ${request.hospital_name}</p>
-          <p>Emergency: ${request.emergency_level}</p>
+
+          <h3>
+            Blood Request #${request.request_id}
+          </h3>
+
+          <p>
+            Blood Group: ${request.blood_group}
+          </p>
+
+          <p>
+            Hospital: ${request.hospital_name}
+          </p>
+
+          <p>
+            Emergency: ${request.emergency_level}
+          </p>
+
           <p>
             Status:
-            <strong style="color:${requestStatusColor};">${requestStatusDisplay}</strong>
+            <strong style="color:${requestStatusColor};">
+              ${requestStatusDisplay}
+            </strong>
           </p>
-          <p>Units Needed: ${request.units_needed}</p>
-          <p>Hospital Inventory Fallback: ${request.status === "Completed" && donorItems.length === 0 ? "Used" : donorItems.length === 0 ? "Awaiting donor or inventory" : "Not required"}</p>
+
+          <p>
+            Units Needed: ${request.units_needed}
+          </p>
+
+          <p>
+            Hospital Inventory Fallback:
+            ${inventoryFallback}
+          </p>
+
           <div class="matched-donors">
             ${donorHTML}
           </div>
+
         </div>
       `;
-    });
+      })
+      .join("");
+
+    // ONE DOM update instead of innerHTML += repeatedly
+    requestContainer.innerHTML = requestsHTML;
   } catch (error) {
-    console.log(error);
-    if (requestContainer)
-      requestContainer.innerHTML = "<p>Unable to connect to backend.</p>";
+    console.error("My Requests Error:", error);
+
+    if (requestContainer) {
+      requestContainer.innerHTML = `<p>Unable to load requests: ${error.message}</p>`;
+    }
   }
-}
-
-function safeLogout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("user");
-  localStorage.removeItem("patient_id");
-  localStorage.removeItem("donor_id");
-  window.location.href = "login.html";
-}
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", function () {
-    safeLogout();
-  });
 }
 // ==========================================
 // INITIAL LOAD
