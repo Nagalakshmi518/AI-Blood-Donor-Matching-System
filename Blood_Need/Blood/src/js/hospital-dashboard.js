@@ -40,14 +40,20 @@ function checkAuthentication() {
 
 async function loadHospitalProfile() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/hospitals/${hospitalId}/inventory`, {
-      headers: getHeaders(),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/api/hospitals/my-profile`,
+      {
+        headers: getHeaders(),
+        cache: "no-store",
+      }
+    );
 
     const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "Unable to load hospital profile");
+    if (!response.ok || !data.success || !data.hospital) {
+      throw new Error(
+        data.message || "Unable to load hospital profile"
+      );
     }
 
     const hospital = data.hospital;
@@ -59,7 +65,8 @@ async function loadHospitalProfile() {
     document.getElementById("hospitalName").textContent =
       hospital.hospital_name || "-";
 
-    document.getElementById("hospitalCity").textContent = hospital.city || "-";
+    document.getElementById("hospitalCity").textContent =
+      hospital.city || "-";
 
     document.getElementById("hospitalPhone").textContent =
       hospital.phone || "-";
@@ -70,19 +77,23 @@ async function loadHospitalProfile() {
     document.getElementById("hospitalAddress").textContent =
       hospital.address || "-";
 
-    // Load inventory after hospital ID is available
+    // Load inventory only after ID is available
     await loadInventory();
+
   } catch (error) {
     console.error("Hospital Profile Error:", error);
 
     document.getElementById("hospitalName").textContent =
       "Profile not available";
 
+    document.getElementById("hospitalCity").textContent = "-";
+    document.getElementById("hospitalPhone").textContent = "-";
+    document.getElementById("hospitalEmail").textContent = "-";
+    document.getElementById("hospitalAddress").textContent = "-";
+
     alert("Unable to load hospital profile: " + error.message);
   }
-}
-
-// ==========================================
+}// ==========================================
 // LOAD INVENTORY
 // ==========================================
 
@@ -92,39 +103,46 @@ async function loadInventory() {
     return;
   }
 
-  const tableBody = document.getElementById("inventoryTableBody");
+  const tableBody =
+    document.getElementById("inventoryTableBody");
 
   try {
     tableBody.innerHTML = `
-            <tr>
-                <td colspan="4">Loading inventory...</td>
-            </tr>
-        `;
+      <tr>
+        <td colspan="4">Loading inventory...</td>
+      </tr>
+    `;
 
-    const response = await fetch(`${API_BASE_URL}/api/hospitals/${hospitalId}/inventory/add`, {
-      headers: getHeaders(),
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/api/hospitals/${hospitalId}/inventory`,
+      {
+        headers: getHeaders(),
+        cache: "no-store",
+      }
+    );
 
     const inventory = await response.json();
 
     if (!response.ok) {
-      throw new Error(inventory.message || "Unable to load inventory");
+      throw new Error(
+        inventory.message || "Unable to load inventory"
+      );
     }
 
     renderInventory(inventory);
+
   } catch (error) {
     console.error("Inventory Error:", error);
 
     tableBody.innerHTML = `
-            <tr>
-                <td colspan="4">
-                    Unable to load inventory
-                </td>
-            </tr>
-        `;
+      <tr>
+        <td colspan="4">
+          Unable to load inventory: ${error.message}
+        </td>
+      </tr>
+    `;
   }
 }
-
 // ==========================================
 // RENDER INVENTORY
 // ==========================================
@@ -231,7 +249,7 @@ async function addBloodUnits() {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/${hospitalId}/inventory/add`,
+      `${API_BASE_URL}/api/hospitals/${hospitalId}/inventory/add`,
       {
         method: "POST",
 
