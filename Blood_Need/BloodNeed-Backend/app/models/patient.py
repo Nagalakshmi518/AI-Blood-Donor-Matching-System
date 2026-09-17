@@ -50,6 +50,12 @@ class Patient(db.Model):
     # Relationships
     # =========================
 
+    user = db.relationship(
+        "User",
+        backref=db.backref("patient_profile", uselist=False),
+        lazy=True
+    )
+
     blood_requests = db.relationship(
         "BloodRequest",
         backref="patient",
@@ -77,7 +83,7 @@ class Patient(db.Model):
 
     def to_dict(self):
 
-        user = User.query.get(self.user_id)
+        user = getattr(self, "user", None) or User.query.get(self.user_id)
 
         return {
 

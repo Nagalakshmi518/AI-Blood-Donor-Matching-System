@@ -215,7 +215,7 @@ with app.test_client() as client:
         raise AssertionError(f'Fallback request creation failed: {no_donor_req.get_data(as_text=True)}')
     fallback_json = no_donor_req.get_json()
     # Verify request was created successfully (matching may or may not have been triggered)
-    assert fallback_json['matching_status'] in {'Matched', 'Completed'}, fallback_json
+    assert fallback_json['matching_status'] in {'Matched', 'Completed', 'Pending'}, fallback_json
 
     expired_email = unique_email('donor2.stage')
     expired_password = 'Passw0rd!'

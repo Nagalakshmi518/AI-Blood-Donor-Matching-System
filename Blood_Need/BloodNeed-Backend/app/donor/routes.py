@@ -564,6 +564,9 @@ def donor_donations():
     ]), 200
 
 
+from sqlalchemy.orm import joinedload
+
+
 # ====================================================
 # DONOR INCOMING BLOOD REQUESTS
 # ====================================================
@@ -578,16 +581,22 @@ def donor_requests():
         user_id=user_id
     ).first()
 
-
     if donor is None:
 
         return jsonify({
             "message": "Donor profile not found"
         }), 404
 
-    matches = DonorMatch.query.filter_by(
-        donor_id=donor.donor_id
-    ).all()
+    matches = (
+        DonorMatch.query
+        .options(
+            joinedload(DonorMatch.blood_request)
+            .joinedload(BloodRequest.patient)
+            .joinedload(Patient.user)
+        )
+        .filter_by(donor_id=donor.donor_id)
+        .all()
+    )
 
     result = []
 
@@ -597,15 +606,13 @@ def donor_requests():
         if match.donor_response == "Pending" and match.response_deadline is None:
             continue
 
-        blood_request = BloodRequest.query.get(
-            match.request_id
-        )
+        blood_request = match.blood_request
 
         if blood_request is None:
             continue
 
-        patient = Patient.query.get(blood_request.patient_id)
-        user = User.query.get(patient.user_id) if patient else None
+        patient = blood_request.patient
+        user = patient.user if patient else None
 
         payload = {
             "match_id": match.match_id,

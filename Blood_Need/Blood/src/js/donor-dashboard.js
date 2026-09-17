@@ -1,4 +1,22 @@
-const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
+const RENDER_FALLBACK_URL = "https://ai-blood-donor-matching-system.onrender.com";
+
+function resolveApiUrl() {
+  if (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+  ) {
+    if (window.location.port === "5000") {
+      return window.location.origin;
+    }
+    return "http://127.0.0.1:5000";
+  }
+  if (window.location.origin.includes("onrender.com")) {
+    return window.location.origin;
+  }
+  return RENDER_FALLBACK_URL;
+}
+
+const API_URL = resolveApiUrl();
 const API_BASE_URL = window.location.origin;
 function getStoredRole() {
   return String(localStorage.getItem("role") || "")
@@ -66,6 +84,7 @@ const eligibleCard = document.getElementById("eligibleCard");
 const recentDonations = document.getElementById("recentDonations");
 
 let activeTimers = {};
+let activeMaps = {};
 let isRefreshingRequests = false;
 
 if (!token) {
@@ -219,6 +238,15 @@ async function loadIncomingRequests() {
     Object.values(activeTimers).forEach((timer) => clearInterval(timer));
     activeTimers = {};
 
+    Object.values(activeMaps).forEach((m) => {
+      if (m && typeof m.remove === "function") {
+        try {
+          m.remove();
+        } catch (err) {}
+      }
+    });
+    activeMaps = {};
+
     const visibleRequests = requests.filter((request) => {
       if (request.donor_response === "Rejected") return false;
       if (request.request_status === "Cancelled") return false;
@@ -283,17 +311,23 @@ async function loadIncomingRequests() {
       mapContainer.style.borderRadius = "10px";
       card.appendChild(mapContainer);
 
-      const map = L.map(`map-${request.match_id}`).setView(
-        [request.hospital_latitude, request.hospital_longitude],
-        13,
-      );
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-      }).addTo(map);
-      L.marker([request.hospital_latitude, request.hospital_longitude])
-        .addTo(map)
-        .bindPopup(request.hospital_name)
-        .openPopup();
+      try {
+        const map = L.map(`map-${request.match_id}`).setView(
+          [request.hospital_latitude, request.hospital_longitude],
+          13,
+        );
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+        }).addTo(map);
+        L.marker([request.hospital_latitude, request.hospital_longitude])
+          .addTo(map)
+          .bindPopup(request.hospital_name)
+          .openPopup();
+
+        activeMaps[request.match_id] = map;
+      } catch (mapErr) {
+        console.warn("Leaflet map initialization warning:", mapErr);
+      }
 
       if (showTimer) {
         const timerElement = document.getElementById(

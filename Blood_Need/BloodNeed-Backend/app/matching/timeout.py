@@ -22,121 +22,97 @@ from app.ai.ranking import (
 
 
 # ==========================================
-# FIND NEXT ELIGIBLE DONOR
-# ==========================================
+from sqlalchemy.orm import joinedload
+from app.models.user import User
+from app.ai.ranking import blood_match
+
 
 def find_next_donor(blood_request):
 
     # Donors who already received a match for this request
-    already_matched_donor_ids = [
-
+    already_matched_donor_ids = set(
         donor_id
-
-        for (
-            donor_id,
-        ) in db.session.query(
+        for (donor_id,) in db.session.query(
             DonorMatch.donor_id
         ).filter_by(
             request_id=blood_request.request_id
         ).all()
+    )
 
+    compatible_groups = [
+        group for group in ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"]
+        if blood_match(blood_request.blood_group, group)
     ]
 
-
-    donors = Donor.query.all()
+    donors = (
+        Donor.query
+        .join(User, Donor.user_id == User.user_id)
+        .options(joinedload(Donor.user))
+        .filter(
+            Donor.availability == True,
+            Donor.blood_group.in_(compatible_groups),
+            User.role == "DONOR",
+            User.active == True,
+            Donor.latitude.isnot(None),
+            Donor.longitude.isnot(None)
+        )
+        .all()
+    )
 
     candidates = []
-
 
     for donor in donors:
 
         # Skip donors who already received this request
         if donor.donor_id in already_matched_donor_ids:
-
             continue
-
 
         # Check availability + donation cooldown
-        if not is_donor_eligible(donor, blood_request):
-
+        if not is_donor_eligible(donor, blood_request, already_matched_donor_ids):
             continue
-
-
-        # Calculate AI ranking score
-        score = calculate_score(
-
-            blood_request,
-
-            donor
-
-        )
-
-
-        if score <= 0:
-
-            continue
-
 
         # Calculate distance
         distance = calculate_distance(
-
             donor.latitude,
-
             donor.longitude,
-
             blood_request.hospital_latitude,
-
             blood_request.hospital_longitude
-
         )
 
         if distance > allowed_radius(blood_request.emergency_level):
             continue
 
-        # Calculate response probability
-        response_probability = min(
-
-            100,
-
-            round(
-
-                (donor.reliability_score or 0)
-
-                + (
-
-                    (donor.total_donations or 0)
-
-                    * 2
-
-                ),
-
-                2
-
-            )
-
+        # Calculate AI ranking score with precalculated distance
+        score = calculate_score(
+            blood_request,
+            donor,
+            precalculated_distance=distance
         )
 
+        if score <= 0:
+            continue
+
+        # Calculate response probability
+        response_probability = min(
+            100,
+            round(
+                (donor.reliability_score or 0)
+                + ((donor.total_donations or 0) * 2),
+                2
+            )
+        )
 
         candidates.append({
-
             "donor": donor,
-
             "score": score,
-
             "distance": distance,
-
             "probability": response_probability
-
         })
-
 
     # Sort by highest ranking score
     candidates.sort(
-
         key=lambda item: item["score"],
-
         reverse=True
-
     )
 
 

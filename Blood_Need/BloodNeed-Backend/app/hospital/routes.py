@@ -220,10 +220,12 @@ def hospital_inventory_add(hospital_id):
         "is_read": False,
     })
 
+    inv_dict = inv.to_dict()
     return jsonify({
         "success": True,
         "message": "Blood units added successfully",
-        "inventory": inv.to_dict()
+        "available_units": inv_dict.get("available_units", 0),
+        "inventory": inv_dict
     }), 200
 @hospital_bp.route("/<int:hospital_id>/inventory/use", methods=["POST"])
 @jwt_required()

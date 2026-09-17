@@ -5,28 +5,33 @@ class DonorMatch(db.Model):
 
     __tablename__ = "donor_matches"
 
+    __table_args__ = (
+        db.Index("idx_matches_response_deadline", "donor_response", "response_deadline"),
+        db.Index("idx_matches_donor_response", "donor_id", "donor_response"),
+        db.Index("idx_matches_req_donor", "request_id", "donor_id"),
+    )
 
     match_id = db.Column(
         db.Integer,
         primary_key=True
     )
 
-
     request_id = db.Column(
         db.Integer,
         db.ForeignKey(
             "blood_requests.request_id"
         ),
-        nullable=False
+        nullable=False,
+        index=True
     )
-
 
     donor_id = db.Column(
         db.Integer,
         db.ForeignKey(
             "donors.donor_id"
         ),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
 

@@ -1,4 +1,7 @@
 import os
+import werkzeug
+if not hasattr(werkzeug, "__version__"):
+    werkzeug.__version__ = getattr(werkzeug, "__version__", "3.0.0")
 
 from flask import Flask
 
@@ -158,28 +161,36 @@ def create_app():
 
 
     # ==========================================
-    # START SCHEDULER
+    # START SCHEDULER (SINGLE WORKER LOCK)
     # ==========================================
 
     disable_scheduler = app.config.get("DISABLE_SCHEDULER") or os.getenv("DISABLE_SCHEDULER", "").strip().lower() in {"1", "true", "yes", "on"}
 
     if not disable_scheduler and not scheduler.running:
+        lock_acquired = False
+        try:
+            lock_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".scheduler.lock")
+            lock_file = open(lock_file_path, "a+")
+            if os.name == "nt":
+                import msvcrt
+                msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1)
+                lock_acquired = True
+            else:
+                import fcntl
+                fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                lock_acquired = True
+        except Exception:
+            lock_acquired = False
 
-        scheduler.add_job(
-
-            func=check_expired_matches,
-
-            trigger="interval",
-
-            seconds=30,
-
-            id="process_expired_matches",
-
-            replace_existing=True
-
-        )
-
-        scheduler.start()
+        if lock_acquired:
+            scheduler.add_job(
+                func=check_expired_matches,
+                trigger="interval",
+                seconds=30,
+                id="process_expired_matches",
+                replace_existing=True
+            )
+            scheduler.start()
 
 
     # ==========================================
