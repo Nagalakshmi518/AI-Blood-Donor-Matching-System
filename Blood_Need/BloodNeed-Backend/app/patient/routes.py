@@ -332,9 +332,8 @@ def update_current_patient():
             "message": "Failed to update profile"
         }), 500
 
-
 # ====================================================
-# Logged-in Patient Requests - HIGHLY OPTIMIZED
+# Logged-in Patient Requests - OPTIMIZED
 # ====================================================
 @patient_bp.route("/requests", methods=["GET"])
 @jwt_required()
@@ -342,45 +341,53 @@ def patient_requests():
 
     user_id = int(get_jwt_identity())
 
-
-    # Get patient
-    patient = Patient.query.filter_by(
-        user_id=user_id
-    ).first()
+    # 1. Get patient
+    patient = (
+        Patient.query
+        .filter_by(user_id=user_id)
+        .first()
+    )
 
     if patient is None:
         return jsonify({
             "message": "Patient profile not found"
         }), 404
 
-
-    # ================================================
-    # QUERY 1: Get all patient requests
-    # ================================================
+    # 2. Get patient requests
     blood_requests = (
         BloodRequest.query
-        .filter_by(patient_id=patient.patient_id)
-        .order_by(BloodRequest.request_id.desc())
+        .filter(
+            BloodRequest.patient_id == patient.patient_id
+        )
+        .order_by(
+            BloodRequest.request_id.desc()
+        )
         .all()
     )
 
     if not blood_requests:
         return jsonify([]), 200
 
-
-    # Get all request IDs
     request_ids = [
         req.request_id
         for req in blood_requests
     ]
 
-
-    # ================================================
-    # QUERY 2: Get ALL matches at once
-    # Instead of one query per request
-    # ================================================
-    all_matches = (
-        DonorMatch.query
+    # 3. Get matches + donor + user in ONE query
+    match_rows = (
+        db.session.query(
+            DonorMatch,
+            Donor,
+            User
+        )
+        .join(
+            Donor,
+            Donor.donor_id == DonorMatch.donor_id
+        )
+        .join(
+            User,
+            User.user_id == Donor.user_id
+        )
         .filter(
             DonorMatch.request_id.in_(request_ids)
         )
@@ -390,174 +397,94 @@ def patient_requests():
         .all()
     )
 
-
-    # Group matches by request_id
+    # 4. Group matches by request
     matches_by_request = {}
 
-    donor_ids = set()
+    for match, donor, user in match_rows:
 
-    for match in all_matches:
+        donor_data = {
+            "donor_id": donor.donor_id,
+
+            "full_name": (
+                user.full_name
+                if user
+                else "Unknown Donor"
+            ),
+
+            "blood_group": donor.blood_group,
+
+            "availability": donor.availability,
+
+            "distance_km": (
+                round(match.distance_km, 2)
+                if match.distance_km is not None
+                else None
+            ),
+
+            "ranking_score": (
+                round(match.ranking_score, 2)
+                if match.ranking_score is not None
+                else None
+            ),
+
+            "response_probability": (
+                round(match.response_probability, 2)
+                if match.response_probability is not None
+                else None
+            ),
+
+            "reliability_score": (
+                round(donor.reliability_score, 2)
+                if donor.reliability_score is not None
+                else None
+            ),
+
+            "donor_response": (
+                match.donor_response
+                or "Pending"
+            ),
+
+            "match_status": (
+                match.donor_response
+                or "Pending"
+            )
+        }
+
+        # Private details only after acceptance
+        if match.donor_response == "Accepted":
+
+            donor_data["phone"] = (
+                user.phone
+                if user
+                else None
+            )
+
+            donor_data["email"] = (
+                user.email
+                if user
+                else None
+            )
+
+            # Coordinates for accepted donor/map
+            donor_data["latitude"] = donor.latitude
+            donor_data["longitude"] = donor.longitude
 
         matches_by_request.setdefault(
             match.request_id,
             []
-        ).append(match)
+        ).append(donor_data)
 
-        donor_ids.add(match.donor_id)
-
-
-    # ================================================
-    # QUERY 3: Get ALL donors at once
-    # ================================================
-    donors = []
-
-    if donor_ids:
-        donors = (
-            Donor.query
-            .filter(
-                Donor.donor_id.in_(donor_ids)
-            )
-            .all()
-        )
-
-
-    donor_map = {
-        donor.donor_id: donor
-        for donor in donors
-    }
-
-
-    # ================================================
-    # QUERY 4: Get ALL users at once
-    # Avoid User.query.get() inside loop
-    # ================================================
-    user_ids = {
-        donor.user_id
-        for donor in donors
-    }
-
-    users = []
-
-    if user_ids:
-        users = (
-            User.query
-            .filter(
-                User.user_id.in_(user_ids)
-            )
-            .all()
-        )
-
-
-    user_map = {
-        user.user_id: user
-        for user in users
-    }
-
-
-    # ================================================
-    # Build response without extra DB queries
-    # ================================================
+    # 5. Build final response
     result = []
-
 
     for blood_request in blood_requests:
 
         request_data = blood_request.to_dict()
 
-        request_matches = matches_by_request.get(
+        matched_donors = matches_by_request.get(
             blood_request.request_id,
             []
         )
-
-        matched_donors = []
-
-
-        for match in request_matches:
-
-            donor = donor_map.get(
-                match.donor_id
-            )
-
-            if donor is None:
-                continue
-
-
-            user = user_map.get(
-                donor.user_id
-            )
-
-
-            donor_data = {
-
-                "donor_id": donor.donor_id,
-
-                "full_name": (
-                    user.full_name
-                    if user
-                    else "Unknown Donor"
-                ),
-
-                "blood_group": donor.blood_group,
-
-                "availability": donor.availability,
-
-                "distance_km": (
-                    round(match.distance_km, 2)
-                    if match.distance_km is not None
-                    else None
-                ),
-
-                "ranking_score": (
-                    round(match.ranking_score, 2)
-                    if match.ranking_score is not None
-                    else None
-                ),
-
-                "response_probability": (
-                    round(match.response_probability, 2)
-                    if match.response_probability is not None
-                    else None
-                ),
-
-                "reliability_score": (
-                    round(donor.reliability_score, 2)
-                    if donor.reliability_score is not None
-                    else None
-                ),
-
-                "donor_response": (
-                    match.donor_response
-                    or "Pending"
-                ),
-
-                "match_status": (
-                    match.donor_response
-                    or "Pending"
-                )
-            }
-
-
-            # Show private contact details ONLY
-            # after donor accepts
-            if match.donor_response == "Accepted":
-
-                donor_data["phone"] = (
-                    user.phone
-                    if user
-                    else None
-                )
-
-                donor_data["email"] = (
-                    user.email
-                    if user
-                    else None
-                )
-
-
-            matched_donors.append(
-                donor_data
-            )
-
 
         request_data["matched_donors"] = (
             matched_donors
@@ -566,7 +493,6 @@ def patient_requests():
         request_data["matched_donors_count"] = (
             len(matched_donors)
         )
-
 
         accepted_donor = next(
             (
@@ -577,15 +503,10 @@ def patient_requests():
             None
         )
 
-
         request_data["accepted_donor"] = (
             accepted_donor
         )
 
-
-        result.append(
-            request_data
-        )
-
+        result.append(request_data)
 
     return jsonify(result), 200
