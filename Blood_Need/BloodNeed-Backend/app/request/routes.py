@@ -10,6 +10,9 @@ from flask_jwt_extended import (
 from app import db
 
 from app.models.patient import Patient
+from app.models.blood_request import BloodRequest
+from app.models.donor import Donor
+from app.models.user import User
 from app.models.donor_match import DonorMatch
 from app.models.hospital_inventory import HospitalInventory
 from app.matching.services import find_matching_donors
@@ -37,10 +40,6 @@ request_bp = Blueprint(
 # ====================================================
 # GET MY BLOOD REQUESTS
 # ====================================================
-# ====================================================
-# GET MY BLOOD REQUESTS
-# ====================================================
-
 @request_bp.route("/", methods=["GET"])
 @jwt_required()
 def requests():
@@ -56,13 +55,162 @@ def requests():
             "message": "Patient profile not found"
         }), 404
 
-    all_requests = get_all_requests()
+    # ====================================================
+    # 1. FETCH ONLY THIS PATIENT'S REQUESTS
+    # ====================================================
 
-    patient_requests = [
-        req
-        for req in all_requests
-        if req.patient_id == patient.patient_id
+    patient_requests = (
+        BloodRequest.query
+        .filter(
+            BloodRequest.patient_id == patient.patient_id
+        )
+        .order_by(
+            BloodRequest.request_time.desc()
+        )
+        .all()
+    )
+
+    if not patient_requests:
+        return jsonify([]), 200
+
+    request_ids = [
+        req.request_id
+        for req in patient_requests
     ]
+
+    blood_groups = list({
+        req.blood_group
+        for req in patient_requests
+    })
+
+    # ====================================================
+    # 2. FETCH ALL MATCHES + DONOR + USER IN ONE QUERY
+    # ====================================================
+
+    match_rows = (
+        db.session.query(
+            DonorMatch,
+            Donor,
+            User
+        )
+        .join(
+            Donor,
+            Donor.donor_id == DonorMatch.donor_id
+        )
+        .join(
+            User,
+            User.user_id == Donor.user_id
+        )
+        .filter(
+            DonorMatch.request_id.in_(request_ids)
+        )
+        .order_by(
+            DonorMatch.ranking_score.desc()
+        )
+        .all()
+    )
+
+    matches_by_request = {}
+
+    for match, donor, user in match_rows:
+
+        donor_response = match.donor_response
+
+        # ====================================================
+        # SAME DONOR PRIVACY LOGIC
+        # ====================================================
+
+        donor_data = {
+            "donor_id": donor.donor_id,
+            "full_name": (
+                user.full_name
+                if user
+                else "Unknown Donor"
+            ),
+            "blood_group": donor.blood_group,
+            "availability": donor.availability,
+            "distance_km": (
+                round(match.distance_km, 2)
+                if match.distance_km is not None
+                else None
+            ),
+            "ranking_score": (
+                round(match.ranking_score, 2)
+                if match.ranking_score is not None
+                else None
+            ),
+            "response_probability": (
+                round(match.response_probability, 2)
+                if match.response_probability is not None
+                else None
+            ),
+            "donor_response": donor_response,
+            "match_status": donor_response
+        }
+
+        # Private information only for Accepted donor
+        if donor_response == "Accepted":
+            donor_data.update({
+                "phone": user.phone if user else None,
+                "email": user.email if user else None,
+                "latitude": donor.latitude,
+                "longitude": donor.longitude
+            })
+
+        matches_by_request.setdefault(
+            match.request_id,
+            []
+        ).append({
+            "match_id": match.match_id,
+            "donor": donor_data,
+            "distance_km": (
+                round(match.distance_km, 2)
+                if match.distance_km is not None
+                else None
+            ),
+            "ranking_score": (
+                round(match.ranking_score, 2)
+                if match.ranking_score is not None
+                else None
+            ),
+            "response_probability": (
+                round(match.response_probability, 2)
+                if match.response_probability is not None
+                else None
+            ),
+            "donor_response": donor_response,
+            "response_deadline": (
+                match.response_deadline.strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
+                if match.response_deadline
+                else None
+            )
+        })
+
+    # ====================================================
+    # 3. FETCH ALL REQUIRED INVENTORY IN ONE QUERY
+    # ====================================================
+
+    inventory_rows = (
+        HospitalInventory.query
+        .filter(
+            HospitalInventory.blood_group.in_(blood_groups)
+        )
+        .all()
+    )
+
+    inventory_by_group = {}
+
+    for inventory in inventory_rows:
+        inventory_by_group.setdefault(
+            inventory.blood_group,
+            []
+        ).append(inventory)
+
+    # ====================================================
+    # 4. BUILD SAME RESPONSE
+    # ====================================================
 
     response = []
 
@@ -70,96 +218,31 @@ def requests():
 
         request_data = req.to_dict()
 
-        matches = DonorMatch.query.filter_by(
-            request_id=req.request_id
-        ).order_by(
-            DonorMatch.ranking_score.desc()
-        ).all()
-
-        request_data["matched_donors"] = []
-
-        for match in matches:
-
-            donor = match.donor
-
-            if donor is None:
-                continue
-
-            donor_data = donor.to_public_dict(
-                distance_km=match.distance_km,
-                ranking_score=match.ranking_score,
-                donor_response=match.donor_response,
-                response_probability=match.response_probability,
-                include_private=(
-                    match.donor_response == "Accepted"
-                )
-            )
-
-            request_data["matched_donors"].append({
-                "match_id": match.match_id,
-
-                "donor": donor_data,
-
-                "distance_km": (
-                    round(match.distance_km, 2)
-                    if match.distance_km is not None
-                    else None
-                ),
-
-                "ranking_score": (
-                    round(match.ranking_score, 2)
-                    if match.ranking_score is not None
-                    else None
-                ),
-
-                "response_probability": (
-                    round(match.response_probability, 2)
-                    if match.response_probability is not None
-                    else None
-                ),
-
-                "donor_response": match.donor_response,
-
-                "response_deadline": (
-                    match.response_deadline.strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
-                    if match.response_deadline
-                    else None
-                )
-            })
-
-        # ====================================================
-        # HOSPITAL INVENTORY STATUS
-        # ====================================================
-
-        inventory_records = HospitalInventory.query.filter_by(
-            blood_group=req.blood_group
-        ).order_by(
-            HospitalInventory.available_units.desc()
-        ).all()
-
-        required_units = req.units_needed or 1
-
-        total_available_units = sum(
-            inventory.available_units or 0
-            for inventory in inventory_records
+        matches = matches_by_request.get(
+            req.request_id,
+            []
         )
 
+        request_data["matched_donors"] = matches
+
+        # ====================================================
+        # SAME MATCH STATUS LOGIC
+        # ====================================================
+
         accepted_exists = any(
-            match.donor_response == "Accepted"
+            match["donor_response"] == "Accepted"
             for match in matches
         )
 
         active_pending_exists = any(
-            match.donor_response == "Pending"
+            match["donor_response"] == "Pending"
             for match in matches
         )
 
         all_donors_finished = (
             len(matches) > 0
             and all(
-                match.donor_response in [
+                match["donor_response"] in [
                     "Rejected",
                     "Missed",
                     "Expired"
@@ -168,11 +251,21 @@ def requests():
             )
         )
 
-        # Inventory should be shown when:
-        # 1. No accepted donor exists
-        # 2. No active donor is waiting
-        # 3. All donor attempts are finished
-        # 4. Inventory exists for requested blood group
+        # ====================================================
+        # INVENTORY
+        # ====================================================
+
+        inventory_records = inventory_by_group.get(
+            req.blood_group,
+            []
+        )
+
+        required_units = req.units_needed or 1
+
+        total_available_units = sum(
+            inventory.available_units or 0
+            for inventory in inventory_records
+        )
 
         inventory_fallback_active = (
             not accepted_exists
@@ -207,7 +300,6 @@ def requests():
         response.append(request_data)
 
     return jsonify(response), 200
-
 
 # ====================================================
 # GET SINGLE BLOOD REQUEST
