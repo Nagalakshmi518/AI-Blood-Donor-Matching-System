@@ -1,3 +1,5 @@
+from sqlalchemy.orm import joinedload
+
 from app import db
 from app.models.hospital import Hospital
 from app.notifications.services import create_notification
@@ -143,27 +145,29 @@ def fallback_blood_bank_for_request(blood_request):
     # HOSPITAL STOCK AVAILABLE
     # -------------------------------------------------
     inventory_records = (
-    HospitalInventory.query
-    .join(
-        Hospital,
-        HospitalInventory.hospital_id == Hospital.hospital_id
+        HospitalInventory.query
+        .options(joinedload(HospitalInventory.hospital))
+        .join(
+            Hospital,
+            HospitalInventory.hospital_id == Hospital.hospital_id
+        )
+        .filter(
+            db.func.upper(HospitalInventory.blood_group) == blood_group,
+            HospitalInventory.available_units >= required_units,
+            Hospital.user_id.isnot(None),
+            Hospital.is_active.is_(True)
+        )
+        .order_by(HospitalInventory.available_units.desc())
+        .all()
     )
-    .filter(
-        db.func.upper(HospitalInventory.blood_group) == blood_group,
-        HospitalInventory.available_units >= required_units,
-        Hospital.user_id.isnot(None),
-        Hospital.is_active.is_(True)
-    )
-    .order_by(HospitalInventory.available_units.desc())
-    .all()
-)
     print("Eligible hospitals found:", len(inventory_records))
     if inventory_records:
 
         selected_inventory = inventory_records[0]
 
-        selected_hospital = Hospital.query.get(
-            selected_inventory.hospital_id
+        selected_hospital = (
+            selected_inventory.hospital
+            or Hospital.query.get(selected_inventory.hospital_id)
         )
 
         # Reduce blood units

@@ -41,9 +41,43 @@ donor_bp = Blueprint(
 def donors():
 
     donors = get_all_donors()
+    if not donors:
+        return jsonify([]), 200
+
+    from app.models.reward_point import RewardPoint
+    from app.models.badge import Badge
+
+    user_ids = [d.user_id for d in donors if d.user_id]
+    donor_ids = [d.donor_id for d in donors]
+
+    users = User.query.filter(User.user_id.in_(user_ids)).all() if user_ids else []
+    user_map = {u.user_id: u for u in users}
+
+    reward_sums = dict(
+        db.session.query(
+            RewardPoint.donor_id,
+            func.coalesce(func.sum(RewardPoint.points), 0)
+        )
+        .filter(RewardPoint.donor_id.in_(donor_ids))
+        .group_by(RewardPoint.donor_id)
+        .all()
+    ) if donor_ids else {}
+
+    badge_rows = (
+        db.session.query(Badge.donor_id, Badge.badge_name)
+        .filter(Badge.donor_id.in_(donor_ids), Badge.is_active == True)
+        .all()
+    ) if donor_ids else []
+    badge_map = {}
+    for did, bname in badge_rows:
+        badge_map.setdefault(did, []).append(bname)
 
     return jsonify([
-        donor.to_dict()
+        donor.to_dict(
+            user=user_map.get(donor.user_id),
+            reward_points=int(reward_sums.get(donor.donor_id, 0)),
+            badges=badge_map.get(donor.donor_id, [])
+        )
         for donor in donors
     ]), 200
 
@@ -56,7 +90,7 @@ def donors():
 @jwt_required()
 def donor_details(donor_id):
 
-    donor = get_donor(donor_id)
+    donor = Donor.query.options(joinedload(Donor.user)).filter_by(donor_id=donor_id).first()
 
     if donor is None:
 
@@ -67,6 +101,7 @@ def donor_details(donor_id):
     return jsonify(
         donor.to_dict()
     ), 200
+
 
 
 # ====================================================
@@ -202,7 +237,7 @@ def get_donor_profile():
 
     user_id = get_jwt_identity()
 
-    donor = Donor.query.filter_by(
+    donor = Donor.query.options(joinedload(Donor.user)).filter_by(
         user_id=user_id
     ).first()
 
@@ -352,7 +387,7 @@ def donor_dashboard():
 
     user_id = get_jwt_identity()
 
-    donor = Donor.query.filter_by(
+    donor = Donor.query.options(joinedload(Donor.user)).filter_by(
         user_id=user_id
     ).first()
 
@@ -420,7 +455,7 @@ def donor_dashboard():
         Donation.donation_date.desc()
     ).limit(5).all()
 
-    user = User.query.get(donor.user_id) if donor.user_id else None
+    user = donor.user
 
     return jsonify({
 

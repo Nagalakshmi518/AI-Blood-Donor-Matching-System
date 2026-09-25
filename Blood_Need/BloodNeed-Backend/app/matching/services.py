@@ -179,12 +179,7 @@ def find_matching_donors(blood_request):
 
     print("Total compatible donors found:", len(donors))
 
-    already_matched_donor_ids = {
-        match.donor_id
-        for match in DonorMatch.query.filter_by(
-            request_id=blood_request.request_id
-        ).all()
-    }
+    already_matched_donor_ids = set()
 
     matched = []
 
@@ -316,15 +311,20 @@ def find_matching_donors(blood_request):
         # --------------------------------------
         if index == 0:
 
-            patient = Patient.query.get(
-                blood_request.patient_id
+            patient = (
+                getattr(blood_request, "patient", None)
+                or Patient.query.options(joinedload(Patient.user)).get(
+                    blood_request.patient_id
+                )
             )
 
             user = (
-                User.query.get(patient.user_id)
+                getattr(patient, "user", None)
                 if patient
                 else None
             )
+            if user is None and patient and patient.user_id:
+                user = User.query.get(patient.user_id)
 
             if user:
 

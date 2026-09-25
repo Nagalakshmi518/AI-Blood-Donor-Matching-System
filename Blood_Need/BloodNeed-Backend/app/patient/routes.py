@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 from app import db
 from app.models.blood_request import BloodRequest
@@ -136,7 +137,7 @@ def patient_dashboard():
 
     user_id = int(get_jwt_identity())
 
-    patient = Patient.query.filter_by(
+    patient = Patient.query.options(joinedload(Patient.user)).filter_by(
         user_id=user_id
     ).first()
 
@@ -223,8 +224,8 @@ def patient_dashboard():
         })
 
 
-    # Avoid patient.to_dict() extra query
-    user = User.query.get(patient.user_id)
+    # Use already eager-loaded patient.user
+    user = patient.user
 
     patient_data = {
         "patient_id": patient.patient_id,
@@ -267,7 +268,7 @@ def get_current_patient():
 
     user_id = int(get_jwt_identity())
 
-    patient = Patient.query.filter_by(
+    patient = Patient.query.options(joinedload(Patient.user)).filter_by(
         user_id=user_id
     ).first()
 

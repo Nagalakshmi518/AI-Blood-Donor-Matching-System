@@ -7,7 +7,9 @@ const API_BASE_URL = "https://ai-blood-donor-matching-system.onrender.com";
 const token =
   localStorage.getItem("token") || localStorage.getItem("access_token");
 
-let hospitalId = null;
+let hospitalId = localStorage.getItem("hospital_id")
+  ? parseInt(localStorage.getItem("hospital_id"), 10)
+  : null;
 
 // ==========================================
 // AUTH HEADERS
@@ -38,7 +40,7 @@ function checkAuthentication() {
 // LOAD HOSPITAL PROFILE
 // ==========================================
 
-async function loadHospitalProfile() {
+async function loadHospitalProfile(shouldLoadInventory = true) {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/hospitals/my-profile`,
@@ -60,6 +62,9 @@ async function loadHospitalProfile() {
 
     // Save hospital ID
     hospitalId = hospital.hospital_id;
+    if (hospitalId) {
+      localStorage.setItem("hospital_id", String(hospitalId));
+    }
 
     // Display profile
     document.getElementById("hospitalName").textContent =
@@ -77,8 +82,10 @@ async function loadHospitalProfile() {
     document.getElementById("hospitalAddress").textContent =
       hospital.address || "-";
 
-    // Load inventory only after ID is available
-    await loadInventory();
+    // Load inventory if requested
+    if (shouldLoadInventory) {
+      await loadInventory();
+    }
 
   } catch (error) {
     console.error("Hospital Profile Error:", error);
@@ -349,6 +356,7 @@ async function useBloodUnits() {
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("access_token");
+  localStorage.removeItem("hospital_id");
 
   window.location.href = "login.html";
 }
@@ -372,6 +380,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("logoutBtn").addEventListener("click", logout);
 
-  // Load dashboard
-  await loadHospitalProfile();
+  // Load dashboard in parallel if hospitalId is cached, otherwise sequential
+  if (hospitalId) {
+    await Promise.all([loadHospitalProfile(false), loadInventory()]);
+  } else {
+    await loadHospitalProfile(true);
+  }
 });

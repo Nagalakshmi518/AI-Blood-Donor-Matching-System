@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, date
+from sqlalchemy.orm import joinedload
 
 from app import db
 
@@ -24,6 +25,10 @@ def get_match(match_id, user_id):
 
     return (
         DonorMatch.query
+        .options(
+            joinedload(DonorMatch.donor).joinedload(Donor.user),
+            joinedload(DonorMatch.blood_request).joinedload(BloodRequest.patient)
+        )
         .join(Donor)
         .filter(
             DonorMatch.match_id == match_id,
@@ -77,7 +82,7 @@ def accept_request(match_id, user_id):
     if donor is None:
         return None
 
-    blood_request = BloodRequest.query.get(
+    blood_request = match.blood_request or BloodRequest.query.get(
         match.request_id
     )
 
@@ -115,14 +120,11 @@ def accept_request(match_id, user_id):
     # REJECT OTHER WAITING DONORS
     # --------------------------------------
 
-    other_matches = DonorMatch.query.filter(
+    DonorMatch.query.filter(
         DonorMatch.request_id == match.request_id,
         DonorMatch.match_id != match.match_id,
         DonorMatch.donor_response == "Pending"
-    ).all()
-
-    for other_match in other_matches:
-        other_match.donor_response = "Rejected"
+    ).update({"donor_response": "Rejected"}, synchronize_session=False)
 
     # --------------------------------------
     # SAVE RESPONSE HISTORY
@@ -273,6 +275,10 @@ def notify_next_donor(current_match):
     # Find next waiting donor
     next_match = (
         DonorMatch.query
+        .options(
+            joinedload(DonorMatch.donor).joinedload(Donor.user),
+            joinedload(DonorMatch.blood_request)
+        )
         .filter(
             DonorMatch.request_id
             == current_match.request_id,
@@ -307,8 +313,10 @@ def notify_next_donor(current_match):
     # GET BLOOD REQUEST
     # --------------------------------------
 
-    blood_request = BloodRequest.query.get(
-        current_match.request_id
+    blood_request = (
+        next_match.blood_request
+        or getattr(current_match, "blood_request", None)
+        or BloodRequest.query.get(current_match.request_id)
     )
 
     if blood_request is None:

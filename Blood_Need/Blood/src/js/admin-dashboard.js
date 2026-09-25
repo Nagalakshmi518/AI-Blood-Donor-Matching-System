@@ -983,11 +983,19 @@ document.getElementById("downloadRequestReport").onclick = () => {
 document.getElementById("downloadDonationReport").onclick = () => {
   downloadReport(`${API_URL}/reports/donations`, "donation_report.csv");
 };
-// ================================
-// INITIAL LOAD
-// ================================
+let isInitializingAdmin = false;
 
-async function initializeDashboard() {
+async function initializeDashboard(isAuto = false) {
+  if (isInitializingAdmin) return;
+  if (isAuto && document.hidden) return;
+
+  isInitializingAdmin = true;
+  const refreshBtn = document.getElementById("refreshBtn");
+  if (refreshBtn && !isAuto) {
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = "Refreshing...";
+  }
+
   try {
     await Promise.all([
       loadSummary(),
@@ -1000,24 +1008,40 @@ async function initializeDashboard() {
       loadInventory(),
     ]);
   } catch (error) {
-    console.error(error);
-
-    alert("Unable to load admin dashboard.");
+    console.error("Dashboard error:", error);
+    if (!isAuto) {
+      alert("Unable to load admin dashboard.");
+    }
+  } finally {
+    isInitializingAdmin = false;
+    if (refreshBtn && !isAuto) {
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = "Refresh";
+    }
   }
 }
 
 initializeDashboard();
 
 // ================================
-// AUTO REFRESH
+// AUTO REFRESH & BUTTON LISTENERS
 // ================================
-document.getElementById("refreshBtn").addEventListener("click", () => {
-  initializeDashboard();
-});
+const refreshBtn = document.getElementById("refreshBtn");
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => {
+    initializeDashboard(false);
+  });
+}
 
 setInterval(() => {
-  initializeDashboard();
+  initializeDashboard(true);
 }, 30000);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    initializeDashboard(true);
+  }
+});
 // ==========================================
 // SEARCH USERS
 // ==========================================
@@ -1073,27 +1097,5 @@ if (searchUser) {
 
       row.style.display = rowText.includes(searchText) ? "" : "none";
     });
-  });
-}
-
-// ==========================================
-// REFRESH USERS
-// ==========================================
-
-const refreshBtn = document.getElementById("refreshBtn");
-
-if (refreshBtn) {
-  refreshBtn.addEventListener("click", async function () {
-    refreshBtn.disabled = true;
-    refreshBtn.textContent = "Refreshing...";
-
-    try {
-      await loadUsers();
-    } catch (error) {
-      console.error("Refresh Users Error:", error);
-    } finally {
-      refreshBtn.disabled = false;
-      refreshBtn.textContent = "Refresh";
-    }
   });
 }

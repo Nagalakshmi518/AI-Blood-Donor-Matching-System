@@ -78,17 +78,16 @@ def register_user(data):
                     "success": False,
                     "message": f"{field} is required for hospital registration."
                 }
-    print("REGISTER EMAIL:", repr(data.get("email")))
-    print("REGISTER PHONE:", repr(data.get("phone")))
-    print("EMAIL FOUND:", User.query.filter_by(email=data.get("email")).first())
-    print("PHONE FOUND:", User.query.filter_by(phone=data.get("phone")).first())
-    if User.query.filter_by(email=data["email"]).first():
-        return {
-            "success": False,
-            "message": "Email already exists."
-        }
+    existing_user = User.query.filter(
+        (User.email == data["email"]) | (User.phone == data["phone"])
+    ).first()
 
-    if User.query.filter_by(phone=data["phone"]).first():
+    if existing_user:
+        if existing_user.email == data["email"]:
+            return {
+                "success": False,
+                "message": "Email already exists."
+            }
         return {
             "success": False,
             "message": "Phone number already exists."

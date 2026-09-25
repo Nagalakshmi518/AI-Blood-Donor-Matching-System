@@ -27,14 +27,17 @@ def create_patient(data):
 
     return patient
 
+from sqlalchemy.orm import joinedload
+
+
 def get_all_patients():
 
-    return Patient.query.all()
+    return Patient.query.options(joinedload(Patient.user)).order_by(Patient.patient_id.desc()).all()
 
 
 def get_patient(patient_id):
 
-    return Patient.query.get(patient_id)
+    return Patient.query.options(joinedload(Patient.user)).filter_by(patient_id=patient_id).first()
 
 
 def update_patient(patient, data):

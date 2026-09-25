@@ -141,13 +141,18 @@ def create_app():
     )
 
 
+    _table_checked = False
+
     def check_expired_matches():
+        nonlocal _table_checked
 
         with app.app_context():
             try:
-                inspector = db.inspect(db.engine)
-                if not inspector.has_table("donor_matches"):
-                    return
+                if not _table_checked:
+                    inspector = db.inspect(db.engine)
+                    if not inspector.has_table("donor_matches"):
+                        return
+                    _table_checked = True
                 process_expired_matches()
             except Exception as exc:
                 message = str(exc).lower()

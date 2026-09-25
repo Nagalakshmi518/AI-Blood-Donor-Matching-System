@@ -76,14 +76,17 @@ const notificationsContainer = document.getElementById(
 // LOAD NOTIFICATIONS
 // =======================================
 
+let isFetchingNotifications = false;
+
 async function loadNotifications() {
-  if (document.hidden) return;
+  if (document.hidden || isFetchingNotifications) return;
 
   if (!token) {
     window.location.href = "login.html";
     return;
   }
 
+  isFetchingNotifications = true;
   try {
     const response = await fetch(
       `${API_URL}/api/notifications/`,
@@ -211,6 +214,8 @@ async function loadNotifications() {
                 Unable to connect to backend.
             </p>
         `;
+  } finally {
+    isFetchingNotifications = false;
   }
 }
 
@@ -283,10 +288,14 @@ function goBack() {
 
 loadNotifications();
 
-// Auto Refresh Every 10 Seconds
-
+// Auto Refresh Every 30 Seconds when active
 setInterval(
   loadNotifications,
-
   30000,
 );
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    loadNotifications();
+  }
+});
