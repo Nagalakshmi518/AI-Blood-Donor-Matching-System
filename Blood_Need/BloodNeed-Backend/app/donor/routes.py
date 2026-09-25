@@ -3,6 +3,7 @@ from re import match
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import func
 
 from app import db
 from app.models.badge import Badge
@@ -371,24 +372,20 @@ def donor_dashboard():
         donor_id=donor.donor_id
     ).count()
 
-    total_requests = DonorMatch.query.filter_by(
-        donor_id=donor.donor_id
-    ).count()
+    match_counts = dict(
+        db.session.query(
+            DonorMatch.donor_response,
+            func.count(DonorMatch.match_id)
+        )
+        .filter(DonorMatch.donor_id == donor.donor_id)
+        .group_by(DonorMatch.donor_response)
+        .all()
+    )
 
-    accepted_requests = DonorMatch.query.filter_by(
-        donor_id=donor.donor_id,
-        donor_response="Accepted"
-    ).count()
-
-    rejected_requests = DonorMatch.query.filter_by(
-        donor_id=donor.donor_id,
-        donor_response="Rejected"
-    ).count()
-
-    missed_requests = DonorMatch.query.filter_by(
-        donor_id=donor.donor_id,
-        donor_response="Missed"
-    ).count()
+    total_requests = sum(match_counts.values())
+    accepted_requests = match_counts.get("Accepted", 0)
+    rejected_requests = match_counts.get("Rejected", 0)
+    missed_requests = match_counts.get("Missed", 0)
 
     if total_requests > 0:
 
@@ -404,18 +401,18 @@ def donor_dashboard():
 
         acceptance_rate = 0
 
-    rewards = RewardPoint.query.filter_by(
+    total_points = db.session.query(
+        func.coalesce(func.sum(RewardPoint.points), 0)
+    ).filter(
+        RewardPoint.donor_id == donor.donor_id
+    ).scalar() or 0
+
+    badge_rows = Badge.query.filter_by(
         donor_id=donor.donor_id
     ).all()
 
-    total_points = sum(
-        reward.points
-        for reward in rewards
-    )
-
-    badges = Badge.query.filter_by(
-        donor_id=donor.donor_id
-    ).count()
+    badges = len(badge_rows)
+    badge_names = [b.badge_name for b in badge_rows if getattr(b, "is_active", False)]
 
     recent_donations = Donation.query.filter_by(
         donor_id=donor.donor_id
@@ -423,10 +420,16 @@ def donor_dashboard():
         Donation.donation_date.desc()
     ).limit(5).all()
 
+    user = User.query.get(donor.user_id) if donor.user_id else None
+
     return jsonify({
 
         "donor":
-            donor.to_dict(),
+            donor.to_dict(
+                user=user,
+                reward_points=total_points,
+                badges=badge_names
+            ),
 
         "total_donations":
             total_donations,
@@ -585,28 +588,23 @@ def donor_requests():
             "message": "Donor profile not found"
         }), 404
 
-    matches = DonorMatch.query.filter_by(
-        donor_id=donor.donor_id
-    ).all()
+    matches = (
+        db.session.query(DonorMatch, BloodRequest, User)
+        .join(BloodRequest, BloodRequest.request_id == DonorMatch.request_id)
+        .outerjoin(Patient, Patient.patient_id == BloodRequest.patient_id)
+        .outerjoin(User, User.user_id == Patient.user_id)
+        .filter(DonorMatch.donor_id == donor.donor_id)
+        .filter(DonorMatch.donor_response != "Rejected")
+        .filter(
+            ~((DonorMatch.donor_response == "Pending") & (DonorMatch.response_deadline.is_(None)))
+        )
+        .order_by(DonorMatch.match_id.desc())
+        .all()
+    )
 
     result = []
 
-    for match in matches:
-        if match.donor_response == "Rejected":
-            continue
-        if match.donor_response == "Pending" and match.response_deadline is None:
-            continue
-
-        blood_request = BloodRequest.query.get(
-            match.request_id
-        )
-
-        if blood_request is None:
-            continue
-
-        patient = Patient.query.get(blood_request.patient_id)
-        user = User.query.get(patient.user_id) if patient else None
-
+    for match, blood_request, user in matches:
         payload = {
             "match_id": match.match_id,
             "request_id": blood_request.request_id,
@@ -616,27 +614,33 @@ def donor_requests():
             "hospital_name": blood_request.hospital_name,
             "hospital_latitude": blood_request.hospital_latitude,
             "hospital_longitude": blood_request.hospital_longitude,
-            "distance_km": round(match.distance_km, 2)
+            "distance_km": (
+                round(match.distance_km, 2)
                 if match.distance_km is not None
-                else None,
-            "ranking_score": round(match.ranking_score, 2)
+                else None
+            ),
+            "ranking_score": (
+                round(match.ranking_score, 2)
                 if match.ranking_score is not None
-                else 0,
-            "response_probability": round(match.response_probability, 2)
+                else 0
+            ),
+            "response_probability": (
+                round(match.response_probability, 2)
                 if match.response_probability is not None
-                else 0,
+                else 0
+            ),
             "donor_response": match.donor_response,
-            "response_deadline": match.response_deadline.strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+            "response_deadline": (
+                match.response_deadline.strftime("%Y-%m-%d %H:%M:%S")
                 if match.response_deadline
-                else None,
+                else None
+            ),
             "request_status": blood_request.status,
-            "request_time": blood_request.request_time.strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+            "request_time": (
+                blood_request.request_time.strftime("%Y-%m-%d %H:%M:%S")
                 if blood_request.request_time
-                else None,
+                else None
+            ),
         }
 
         if match.donor_response == "Accepted" or blood_request.status == "Accepted":

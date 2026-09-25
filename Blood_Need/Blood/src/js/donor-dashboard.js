@@ -368,8 +368,7 @@ async function updateAvailability() {
     }
 
     alert("Availability updated successfully");
-    await loadDonorDashboard();
-    await loadIncomingRequests();
+    await Promise.all([loadDonorDashboard(), loadIncomingRequests()]);
   } catch (error) {
     console.error("Availability Error:", error);
     alert("Unable to connect to backend");
@@ -407,8 +406,7 @@ async function respondToRequest(matchId, response) {
     }
 
     alert(data.message);
-    await loadIncomingRequests();
-    await loadDonorDashboard();
+    await Promise.all([loadIncomingRequests(), loadDonorDashboard()]);
   } catch (error) {
     console.error(error);
     alert("Unable to connect backend");
@@ -421,8 +419,7 @@ if (logoutButton) {
   });
 }
 
-loadDonorDashboard();
-loadIncomingRequests();
+Promise.all([loadDonorDashboard(), loadIncomingRequests()]);
 
 function openMap(lat, lng) {
   window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");

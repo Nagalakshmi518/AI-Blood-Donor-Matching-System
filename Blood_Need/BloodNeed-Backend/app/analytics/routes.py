@@ -96,25 +96,33 @@ from app.models.donation import Donation
 @analytics_bp.route("/", methods=["GET"])
 @jwt_required()
 def analytics_dashboard():
+    from app import db
+    from sqlalchemy import func
 
-    total_requests = BloodRequest.query.count()
+    request_counts = dict(
+        db.session.query(
+            BloodRequest.status,
+            func.count(BloodRequest.request_id)
+        )
+        .group_by(BloodRequest.status)
+        .all()
+    )
+    total_requests = sum(request_counts.values())
+    completed_requests = request_counts.get("Completed", 0)
+    pending_requests = request_counts.get("Pending", 0)
 
-    completed_requests = BloodRequest.query.filter_by(
-        status="Completed"
-    ).count()
-
-    pending_requests = BloodRequest.query.filter_by(
-        status="Pending"
-    ).count()
-
-    available_donors = Donor.query.filter_by(
-        availability=True
-    ).count()
-
-    total_donors = Donor.query.count()
+    donor_counts = dict(
+        db.session.query(
+            Donor.availability,
+            func.count(Donor.donor_id)
+        )
+        .group_by(Donor.availability)
+        .all()
+    )
+    total_donors = sum(donor_counts.values())
+    available_donors = donor_counts.get(True, 0)
 
     total_patients = Patient.query.count()
-
     total_donations = Donation.query.count()
 
     success_rate = 0

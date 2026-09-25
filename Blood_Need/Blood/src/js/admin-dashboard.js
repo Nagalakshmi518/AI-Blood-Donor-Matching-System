@@ -971,21 +971,16 @@ document.getElementById("downloadDonationReport").onclick = () => {
 
 async function initializeDashboard() {
   try {
-    await loadSummary();
-
-    await loadUsers();
-
-    await loadDonors();
-
-    await loadPatients();
-
-    await loadRequests();
-
-    await loadDonations();
-
-    await loadMatches();
-
-    await loadInventory();
+    await Promise.all([
+      loadSummary(),
+      loadUsers(),
+      loadDonors(),
+      loadPatients(),
+      loadRequests(),
+      loadDonations(),
+      loadMatches(),
+      loadInventory(),
+    ]);
   } catch (error) {
     console.error(error);
 

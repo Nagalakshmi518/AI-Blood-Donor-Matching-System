@@ -119,21 +119,15 @@ def get_rewards(donor_id):
 # =====================================================
 
 def get_total_points(donor_id):
+    from sqlalchemy import func
 
-    rewards = RewardPoint.query.filter_by(
+    total = db.session.query(
+        func.coalesce(func.sum(RewardPoint.points), 0)
+    ).filter(
+        RewardPoint.donor_id == donor_id
+    ).scalar()
 
-        donor_id=donor_id
-
-    ).all()
-
-
-    return sum(
-
-        reward.points or 0
-
-        for reward in rewards
-
-    )
+    return int(total or 0)
 
 
 # =====================================================

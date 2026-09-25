@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity
 )
+from sqlalchemy import func
 
 from app import db
 
@@ -189,24 +190,22 @@ def requests():
         })
 
     # ====================================================
-    # 3. FETCH ALL REQUIRED INVENTORY IN ONE QUERY
+    # 3. FETCH AGGREGATED INVENTORY IN ONE SQL QUERY
     # ====================================================
 
-    inventory_rows = (
-        HospitalInventory.query
+    inventory_totals = dict(
+        db.session.query(
+            HospitalInventory.blood_group,
+            func.coalesce(func.sum(HospitalInventory.available_units), 0)
+        )
         .filter(
             HospitalInventory.blood_group.in_(blood_groups)
         )
+        .group_by(
+            HospitalInventory.blood_group
+        )
         .all()
     )
-
-    inventory_by_group = {}
-
-    for inventory in inventory_rows:
-        inventory_by_group.setdefault(
-            inventory.blood_group,
-            []
-        ).append(inventory)
 
     # ====================================================
     # 4. BUILD SAME RESPONSE
@@ -255,17 +254,8 @@ def requests():
         # INVENTORY
         # ====================================================
 
-        inventory_records = inventory_by_group.get(
-            req.blood_group,
-            []
-        )
-
         required_units = req.units_needed or 1
-
-        total_available_units = sum(
-            inventory.available_units or 0
-            for inventory in inventory_records
-        )
+        total_available_units = int(inventory_totals.get(req.blood_group, 0))
 
         inventory_fallback_active = (
             not accepted_exists
@@ -997,18 +987,18 @@ def get_request_inventory(request_id):
             "message": "Unauthorized"
         }), 403
 
-    inventory_records = HospitalInventory.query.filter_by(
-        blood_group=req.blood_group
-    ).order_by(
-        HospitalInventory.available_units.desc()
-    ).all()
+    inv_row = (
+        db.session.query(
+            func.coalesce(func.sum(HospitalInventory.available_units), 0),
+            func.count(HospitalInventory.inventory_id)
+        )
+        .filter(HospitalInventory.blood_group == req.blood_group)
+        .first()
+    )
 
     required_units = req.units_needed or 1
-
-    total_available_units = sum(
-        inventory.available_units or 0
-        for inventory in inventory_records
-    )
+    total_available_units = int(inv_row[0]) if inv_row else 0
+    inventory_count = int(inv_row[1]) if inv_row else 0
 
     return jsonify({
         "request_id": req.request_id,
@@ -1016,5 +1006,5 @@ def get_request_inventory(request_id):
         "required_units": required_units,
         "available_units": total_available_units,
         "sufficient": total_available_units >= required_units,
-        "inventory_found": len(inventory_records) > 0
+        "inventory_found": inventory_count > 0
     }), 200

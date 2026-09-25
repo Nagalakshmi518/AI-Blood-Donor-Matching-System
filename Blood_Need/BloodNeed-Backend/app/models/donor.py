@@ -65,12 +65,19 @@ class Donor(db.Model):
         "ResponseHistory", backref="donor", lazy=True, cascade="all, delete-orphan"
     )
 
-    def to_dict(self):
-        user = User.query.get(self.user_id)
+    def to_dict(self, user=None, reward_points=None, badges=None):
+        if user is None:
+            user = User.query.get(self.user_id)
 
-        total_points = sum(getattr(reward, 'points', 0) for reward in self.rewards or [])
+        if reward_points is None:
+            total_points = sum(getattr(reward, 'points', 0) for reward in self.rewards or [])
+        else:
+            total_points = reward_points
 
-        badge_names = [badge.badge_name for badge in (self.badges or []) if getattr(badge, 'is_active', False)]
+        if badges is None:
+            badge_names = [badge.badge_name for badge in (self.badges or []) if getattr(badge, 'is_active', False)]
+        else:
+            badge_names = badges
 
         return {
             "donor_id": self.donor_id,

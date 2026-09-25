@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 
+from app import db
+
 from app.hospital.services import (
     create_hospital,
     get_all_hospitals,
@@ -87,12 +89,17 @@ def _require_admin():
 def all_hospital_inventory():
     _require_admin()
 
+    inventory_items = (
+        db.session.query(HospitalInventory, Hospital.hospital_name)
+        .join(Hospital, Hospital.hospital_id == HospitalInventory.hospital_id)
+        .order_by(HospitalInventory.inventory_id.desc())
+        .all()
+    )
     rows = []
-    for hospital in get_all_hospitals():
-        for item in get_inventory(hospital.hospital_id):
-            payload = item.to_dict()
-            payload["hospital_name"] = hospital.hospital_name
-            rows.append(payload)
+    for item, hospital_name in inventory_items:
+        payload = item.to_dict()
+        payload["hospital_name"] = hospital_name
+        rows.append(payload)
 
     return jsonify(rows), 200
 

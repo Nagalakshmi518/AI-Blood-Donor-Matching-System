@@ -2,29 +2,7 @@ const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
 const token = localStorage.getItem("token");
 
 const requestsContainer = document.getElementById("requestsContainer");
-async function checkHospitalInventory(requestId) {
-  try {
-    const response = await fetch(
-      `${API_URL}/api/requests/${requestId}/inventory`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
 
-    if (!response.ok) {
-      console.log("Inventory API status:", response.status);
-      return null;
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Hospital inventory error:", error);
-    return null;
-  }
-}
 // =====================================================
 // LOAD MY BLOOD REQUESTS
 // =====================================================

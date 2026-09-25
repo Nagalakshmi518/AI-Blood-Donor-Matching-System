@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy import func
 
 from app import db
 
@@ -103,9 +104,43 @@ def donors():
         }), 403
 
     donors = get_all_donors()
+    if not donors:
+        return jsonify([]), 200
+
+    from app.models.reward_point import RewardPoint
+    from app.models.badge import Badge
+
+    user_ids = [d.user_id for d in donors if d.user_id]
+    donor_ids = [d.donor_id for d in donors]
+
+    users = User.query.filter(User.user_id.in_(user_ids)).all() if user_ids else []
+    user_map = {u.user_id: u for u in users}
+
+    reward_sums = dict(
+        db.session.query(
+            RewardPoint.donor_id,
+            func.coalesce(func.sum(RewardPoint.points), 0)
+        )
+        .filter(RewardPoint.donor_id.in_(donor_ids))
+        .group_by(RewardPoint.donor_id)
+        .all()
+    ) if donor_ids else {}
+
+    badge_rows = (
+        db.session.query(Badge.donor_id, Badge.badge_name)
+        .filter(Badge.donor_id.in_(donor_ids), Badge.is_active == True)
+        .all()
+    ) if donor_ids else []
+    badge_map = {}
+    for did, bname in badge_rows:
+        badge_map.setdefault(did, []).append(bname)
 
     return jsonify([
-        donor.to_dict()
+        donor.to_dict(
+            user=user_map.get(donor.user_id),
+            reward_points=int(reward_sums.get(donor.donor_id, 0)),
+            badges=badge_map.get(donor.donor_id, [])
+        )
         for donor in donors
     ]), 200
 
@@ -125,9 +160,15 @@ def patients():
         }), 403
 
     patients = get_all_patients()
+    if not patients:
+        return jsonify([]), 200
+
+    user_ids = [p.user_id for p in patients if p.user_id]
+    users = User.query.filter(User.user_id.in_(user_ids)).all() if user_ids else []
+    user_map = {u.user_id: u for u in users}
 
     return jsonify([
-        patient.to_dict()
+        patient.to_dict(user=user_map.get(patient.user_id))
         for patient in patients
     ]), 200
 
@@ -209,50 +250,31 @@ def analytics():
             "message": "Admin access required"
         }), 403
 
-    from app.models.user import User
     from app.models.donor import Donor
     from app.models.patient import Patient
     from app.models.blood_request import BloodRequest
     from app.models.donation import Donation
 
+    request_counts = dict(
+        db.session.query(
+            BloodRequest.status,
+            func.count(BloodRequest.request_id)
+        )
+        .group_by(BloodRequest.status)
+        .all()
+    )
+
     return jsonify({
-
         "users": User.query.count(),
-
         "donors": Donor.query.count(),
-
         "patients": Patient.query.count(),
-
-        "requests": BloodRequest.query.count(),
-
-        "pending_requests":
-            BloodRequest.query.filter_by(
-                status="Pending"
-            ).count(),
-
-        "matched_requests":
-            BloodRequest.query.filter_by(
-                status="Matched"
-            ).count(),
-
-        "accepted_requests":
-            BloodRequest.query.filter_by(
-                status="Accepted"
-            ).count(),
-
-        "completed_requests":
-            BloodRequest.query.filter_by(
-                status="Completed"
-            ).count(),
-
-        "cancelled_requests":
-            BloodRequest.query.filter_by(
-                status="Cancelled"
-            ).count(),
-
-        "total_donations":
-            Donation.query.count()
-
+        "requests": sum(request_counts.values()),
+        "pending_requests": request_counts.get("Pending", 0),
+        "matched_requests": request_counts.get("Matched", 0),
+        "accepted_requests": request_counts.get("Accepted", 0),
+        "completed_requests": request_counts.get("Completed", 0),
+        "cancelled_requests": request_counts.get("Cancelled", 0),
+        "total_donations": Donation.query.count()
     }), 200
 # ====================================================
 # BLOCK USER

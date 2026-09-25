@@ -23,11 +23,12 @@ from app.ai.ranking import (
 DONATION_COOLDOWN_DAYS = 90
 
 
-def send_request_email_to_donor(donor, blood_request, response_minutes):
+def send_request_email_to_donor(donor, blood_request, response_minutes, user=None):
     if donor is None:
         return
 
-    user = User.query.get(donor.user_id) if donor.user_id else None
+    if user is None:
+        user = User.query.get(donor.user_id) if donor.user_id else None
     if user is None or not getattr(user, "email", None):
         return
 
@@ -74,7 +75,7 @@ def get_response_window(emergency_level):
 # CHECK DONOR ELIGIBILITY
 # ==========================================
 
-def is_donor_eligible(donor, blood_request=None):
+def is_donor_eligible(donor, blood_request=None, user=None, existing_matches=None):
 
     if donor is None:
         return False
@@ -83,7 +84,8 @@ def is_donor_eligible(donor, blood_request=None):
     if donor.availability is not True:
         return False
 
-    user = User.query.get(donor.user_id) if donor.user_id else None
+    if user is None:
+        user = User.query.get(donor.user_id) if donor.user_id else None
     if user is None:
         return False
 
@@ -112,7 +114,10 @@ def is_donor_eligible(donor, blood_request=None):
         if date.today() < eligible_date:
             return False
 
-    if blood_request is not None:
+    if existing_matches is not None:
+        if donor.donor_id in existing_matches:
+            return False
+    elif blood_request is not None:
         existing_match = DonorMatch.query.filter_by(
             request_id=blood_request.request_id,
             donor_id=donor.donor_id
@@ -147,11 +152,41 @@ def find_matching_donors(blood_request):
     db.session.commit()
 
     # --------------------------------------
-    # Get all donors
+    # Get compatible and available donors
     # --------------------------------------
-    donors = Donor.query.all()
+    compatibility_map = {
+        "O-": ["O-"],
+        "O+": ["O-", "O+"],
+        "A-": ["O-", "A-"],
+        "A+": ["O-", "O+", "A-", "A+"],
+        "B-": ["O-", "B-"],
+        "B+": ["O-", "O+", "B-", "B+"],
+        "AB-": ["O-", "A-", "B-", "AB-"],
+        "AB+": ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+    }
+    compatible_groups = compatibility_map.get(blood_request.blood_group, [blood_request.blood_group])
+
+    donors = (
+        Donor.query
+        .filter(
+            Donor.blood_group.in_(compatible_groups),
+            Donor.availability == True,
+            Donor.latitude.isnot(None),
+            Donor.longitude.isnot(None),
+        )
+        .all()
+    )
 
     print("Total donors found:", len(donors))
+
+    user_ids = [d.user_id for d in donors if d.user_id]
+    users_map = {u.user_id: u for u in User.query.filter(User.user_id.in_(user_ids)).all()} if user_ids else {}
+    existing_matches = {
+    match.donor_id
+    for match in DonorMatch.query.filter_by(
+        request_id=blood_request.request_id
+    ).all()
+}
 
     matched = []
 
@@ -168,7 +203,7 @@ def find_matching_donors(blood_request):
         print("Lon:", donor.longitude)
 
         # Check eligibility
-        if not is_donor_eligible(donor, blood_request):
+        if not is_donor_eligible(donor, blood_request, user=users_map.get(donor.user_id), existing_matches=existing_matches):
             print("Donor not eligible:", donor.donor_id)
             continue
 
@@ -345,7 +380,8 @@ def find_matching_donors(blood_request):
                 send_request_email_to_donor(
                     donor,
                     blood_request,
-                    response_minutes
+                    response_minutes,
+                    user=users_map.get(donor.user_id)
                 )
 
     # --------------------------------------

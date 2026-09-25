@@ -1,6 +1,7 @@
 import csv
 import io
 
+from app import db
 from app.models.donor import Donor
 from app.models.patient import Patient
 from app.models.blood_request import BloodRequest
@@ -21,17 +22,16 @@ def generate_donor_csv():
         "Reliability Score"
     ])
 
-    donors = Donor.query.all()
+    rows = db.session.query(
+        Donor.donor_id,
+        Donor.blood_group,
+        Donor.availability,
+        Donor.total_donations,
+        Donor.reliability_score
+    ).all()
 
-    for donor in donors:
-
-        writer.writerow([
-            donor.donor_id,
-            donor.blood_group,
-            donor.availability,
-            donor.total_donations,
-            donor.reliability_score
-        ])
+    for row in rows:
+        writer.writerow(row)
 
     return output.getvalue()
 
@@ -48,15 +48,14 @@ def generate_patient_csv():
         "Hospital"
     ])
 
-    patients = Patient.query.all()
+    rows = db.session.query(
+        Patient.patient_id,
+        Patient.blood_group,
+        Patient.hospital_name
+    ).all()
 
-    for patient in patients:
-
-        writer.writerow([
-            patient.patient_id,
-            patient.blood_group,
-            patient.hospital_name
-        ])
+    for row in rows:
+        writer.writerow(row)
 
     return output.getvalue()
 
@@ -75,17 +74,16 @@ def generate_request_csv():
         "Status"
     ])
 
-    requests = BloodRequest.query.all()
+    rows = db.session.query(
+        BloodRequest.request_id,
+        BloodRequest.patient_id,
+        BloodRequest.blood_group,
+        BloodRequest.units_needed,
+        BloodRequest.status
+    ).all()
 
-    for req in requests:
-
-        writer.writerow([
-            req.request_id,
-            req.patient_id,
-            req.blood_group,
-            req.units_required,
-            req.status
-        ])
+    for row in rows:
+        writer.writerow(row)
 
     return output.getvalue()
 
@@ -104,16 +102,15 @@ def generate_donation_csv():
         "Date"
     ])
 
-    donations = Donation.query.all()
+    rows = db.session.query(
+        Donation.donation_id,
+        Donation.donor_id,
+        Donation.patient_id,
+        Donation.units_donated,
+        Donation.donation_date
+    ).all()
 
-    for donation in donations:
-
-        writer.writerow([
-            donation.donation_id,
-            donation.donor_id,
-            donation.patient_id,
-            donation.units_donated,
-            donation.donation_date
-        ])
+    for row in rows:
+        writer.writerow(row)
 
     return output.getvalue()

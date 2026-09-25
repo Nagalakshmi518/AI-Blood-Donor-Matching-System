@@ -75,9 +75,9 @@ class Patient(db.Model):
     # Convert to Dictionary
     # =========================
 
-    def to_dict(self):
-
-        user = User.query.get(self.user_id)
+    def to_dict(self, user=None):
+        if user is None:
+            user = User.query.get(self.user_id)
 
         return {
 
