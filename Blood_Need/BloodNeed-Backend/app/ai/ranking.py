@@ -85,7 +85,7 @@ def allowed_radius(level):
 # AI SCORE
 # ==========================================
 
-def calculate_score(request, donor):
+def calculate_score(request, donor, precalculated_distance=None):
 
     # Blood Compatibility
     if not blood_match(request.blood_group, donor.blood_group):
@@ -94,7 +94,11 @@ def calculate_score(request, donor):
     # -----------------------------
     # Distance
     # -----------------------------
-    if (
+    if precalculated_distance is not None:
+        distance = precalculated_distance
+        if distance > allowed_radius(request.emergency_level):
+            return 0
+    elif (
         donor.latitude is not None
         and donor.longitude is not None
         and request.hospital_latitude is not None

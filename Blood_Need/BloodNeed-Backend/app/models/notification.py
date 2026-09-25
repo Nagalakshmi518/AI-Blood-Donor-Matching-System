@@ -5,6 +5,10 @@ class Notification(db.Model):
 
     __tablename__ = "notifications"
 
+    __table_args__ = (
+        db.Index("idx_notifications_user_created", "user_id", "created_at"),
+    )
+
     notification_id = db.Column(
         db.Integer,
         primary_key=True
@@ -13,7 +17,8 @@ class Notification(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.user_id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     title = db.Column(

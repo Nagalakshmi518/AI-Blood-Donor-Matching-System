@@ -84,7 +84,7 @@ class Config:
         "bloodneed"
     )
 
-    SQLALCHEMY_DATABASE_URI = (
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI") or (
         f"mysql+pymysql://{db_user}:{db_password}"
         f"@{db_host}:{db_port}/{db_name}"
     )
@@ -93,41 +93,40 @@ class Config:
     # DATABASE CONNECTION OPTIMIZATION
     # ==========================================
 
-    db_connect_args = {
+    _db_ssl_enabled = os.getenv("DB_SSL", "").strip().lower() in {"1", "true", "yes", "on"} or (
+        db_host not in {"localhost", "127.0.0.1"} and os.getenv("DB_SSL", "").strip().lower() not in {"0", "false", "no", "off"}
+    )
+
+    _connect_args = {
         # Connection establishment timeout
         "connect_timeout": 10
     }
 
-    if db_host not in ("localhost", "127.0.0.1"):
+    if _db_ssl_enabled:
         ca_path = os.path.join(
-            os.path.dirname(
-                os.path.abspath(__file__)
-            ),
+            os.path.dirname(os.path.abspath(__file__)),
             "ca.pem"
         )
         if os.path.exists(ca_path):
-            db_connect_args["ssl"] = {
-                "ca": ca_path
-            }
+            _connect_args["ssl"] = {"ca": ca_path}
 
-    SQLALCHEMY_ENGINE_OPTIONS = {
-
+    _engine_options = {
         # Check connection before using it
         "pool_pre_ping": True,
-
         # Recycle old connections periodically
         "pool_recycle": 280,
-
         # Maintain a healthy connection pool
         "pool_size": 10,
-
         # Allow additional connections when required
         "max_overflow": 10,
-
         # Maximum time to wait for a connection
         "pool_timeout": 30,
-
-        "connect_args": db_connect_args
+        "connect_args": _connect_args
     }
+
+    if SQLALCHEMY_DATABASE_URI.startswith("sqlite"):
+        _engine_options = {}
+
+    SQLALCHEMY_ENGINE_OPTIONS = _engine_options
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

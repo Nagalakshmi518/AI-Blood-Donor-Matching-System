@@ -567,6 +567,9 @@ def donor_donations():
     ]), 200
 
 
+from sqlalchemy.orm import joinedload
+
+
 # ====================================================
 # DONOR INCOMING BLOOD REQUESTS
 # ====================================================
@@ -581,7 +584,6 @@ def donor_requests():
         user_id=user_id
     ).first()
 
-
     if donor is None:
 
         return jsonify({
@@ -589,10 +591,12 @@ def donor_requests():
         }), 404
 
     matches = (
-        db.session.query(DonorMatch, BloodRequest, User)
-        .join(BloodRequest, BloodRequest.request_id == DonorMatch.request_id)
-        .outerjoin(Patient, Patient.patient_id == BloodRequest.patient_id)
-        .outerjoin(User, User.user_id == Patient.user_id)
+        DonorMatch.query
+        .options(
+            joinedload(DonorMatch.blood_request)
+            .joinedload(BloodRequest.patient)
+            .joinedload(Patient.user)
+        )
         .filter(DonorMatch.donor_id == donor.donor_id)
         .filter(DonorMatch.donor_response != "Rejected")
         .filter(
@@ -604,7 +608,13 @@ def donor_requests():
 
     result = []
 
-    for match, blood_request, user in matches:
+    for match in matches:
+        blood_request = match.blood_request
+        if blood_request is None:
+            continue
+
+        patient = blood_request.patient
+        user = patient.user if patient else None
         payload = {
             "match_id": match.match_id,
             "request_id": blood_request.request_id,

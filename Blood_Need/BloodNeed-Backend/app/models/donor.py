@@ -5,13 +5,18 @@ from app.models.user import User
 class Donor(db.Model):
     __tablename__ = "donors"
 
+    __table_args__ = (
+        db.Index("idx_donors_avail_blood", "availability", "blood_group"),
+        db.Index("idx_donors_location", "latitude", "longitude"),
+    )
+
     donor_id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.user_id"), unique=True, nullable=False
+        db.Integer, db.ForeignKey("users.user_id"), unique=True, nullable=False, index=True
     )
 
-    blood_group = db.Column(db.String(5), nullable=False)
+    blood_group = db.Column(db.String(5), nullable=False, index=True)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.Enum("Male", "Female", "Other"), nullable=False)
     weight = db.Column(db.Float, nullable=False, default=50)
@@ -41,6 +46,10 @@ class Donor(db.Model):
     # Relationships
     # -------------------------
 
+    user = db.relationship(
+        "User", backref=db.backref("donor_profile", uselist=False), lazy=True
+    )
+
     matches = db.relationship(
         "DonorMatch", back_populates="donor", lazy=True, cascade="all, delete-orphan"
     )
@@ -67,15 +76,23 @@ class Donor(db.Model):
 
     def to_dict(self, user=None, reward_points=None, badges=None):
         if user is None:
-            user = User.query.get(self.user_id)
+            user = getattr(self, "user", None) or User.query.get(self.user_id)
 
         if reward_points is None:
-            total_points = sum(getattr(reward, 'points', 0) for reward in self.rewards or [])
+            total_points = (
+                sum(getattr(reward, 'points', 0) for reward in self.rewards)
+                if self.rewards is not None and len(self.rewards) > 0
+                else (getattr(self, 'reward_points', 0) or 0)
+            )
         else:
             total_points = reward_points
 
         if badges is None:
-            badge_names = [badge.badge_name for badge in (self.badges or []) if getattr(badge, 'is_active', False)]
+            badge_names = [
+                badge.badge_name
+                for badge in (self.badges or [])
+                if getattr(badge, 'is_active', False)
+            ]
         else:
             badge_names = badges
 
@@ -106,7 +123,7 @@ class Donor(db.Model):
         }
 
     def to_public_dict(self, distance_km=None, ranking_score=None, donor_response="Pending", response_probability=None, include_private=False):
-        user = User.query.get(self.user_id)
+        user = getattr(self, "user", None) or User.query.get(self.user_id)
         public_data = {
             "donor_id": self.donor_id,
             "full_name": user.full_name if user else "Unknown Donor",

@@ -71,11 +71,17 @@ def get_response_window(emergency_level):
 
 
 
+from sqlalchemy.orm import joinedload
+from app.ai.ranking import blood_match
+
 # ==========================================
 # CHECK DONOR ELIGIBILITY
 # ==========================================
 
-def is_donor_eligible(donor, blood_request=None, user=None, existing_matches=None):
+def is_donor_eligible(donor, blood_request=None, user=None, existing_matches=None, already_matched_donor_ids=None):
+    if isinstance(user, (set, list, tuple, dict)):
+        already_matched_donor_ids = user
+        user = None
 
     if donor is None:
         return False
@@ -85,7 +91,7 @@ def is_donor_eligible(donor, blood_request=None, user=None, existing_matches=Non
         return False
 
     if user is None:
-        user = User.query.get(donor.user_id) if donor.user_id else None
+        user = getattr(donor, "user", None) or (User.query.get(donor.user_id) if donor.user_id else None)
     if user is None:
         return False
 
@@ -103,28 +109,27 @@ def is_donor_eligible(donor, blood_request=None, user=None, existing_matches=Non
 
     # Donor cooldown period
     if donor.last_donation_date:
-
         eligible_date = (
             donor.last_donation_date
             + timedelta(
                 days=DONATION_COOLDOWN_DAYS
             )
         )
-
         if date.today() < eligible_date:
             return False
 
-    if existing_matches is not None:
-        if donor.donor_id in existing_matches:
-            return False
-    elif blood_request is not None:
-        existing_match = DonorMatch.query.filter_by(
-            request_id=blood_request.request_id,
-            donor_id=donor.donor_id
-        ).first()
-
-        if existing_match is not None:
-            return False
+    matched_ids = existing_matches if existing_matches is not None else already_matched_donor_ids
+    if blood_request is not None:
+        if matched_ids is not None:
+            if donor.donor_id in matched_ids:
+                return False
+        else:
+            existing_match = DonorMatch.query.filter_by(
+                request_id=blood_request.request_id,
+                donor_id=donor.donor_id
+            ).first()
+            if existing_match is not None:
+                return False
 
     return True
 
@@ -152,41 +157,34 @@ def find_matching_donors(blood_request):
     db.session.commit()
 
     # --------------------------------------
-    # Get compatible and available donors
-    # --------------------------------------
-    compatibility_map = {
-        "O-": ["O-"],
-        "O+": ["O-", "O+"],
-        "A-": ["O-", "A-"],
-        "A+": ["O-", "O+", "A-", "A+"],
-        "B-": ["O-", "B-"],
-        "B+": ["O-", "O+", "B-", "B+"],
-        "AB-": ["O-", "A-", "B-", "AB-"],
-        "AB+": ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
-    }
-    compatible_groups = compatibility_map.get(blood_request.blood_group, [blood_request.blood_group])
+    compatible_groups = [
+        group for group in ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"]
+        if blood_match(blood_request.blood_group, group)
+    ]
 
     donors = (
         Donor.query
+        .join(User, Donor.user_id == User.user_id)
+        .options(joinedload(Donor.user))
         .filter(
-            Donor.blood_group.in_(compatible_groups),
             Donor.availability == True,
+            Donor.blood_group.in_(compatible_groups),
+            User.role == "DONOR",
+            User.active == True,
             Donor.latitude.isnot(None),
-            Donor.longitude.isnot(None),
+            Donor.longitude.isnot(None)
         )
         .all()
     )
 
-    print("Total donors found:", len(donors))
+    print("Total compatible donors found:", len(donors))
 
-    user_ids = [d.user_id for d in donors if d.user_id]
-    users_map = {u.user_id: u for u in User.query.filter(User.user_id.in_(user_ids)).all()} if user_ids else {}
-    existing_matches = {
-    match.donor_id
-    for match in DonorMatch.query.filter_by(
-        request_id=blood_request.request_id
-    ).all()
-}
+    already_matched_donor_ids = {
+        match.donor_id
+        for match in DonorMatch.query.filter_by(
+            request_id=blood_request.request_id
+        ).all()
+    }
 
     matched = []
 
@@ -195,64 +193,36 @@ def find_matching_donors(blood_request):
     # --------------------------------------
     for donor in donors:
 
-        print("--------------------------------")
-        print("Checking Donor:", donor.donor_id)
-        print("Blood:", donor.blood_group)
-        print("Available:", donor.availability)
-        print("Lat:", donor.latitude)
-        print("Lon:", donor.longitude)
-
-        # Check eligibility
-        if not is_donor_eligible(donor, blood_request, user=users_map.get(donor.user_id), existing_matches=existing_matches):
-            print("Donor not eligible:", donor.donor_id)
+        # Check eligibility (cooldown, next_eligible_date, match history)
+        if not is_donor_eligible(
+            donor,
+            blood_request=blood_request,
+            user=donor.user,
+            already_matched_donor_ids=already_matched_donor_ids
+        ):
             continue
 
-        # Calculate AI ranking score
-        score = calculate_score(
-            blood_request,
-            donor
+        # Single distance calculation
+        distance = calculate_distance(
+            donor.latitude,
+            donor.longitude,
+            blood_request.hospital_latitude,
+            blood_request.hospital_longitude
         )
 
-        print("Score:", score)
-
-        if score <= 0:
-            print("Score is zero. Skipping donor:", donor.donor_id)
+        radius = allowed_radius(blood_request.emergency_level)
+        if distance > radius:
             continue
 
-        # --------------------------------------
-        # Distance Calculation
-        # --------------------------------------
-        if (
-            donor.latitude is not None
-            and donor.longitude is not None
-            and blood_request.hospital_latitude is not None
-            and blood_request.hospital_longitude is not None
-        ):
+        # Calculate AI ranking score with precalculated distance
+        score = calculate_score(
+            blood_request,
+            donor,
+            precalculated_distance=distance
+        )
 
-            distance = calculate_distance(
-                donor.latitude,
-                donor.longitude,
-                blood_request.hospital_latitude,
-                blood_request.hospital_longitude
-            )
-
-            print("Distance:", distance)
-
-            radius = allowed_radius(
-                blood_request.emergency_level
-            )
-
-            print("Allowed Radius:", radius)
-
-            if distance > radius:
-                print(
-                    "Donor outside allowed radius:",
-                    donor.donor_id
-                )
-                continue
-
-        else:
-            distance = 0
+        if score <= 0:
+            continue
 
         # --------------------------------------
         # Response Probability
@@ -272,11 +242,6 @@ def find_matching_donors(blood_request):
             "distance": distance,
             "probability": response_probability
         })
-
-        print(
-            "MATCH FOUND:",
-            donor.donor_id
-        )
 
     # --------------------------------------
     # Sort donors by ranking score
@@ -381,7 +346,7 @@ def find_matching_donors(blood_request):
                     donor,
                     blood_request,
                     response_minutes,
-                    user=users_map.get(donor.user_id)
+                    user=donor.user
                 )
 
     # --------------------------------------

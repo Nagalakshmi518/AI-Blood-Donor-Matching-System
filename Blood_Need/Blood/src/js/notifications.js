@@ -1,4 +1,23 @@
-const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
+const RENDER_FALLBACK_URL = "https://ai-blood-donor-matching-system.onrender.com";
+
+function resolveApiUrl() {
+  if (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+  ) {
+    if (window.location.port === "5000") {
+      return window.location.origin;
+    }
+    return "http://127.0.0.1:5000";
+  }
+  if (window.location.origin.includes("onrender.com")) {
+    return window.location.origin;
+  }
+  return RENDER_FALLBACK_URL;
+}
+
+const API_URL = resolveApiUrl();
+
 function getStoredRole() {
   return String(localStorage.getItem("role") || "")
     .trim()
@@ -58,6 +77,8 @@ const notificationsContainer = document.getElementById(
 // =======================================
 
 async function loadNotifications() {
+  if (document.hidden) return;
+
   if (!token) {
     window.location.href = "login.html";
     return;
@@ -267,5 +288,5 @@ loadNotifications();
 setInterval(
   loadNotifications,
 
-  5000,
+  30000,
 );
