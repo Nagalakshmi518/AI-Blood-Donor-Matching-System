@@ -18,3 +18,10 @@ env/
 
 # Python database files
 *.db
+# BloodNeed runtime files
+Blood_Need/BloodNeed-Backend/.scheduler.lock
+
+# ML Python cache
+Blood_Need/BloodNeed-Backend/ml/__pycache__/
+Blood_Need/BloodNeed-Backend/tests/__pycache__/
+Blood_Need/BloodNeed-Backend/app/ml_research/__pycache__/

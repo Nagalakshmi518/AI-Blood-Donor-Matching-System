@@ -1,20 +1,12 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* ==========================================================================
+   COMMON CSS — Bridge to BloodNeed Core Design System
+   ========================================================================== */
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f6fa;
-    color: #222;
-}
+@import url("./design-system.css");
 
-button,
-input {
-    font-family: inherit;
-}
-
-button {
-    cursor: pointer;
+/* Legacy compatibility layer */
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
 }

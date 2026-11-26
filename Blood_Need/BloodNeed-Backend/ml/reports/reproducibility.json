@@ -1,0 +1,20 @@
+{
+  "random_state": 42,
+  "test_size": 0.2,
+  "cv_folds": 5,
+  "stratified_split": true,
+  "stratified_cv": true,
+  "train_samples": 598,
+  "test_samples": 150,
+  "train_positive_rate": 0.2375,
+  "test_positive_rate": 0.24,
+  "python_version": "3.11.9",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "package_versions": {
+    "scikit_learn": "1.9.0",
+    "pandas": "2.1.4",
+    "numpy": "1.26.4",
+    "joblib": "1.6.0"
+  },
+  "trained_at_utc": "2026-11-26T14:00:29.410036+00:00"
+}

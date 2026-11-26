@@ -2,223 +2,179 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard | BloodNeed AI Network</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <title>Patient Dashboard</title>
-
-    <link
-        rel="stylesheet"
-        href="../src/assets/css/common.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="dashboard.css"
-    >
-
+    <!-- CSS System -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
+    <!-- Lightweight Preloader -->
+    <div id="bnPreloader">
+        <div class="bn-preloader-content">
+            <div class="bn-preloader-emblem">
+                <div class="bn-preloader-ring"></div>
+                <div class="bn-preloader-drop">🩸</div>
+            </div>
+            <div class="bn-preloader-title">Blood<span>Need</span></div>
+            <div class="bn-preloader-subtitle">Patient Command</div>
+        </div>
+    </div>
 
-<div class="dashboard">
+    <div class="dashboard">
+        <!-- Dashboard Header -->
+        <header class="dashboard-header">
+            <div>
+                <h1>🩸 BloodNeed Patient Portal</h1>
+                <p>AI-Optimized Real-Time Donor Matching & Response Network</p>
+            </div>
 
-    <!-- Header -->
+            <div class="header-actions">
+                <button
+                    id="notificationBtn"
+                    onclick="location.href='notifications.html'"
+                >
+                    <i class="fas fa-bell"></i> Notifications
+                </button>
 
-    <header class="dashboard-header">
+                <button
+                    id="logoutBtn"
+                >
+                    <i class="fas fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </header>
 
-        <div>
-
-            <h1>🩸 Blood Donor Matching System</h1>
-
+        <!-- Welcome Banner -->
+        <section class="welcome">
+            <h2 id="patientName">
+                Welcome Patient
+            </h2>
             <p>
-                Find compatible blood donors quickly
+                Monitor emergency blood requests, verify AI donor match dispatches, and track hospital reserves.
             </p>
+        </section>
 
-        </div>
+        <!-- Statistics 7-Card Grid -->
+        <section class="cards">
+            <div class="card total-card">
+                <div class="card-icon">📋</div>
+                <div class="card-content">
+                    <h3>Total Requests</h3>
+                    <h1 id="totalRequests">0</h1>
+                </div>
+            </div>
 
-        <div class="header-actions">
+            <div class="card pending-card">
+                <div class="card-icon">⏳</div>
+                <div class="card-content">
+                    <h3>Pending</h3>
+                    <h1 id="pendingRequests">0</h1>
+                </div>
+            </div>
 
-            <button
-                id="notificationBtn"
-                onclick="location.href='notifications.html'"
-            >
-                🔔 Notifications
-            </button>
+            <div class="card matched-card">
+                <div class="card-icon">🎯</div>
+                <div class="card-content">
+                    <h3>Matched</h3>
+                    <h1 id="matchedRequests">0</h1>
+                </div>
+            </div>
 
-            <button
-                id="logoutBtn"
-            >
-                Logout
-            </button>
+            <div class="card accepted-card">
+                <div class="card-icon">🤝</div>
+                <div class="card-content">
+                    <h3>Accepted</h3>
+                    <h1 id="acceptedRequests">0</h1>
+                </div>
+            </div>
 
-        </div>
+            <div class="card completed-card">
+                <div class="card-icon">✅</div>
+                <div class="card-content">
+                    <h3>Completed</h3>
+                    <h1 id="completedRequests">0</h1>
+                </div>
+            </div>
 
-    </header>
+            <div class="card rejected-card">
+                <div class="card-icon">❌</div>
+                <div class="card-content">
+                    <h3>Rejected</h3>
+                    <h1 id="rejectedRequests">0</h1>
+                </div>
+            </div>
 
+            <div class="card cancelled-card">
+                <div class="card-icon">🚫</div>
+                <div class="card-content">
+                    <h3>Cancelled</h3>
+                    <h1 id="cancelledRequests">0</h1>
+                </div>
+            </div>
+        </section>
 
-    <!-- Welcome -->
+        <!-- Quick Actions Navigation -->
+        <section class="actions-section">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
 
-    <section class="welcome">
+            <div class="actions">
+                <button
+                    class="primary-action"
+                    onclick="window.location.href='request-blood.html'"
+                >
+                    <i class="fas fa-hand-holding-droplet"></i> Create Blood Request
+                </button>
 
-        <h2 id="patientName">
-            Welcome
-        </h2>
+                <button
+                    onclick="location.href='my-requests.html'"
+                >
+                    <i class="fas fa-list-check"></i> My Requests
+                </button>
 
-        <p>
-            Manage your blood requests and donor responses
-        </p>
+                <button
+                    onclick="location.href='notifications.html'"
+                >
+                    <i class="fas fa-bell"></i> Alerts Center
+                </button>
 
-    </section>
+                <button
+                    onclick="window.location.href='profile.html'"
+                >
+                    <i class="fas fa-user-circle"></i> Medical Profile
+                </button>
+            </div>
+        </section>
 
+        <!-- Dynamic Requests Grid -->
+        <section class="my-requests">
+            <div class="section-header">
+                <h2><i class="fas fa-droplet"></i> Active Blood Requests</h2>
+            </div>
+            <div id="requestContainer" class="request-grid">
+                <!-- Injected via JavaScript -->
+            </div>
+        </section>
 
-    <!-- Statistics -->
-<section class="cards">
-
-    <div class="card total-card">
-        <div class="card-icon">📋</div>
-        <div class="card-content">
-            <h3>Total Requests</h3>
-            <h1 id="totalRequests">0</h1>
-        </div>
+        <!-- Recent Activity Feed -->
+        <section class="recent-activity">
+            <div class="section-header">
+                <h2><i class="fas fa-clock-rotate-left"></i> Recent Activity Stream</h2>
+            </div>
+            <div id="recentActivity" class="activity-list">
+                Loading recent activity...
+            </div>
+        </section>
     </div>
 
-    <div class="card pending-card">
-        <div class="card-icon">⏳</div>
-        <div class="card-content">
-            <h3>Pending</h3>
-            <h1 id="pendingRequests">0</h1>
-        </div>
-    </div>
-
-    <div class="card matched-card">
-        <div class="card-icon">🎯</div>
-        <div class="card-content">
-            <h3>Matched</h3>
-            <h1 id="matchedRequests">0</h1>
-        </div>
-    </div>
-
-    <div class="card accepted-card">
-        <div class="card-icon">🤝</div>
-        <div class="card-content">
-            <h3>Accepted</h3>
-            <h1 id="acceptedRequests">0</h1>
-        </div>
-    </div>
-
-    <div class="card completed-card">
-        <div class="card-icon">✅</div>
-        <div class="card-content">
-            <h3>Completed</h3>
-            <h1 id="completedRequests">0</h1>
-        </div>
-    </div>
-
-    <div class="card rejected-card">
-        <div class="card-icon">❌</div>
-        <div class="card-content">
-            <h3>Rejected</h3>
-            <h1 id="rejectedRequests">0</h1>
-        </div>
-    </div>
-
-    <div class="card cancelled-card">
-        <div class="card-icon">🚫</div>
-        <div class="card-content">
-            <h3>Cancelled</h3>
-            <h1 id="cancelledRequests">0</h1>
-        </div>
-    </div>
-
-</section>
-    <!-- Quick Actions -->
-
-    <section class="actions-section">
-
-        <h2>
-            Quick Actions
-        </h2>
-
-        <div class="actions">
-
-            <button
-                class="primary-action"
-                onclick="window.location.href='request-blood.html'"
-            >
-
-                🩸 Create Blood Request
-
-            </button>
-
-
-            <button
-                onclick="location.href='my-requests.html'"
-            >
-
-                📋 My Requests
-
-            </button>
-
-
-            <button
-                onclick="location.href='notifications.html'"
-            >
-
-                🔔 Notifications
-
-            </button>
-
-
-            <button
-                onclick="window.location.href='profile.html'"
-            >
-
-                👤 My Profile
-
-            </button>
-
-        </div>
-
-    </section>
-<section class="my-requests">
-    
-    <br><br>
-
-   <div class="section-header">
-    <h2>🩸 My Blood Requests</h2>
-</div>
-
-<div id="requestContainer" class="request-grid">
-
-</div>
-
-</section>
-
-    <!-- Recent Activity --><section class="recent-activity">
-
-<div class="section-header">
-    <h2>📋 Recent Activity</h2>
-</div>
-
-<div id="recentActivity" class="activity-list">
-    Loading recent activity...
-</div>
-
-</section>
-
-</div>
-
-
-<script
-    src="../src/js/patient.js"
-></script>
-
+    <script src="../src/assets/js/app-shell.js"></script>
+    <script src="../src/js/patient.js"></script>
 </body>
 
 </html>

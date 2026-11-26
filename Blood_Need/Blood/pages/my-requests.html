@@ -1,111 +1,64 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blood Requests | BloodNeed AI Network</title>
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<meta charset="UTF-8">
+    <!-- CSS System -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="../src/assets/css/my-requests.css">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>My Blood Requests</title>
-
-<button id="backBtn" onclick="goBackToDashboard()">
-    ← Back to Dashboard
-</button>
-<link
-    rel="stylesheet"
-    href="../src/assets/css/common.css"
->
-
-
-<link
-    rel="stylesheet"
-    href="../src/assets/css/my-requests.css"
->
-
-
-<!-- Leaflet Map CSS -->
-
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
->
-
-
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 
 <body>
-
-<main class="requests-page">
-
-
-    <div class="requests-header">
-
-
-        <div>
-
-
-            <h1>
-                My Blood Requests
-            </h1>
-
-
-            <p>
-                View and track your blood requests
-            </p>
-
-
+    <!-- Lightweight Preloader -->
+    <div id="bnPreloader">
+        <div class="bn-preloader-content">
+            <div class="bn-preloader-emblem">
+                <div class="bn-preloader-ring"></div>
+                <div class="bn-preloader-drop">🩸</div>
+            </div>
+            <div class="bn-preloader-title">Blood<span>Need</span></div>
+            <div class="bn-preloader-subtitle">Request Tracking</div>
         </div>
+    </div>
 
-
-        <button
-            onclick="window.location.href='request-blood.html'"
-        >
-
-            + New Request
-
+    <main class="requests-page">
+        <button id="backBtn" onclick="goBackToDashboard()">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
         </button>
 
+        <div class="requests-header">
+            <div>
+                <h1><i class="fas fa-notes-medical"></i> My Blood Requests</h1>
+                <p>Track live AI donor matching dispatch, response probability, and hospital fallback status</p>
+            </div>
 
-    </div>
+            <button onclick="window.location.href='request-blood.html'">
+                <i class="fas fa-plus"></i> + New Request
+            </button>
+        </div>
 
+        <div id="requestsContainer" class="requests-container">
+            <p class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading your blood requests...
+            </p>
+        </div>
+    </main>
 
-    <div
-        id="requestsContainer"
-        class="requests-container"
-    >
+    <!-- Leaflet Map JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        <p class="loading">
-
-            Loading requests...
-
-        </p>
-
-    </div>
-
-
-</main>
-
-
-<!-- Leaflet Map JavaScript -->
-
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
-
-
-<!-- Your JavaScript -->
-
-<script
-    src="../src/js/my-requests.js"
-></script>
-
-
+    <!-- App Shell & Custom JS -->
+    <script src="../src/assets/js/app-shell.js"></script>
+    <script src="../src/js/my-requests.js"></script>
 </body>
 
 </html>

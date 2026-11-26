@@ -1,0 +1,450 @@
+{
+  "selected_model_key": "logistic_regression_balanced",
+  "selected_model_name": "Logistic Regression (Class-Balanced)",
+  "models": {
+    "logistic_regression_baseline": {
+      "name": "Logistic Regression (Baseline)",
+      "cv_metrics": {
+        "cv_folds": 5,
+        "accuracy": {
+          "mean": 0.7726,
+          "std": 0.0183,
+          "fold_scores": [
+            0.7583,
+            0.7667,
+            0.8,
+            0.7815,
+            0.7563
+          ]
+        },
+        "precision": {
+          "mean": 0.6224,
+          "std": 0.1687,
+          "fold_scores": [
+            0.5,
+            0.6,
+            0.8333,
+            0.75,
+            0.4286
+          ]
+        },
+        "recall": {
+          "mean": 0.12,
+          "std": 0.0328,
+          "fold_scores": [
+            0.1034,
+            0.1034,
+            0.1786,
+            0.1071,
+            0.1071
+          ]
+        },
+        "f1": {
+          "mean": 0.2002,
+          "std": 0.0529,
+          "fold_scores": [
+            0.1714,
+            0.1765,
+            0.2941,
+            0.1875,
+            0.1714
+          ]
+        },
+        "roc_auc": {
+          "mean": 0.7391,
+          "std": 0.0407,
+          "fold_scores": [
+            0.7446,
+            0.6705,
+            0.7634,
+            0.7753,
+            0.7418
+          ]
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.7667,
+        "precision": 0.5714,
+        "recall": 0.1111,
+        "f1_score": 0.186,
+        "roc_auc": 0.7878,
+        "confusion_matrix": [
+          [
+            111,
+            3
+          ],
+          [
+            32,
+            4
+          ]
+        ],
+        "confusion_matrix_breakdown": {
+          "true_negative": 111,
+          "false_positive": 3,
+          "false_negative": 32,
+          "true_positive": 4
+        },
+        "classification_report": {
+          "Not Donated (0)": {
+            "precision": 0.7762237762237763,
+            "recall": 0.9736842105263158,
+            "f1-score": 0.8638132295719845,
+            "support": 114.0
+          },
+          "Donated (1)": {
+            "precision": 0.5714285714285714,
+            "recall": 0.1111111111111111,
+            "f1-score": 0.18604651162790697,
+            "support": 36.0
+          },
+          "accuracy": 0.7666666666666667,
+          "macro avg": {
+            "precision": 0.6738261738261738,
+            "recall": 0.5423976608187134,
+            "f1-score": 0.5249298705999457,
+            "support": 150.0
+          },
+          "weighted avg": {
+            "precision": 0.727072927072927,
+            "recall": 0.7666666666666667,
+            "f1-score": 0.7011492172654059,
+            "support": 150.0
+          }
+        }
+      }
+    },
+    "logistic_regression_balanced": {
+      "name": "Logistic Regression (Class-Balanced)",
+      "cv_metrics": {
+        "cv_folds": 5,
+        "accuracy": {
+          "mean": 0.6472,
+          "std": 0.0713,
+          "fold_scores": [
+            0.5833,
+            0.6,
+            0.7083,
+            0.7395,
+            0.605
+          ]
+        },
+        "precision": {
+          "mean": 0.3833,
+          "std": 0.0615,
+          "fold_scores": [
+            0.3433,
+            0.3273,
+            0.4286,
+            0.4681,
+            0.3492
+          ]
+        },
+        "recall": {
+          "mean": 0.747,
+          "std": 0.0726,
+          "fold_scores": [
+            0.7931,
+            0.6207,
+            0.75,
+            0.7857,
+            0.7857
+          ]
+        },
+        "f1": {
+          "mean": 0.5047,
+          "std": 0.0618,
+          "fold_scores": [
+            0.4792,
+            0.4286,
+            0.5455,
+            0.5867,
+            0.4835
+          ]
+        },
+        "roc_auc": {
+          "mean": 0.74,
+          "std": 0.0402,
+          "fold_scores": [
+            0.7397,
+            0.6736,
+            0.7681,
+            0.7753,
+            0.7433
+          ]
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.72,
+        "precision": 0.4545,
+        "recall": 0.8333,
+        "f1_score": 0.5882,
+        "roc_auc": 0.7848,
+        "confusion_matrix": [
+          [
+            78,
+            36
+          ],
+          [
+            6,
+            30
+          ]
+        ],
+        "confusion_matrix_breakdown": {
+          "true_negative": 78,
+          "false_positive": 36,
+          "false_negative": 6,
+          "true_positive": 30
+        },
+        "classification_report": {
+          "Not Donated (0)": {
+            "precision": 0.9285714285714286,
+            "recall": 0.6842105263157895,
+            "f1-score": 0.7878787878787878,
+            "support": 114.0
+          },
+          "Donated (1)": {
+            "precision": 0.45454545454545453,
+            "recall": 0.8333333333333334,
+            "f1-score": 0.5882352941176471,
+            "support": 36.0
+          },
+          "accuracy": 0.72,
+          "macro avg": {
+            "precision": 0.6915584415584416,
+            "recall": 0.7587719298245614,
+            "f1-score": 0.6880570409982174,
+            "support": 150.0
+          },
+          "weighted avg": {
+            "precision": 0.8148051948051948,
+            "recall": 0.72,
+            "f1-score": 0.739964349376114,
+            "support": 150.0
+          }
+        }
+      }
+    },
+    "random_forest_default": {
+      "name": "Random Forest Classifier (Comparison)",
+      "cv_metrics": {
+        "cv_folds": 5,
+        "accuracy": {
+          "mean": 0.7775,
+          "std": 0.0148,
+          "fold_scores": [
+            0.8,
+            0.775,
+            0.7833,
+            0.7647,
+            0.7647
+          ]
+        },
+        "precision": {
+          "mean": 0.5823,
+          "std": 0.1143,
+          "fold_scores": [
+            0.7778,
+            0.5625,
+            0.5714,
+            0.5,
+            0.5
+          ]
+        },
+        "recall": {
+          "mean": 0.2603,
+          "std": 0.0379,
+          "fold_scores": [
+            0.2414,
+            0.3103,
+            0.2857,
+            0.2143,
+            0.25
+          ]
+        },
+        "f1": {
+          "mean": 0.3565,
+          "std": 0.0399,
+          "fold_scores": [
+            0.3684,
+            0.4,
+            0.381,
+            0.3,
+            0.3333
+          ]
+        },
+        "roc_auc": {
+          "mean": 0.7155,
+          "std": 0.0376,
+          "fold_scores": [
+            0.7298,
+            0.6557,
+            0.7587,
+            0.7188,
+            0.7143
+          ]
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.7933,
+        "precision": 0.5926,
+        "recall": 0.4444,
+        "f1_score": 0.5079,
+        "roc_auc": 0.7766,
+        "confusion_matrix": [
+          [
+            103,
+            11
+          ],
+          [
+            20,
+            16
+          ]
+        ],
+        "confusion_matrix_breakdown": {
+          "true_negative": 103,
+          "false_positive": 11,
+          "false_negative": 20,
+          "true_positive": 16
+        },
+        "classification_report": {
+          "Not Donated (0)": {
+            "precision": 0.8373983739837398,
+            "recall": 0.9035087719298246,
+            "f1-score": 0.869198312236287,
+            "support": 114.0
+          },
+          "Donated (1)": {
+            "precision": 0.5925925925925926,
+            "recall": 0.4444444444444444,
+            "f1-score": 0.5079365079365079,
+            "support": 36.0
+          },
+          "accuracy": 0.7933333333333333,
+          "macro avg": {
+            "precision": 0.7149954832881662,
+            "recall": 0.6739766081871346,
+            "f1-score": 0.6885674100863974,
+            "support": 150.0
+          },
+          "weighted avg": {
+            "precision": 0.7786449864498645,
+            "recall": 0.7933333333333333,
+            "f1-score": 0.7824954792043399,
+            "support": 150.0
+          }
+        }
+      }
+    },
+    "random_forest_balanced": {
+      "name": "Random Forest Classifier (Class-Balanced)",
+      "cv_metrics": {
+        "cv_folds": 5,
+        "accuracy": {
+          "mean": 0.7224,
+          "std": 0.0422,
+          "fold_scores": [
+            0.6833,
+            0.725,
+            0.7417,
+            0.7815,
+            0.6807
+          ]
+        },
+        "precision": {
+          "mean": 0.4426,
+          "std": 0.0594,
+          "fold_scores": [
+            0.4082,
+            0.4231,
+            0.4571,
+            0.5385,
+            0.3864
+          ]
+        },
+        "recall": {
+          "mean": 0.5495,
+          "std": 0.1171,
+          "fold_scores": [
+            0.6897,
+            0.3793,
+            0.5714,
+            0.5,
+            0.6071
+          ]
+        },
+        "f1": {
+          "mean": 0.4823,
+          "std": 0.0494,
+          "fold_scores": [
+            0.5128,
+            0.4,
+            0.5079,
+            0.5185,
+            0.4722
+          ]
+        },
+        "roc_auc": {
+          "mean": 0.7151,
+          "std": 0.0336,
+          "fold_scores": [
+            0.7275,
+            0.6614,
+            0.7537,
+            0.7164,
+            0.7162
+          ]
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.7333,
+        "precision": 0.4643,
+        "recall": 0.7222,
+        "f1_score": 0.5652,
+        "roc_auc": 0.7695,
+        "confusion_matrix": [
+          [
+            84,
+            30
+          ],
+          [
+            10,
+            26
+          ]
+        ],
+        "confusion_matrix_breakdown": {
+          "true_negative": 84,
+          "false_positive": 30,
+          "false_negative": 10,
+          "true_positive": 26
+        },
+        "classification_report": {
+          "Not Donated (0)": {
+            "precision": 0.8936170212765957,
+            "recall": 0.7368421052631579,
+            "f1-score": 0.8076923076923077,
+            "support": 114.0
+          },
+          "Donated (1)": {
+            "precision": 0.4642857142857143,
+            "recall": 0.7222222222222222,
+            "f1-score": 0.5652173913043478,
+            "support": 36.0
+          },
+          "accuracy": 0.7333333333333333,
+          "macro avg": {
+            "precision": 0.678951367781155,
+            "recall": 0.72953216374269,
+            "f1-score": 0.6864548494983278,
+            "support": 150.0
+          },
+          "weighted avg": {
+            "precision": 0.7905775075987843,
+            "recall": 0.7333333333333333,
+            "f1-score": 0.7494983277591973,
+            "support": 150.0
+          }
+        }
+      }
+    }
+  }
+}

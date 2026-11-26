@@ -2,224 +2,203 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Center — BloodNeed AI</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Admin Dashboard</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link rel="stylesheet"
-          href="../src/assets/css/admin-dashboard.css">
-
+    <!-- Design System & Admin CSS -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="../src/assets/css/common.css">
+    <link rel="stylesheet" href="../src/assets/css/admin-dashboard.css">
 </head>
 
 <body>
 
-<div class="dashboard">
-
-    <!-- HEADER -->
-
-    <header>
-
-        <h1>🩸 Admin Dashboard</h1>
-
-        <div>
-
-            <button id="refreshBtn">
-                Refresh
-            </button>
-
-            <button id="logoutBtn">
-                Logout
-            </button>
-
+    <!-- ======================================================================
+         LIGHTWEIGHT AI PRELOADER
+         ====================================================================== -->
+    <div id="bn-preloader" class="bn-preloader">
+        <div class="bn-preloader-content">
+            <div class="bn-blood-pulse">
+                <div class="bn-pulse-ring"></div>
+                <div class="bn-pulse-ring-outer"></div>
+                <div class="bn-drop-core">
+                    <i class="fa-solid fa-server"></i>
+                </div>
+            </div>
+            <div class="bn-preloader-brand">Blood<span>Need</span></div>
+            <div class="bn-preloader-text">Authorizing Central Command Grid...</div>
         </div>
-
-    </header>
-
-
-    <!-- SUMMARY -->
-
-    <section>
-
-        <h2>Dashboard Summary</h2>
-
-        <div
-            id="summaryCards"
-            class="summary-grid">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- ANALYTICS -->
-
-   
-
-
-    <!-- SEARCH -->
-
-    <section>
-
-        <input
-            type="text"
-            id="searchUser"
-            placeholder="Search User..."
-        >
-
-    </section>
-
-
-    <!-- USERS -->
-
-    <section>
-
-        <h2>Users</h2>
-
-        <div id="usersTable">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- DONORS -->
-
-    <section>
-
-        <h2>Donors</h2>
-
-        <div id="donorsTable">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- PATIENTS -->
-
-    <section>
-
-        <h2>Patients</h2>
-
-        <div id="patientsTable">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- BLOOD REQUESTS -->
-
-    <section>
-
-        <h2>Blood Requests</h2>
-
-        <div id="requestsTable">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- DONATIONS -->
-
-    <section>
-
-        <h2>Donations</h2>
-
-        <div id="donationsTable">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- MATCHES -->
-
-    <section>
-
-        <h2>Donor Matches</h2>
-
-        <div id="matchesTable">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- HOSPITAL INVENTORY -->
-
-    <section>
-
-        <h2>Hospital Inventory</h2>
-
-        <div id="inventoryTable">
-
-            Loading inventory...
-
-        </div>
-
-    </section>
-
-
-    <!-- REPORTS -->
-
-    <section>
-
-        <h2>Reports</h2>
-
-        <div class="report-buttons">
-
-            <button id="downloadDonorReport">
-                Download Donor Report
-            </button>
-
-            <button id="downloadPatientReport">
-                Download Patient Report
-            </button>
-
-            <button id="downloadRequestReport">
-                Download Request Report
-            </button>
-
-            <button id="downloadDonationReport">
-                Download Donation Report
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- FOOTER -->
-
-    <footer>
-
-        AI Based Blood Donor Matching & Response Optimization System
-
-    </footer>
-
-</div>
-
-<script src="../src/js/admin-dashboard.js"></script>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="bn-toast-container" class="bn-toast-container"></div>
+
+    <div class="dashboard">
+
+        <!-- HEADER -->
+        <header>
+            <h1>
+                <i class="fa-solid fa-shield-virus" style="color: var(--bn-primary);"></i>
+                Central Command Matrix
+            </h1>
+
+            <div>
+                <button id="refreshBtn">
+                    <i class="fa-solid fa-rotate"></i> Refresh Telemetry
+                </button>
+
+                <button id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i> Terminate Session
+                </button>
+            </div>
+        </header>
+
+        <!-- QUICK JUMP DOCK -->
+        <nav class="admin-jump-dock">
+            <a href="#summarySection" class="jump-link"><i class="fa-solid fa-chart-pie"></i> Metrics</a>
+            <a href="#usersSection" class="jump-link"><i class="fa-solid fa-users"></i> Users</a>
+            <a href="#donorsSection" class="jump-link"><i class="fa-solid fa-hand-holding-droplet"></i> Donors</a>
+            <a href="#patientsSection" class="jump-link"><i class="fa-solid fa-bed-pulse"></i> Patients</a>
+            <a href="#requestsSection" class="jump-link"><i class="fa-solid fa-tower-broadcast"></i> Requests</a>
+            <a href="#donationsSection" class="jump-link"><i class="fa-solid fa-heart-circle-check"></i> Donations</a>
+            <a href="#matchesSection" class="jump-link"><i class="fa-solid fa-brain"></i> AI Matches</a>
+            <a href="#inventorySection" class="jump-link"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a>
+            <a href="#reportsSection" class="jump-link"><i class="fa-solid fa-file-export"></i> Reports</a>
+            <a href="analytics.html" class="jump-link" style="color: var(--bn-ai-cyan); border-color: rgba(6,182,212,0.4);"><i class="fa-solid fa-chart-line"></i> Deep Analytics</a>
+        </nav>
+
+        <!-- SUMMARY -->
+        <section id="summarySection">
+            <h2><i class="fa-solid fa-chart-simple" style="color: var(--bn-ai-cyan);"></i> System Telemetry Overview</h2>
+            <div id="summaryCards" class="summary-grid">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Polling telemetry nodes...
+                </div>
+            </div>
+        </section>
+
+        <!-- SEARCH -->
+        <section>
+            <h2><i class="fa-solid fa-magnifying-glass" style="color: var(--bn-ai-cyan);"></i> Live Identity Query</h2>
+            <input type="text"
+                   id="searchUser"
+                   placeholder="Instant search by user ID, full name, email address, or system role...">
+        </section>
+
+        <!-- USERS -->
+        <section id="usersSection">
+            <h2><i class="fa-solid fa-users-gear" style="color: #60A5FA;"></i> Registered User Accounts</h2>
+            <div id="usersTable">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Loading account registry...
+                </div>
+            </div>
+        </section>
+
+        <!-- DONORS -->
+        <section id="donorsSection">
+            <h2><i class="fa-solid fa-hand-holding-heart" style="color: var(--bn-primary);"></i> Verified Blood Donors</h2>
+            <div id="donorsTable">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Loading donor roster...
+                </div>
+            </div>
+        </section>
+
+        <!-- PATIENTS -->
+        <section id="patientsSection">
+            <h2><i class="fa-solid fa-user-injured" style="color: #F59E0B;"></i> Active Patient Registrations</h2>
+            <div id="patientsTable">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Loading patient profiles...
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOOD REQUESTS -->
+        <section id="requestsSection">
+            <h2><i class="fa-solid fa-bell-concierge" style="color: #EF4444;"></i> Real-Time Emergency Blood Requests</h2>
+            <div id="requestsTable">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Scanning broadcast dispatch...
+                </div>
+            </div>
+        </section>
+
+        <!-- DONATIONS -->
+        <section id="donationsSection">
+            <h2><i class="fa-solid fa-clipboard-check" style="color: #10B981;"></i> Fulfilled Donation Transactions</h2>
+            <div id="donationsTable">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Loading completed transactions...
+                </div>
+            </div>
+        </section>
+
+        <!-- MATCHES -->
+        <section id="matchesSection">
+            <h2><i class="fa-solid fa-network-wired" style="color: var(--bn-ai-cyan);"></i> AI Match Telemetry & Ranking Logs</h2>
+            <div id="matchesTable">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Loading matching algorithm scores...
+                </div>
+            </div>
+        </section>
+
+        <!-- HOSPITAL INVENTORY -->
+        <section id="inventorySection">
+            <h2><i class="fa-solid fa-hospital" style="color: #38BDF8;"></i> Central Hospital Reserve Matrix</h2>
+            <div id="inventoryTable">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Aggregating hospital depository data...
+                </div>
+            </div>
+        </section>
+
+        <!-- REPORTS -->
+        <section id="reportsSection">
+            <h2><i class="fa-solid fa-download" style="color: var(--bn-ai-cyan);"></i> Data Export & Compliance Audits</h2>
+            <div class="report-buttons">
+                <button id="downloadDonorReport">
+                    <i class="fa-solid fa-file-csv" style="color: var(--bn-primary);"></i> Export Donor Registry (CSV)
+                </button>
+
+                <button id="downloadPatientReport">
+                    <i class="fa-solid fa-file-csv" style="color: #F59E0B;"></i> Export Patient Registry (CSV)
+                </button>
+
+                <button id="downloadRequestReport">
+                    <i class="fa-solid fa-file-csv" style="color: #EF4444;"></i> Export Requests Log (CSV)
+                </button>
+
+                <button id="downloadDonationReport">
+                    <i class="fa-solid fa-file-csv" style="color: #10B981;"></i> Export Donations Log (CSV)
+                </button>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <i class="fa-solid fa-dna" style="color: var(--bn-primary); margin-right: 6px;"></i>
+            BloodNeed AI Central Control Matrix — High-Availability Emergency Infrastructure
+        </footer>
+
+    </div>
+
+    <!-- App Shell & Core Utilities -->
+    <script src="../src/assets/js/app-shell.js"></script>
+
+    <!-- Admin Dashboard JS -->
+    <script src="../src/js/admin-dashboard.js"></script>
 
 </body>
 

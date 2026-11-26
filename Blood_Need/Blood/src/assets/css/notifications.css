@@ -1,103 +1,229 @@
-* {
-    box-sizing: border-box;
-}
+/* ==========================================================================
+   NOTIFICATIONS STYLESHEET — Tactical Alert Dispatch Center
+   ========================================================================== */
+
+@import url("./design-system.css");
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
+  background-color: var(--bn-bg-base);
+  color: var(--bn-text-primary);
+  min-height: 100vh;
 }
 
 .container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
+  max-width: 1000px;
+  margin: 30px auto 80px auto;
+  padding: 0 20px;
 }
 
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding: 24px 30px;
+  background: var(--bn-bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-lg);
+  box-shadow: var(--bn-shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--bn-primary-gradient);
 }
 
 .header h1 {
-    margin: 0 0 5px;
-    color: #c62828;
+  font-size: 26px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.5px;
 }
 
 .header p {
-    margin: 0;
-    color: #666;
+  color: var(--bn-text-secondary);
+  font-size: 14px;
+  margin: 0;
 }
 
 .header button {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    background: #c62828;
-    color: white;
-    cursor: pointer;
+  padding: 10px 20px;
+  border-radius: var(--bn-radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bn-border-medium);
+  color: var(--bn-text-primary);
+  cursor: pointer;
+  font-family: var(--bn-font-heading);
+  font-size: 13.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--bn-transition-fast);
 }
 
 .header button:hover {
-    background: #a61f1f;
+  background: rgba(225, 29, 72, 0.15);
+  border-color: var(--bn-primary);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px var(--bn-primary-glow);
 }
 
+/* ==========================================================================
+   NOTIFICATION CARDS
+   ========================================================================== */
 .notification-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    background: white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-    border-left: 5px solid #aaa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 22px 26px;
+  margin-bottom: 16px;
+  border-radius: var(--bn-radius-md);
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-left: 4px solid var(--bn-border-medium);
+  box-shadow: var(--bn-shadow-sm);
+  transition: all var(--bn-transition-normal);
+}
+
+.notification-card:hover {
+  border-color: var(--bn-border-medium);
+  transform: translateX(4px);
+  box-shadow: var(--bn-shadow-md);
 }
 
 .notification-card.unread {
-    border-left-color: #c62828;
-    background: #fff8f8;
+  border-left-color: var(--bn-primary);
+  background: rgba(225, 29, 72, 0.04);
+  box-shadow: 0 4px 20px rgba(225, 29, 72, 0.08);
 }
 
 .notification-card.read {
-    opacity: 0.7;
+  opacity: 0.65;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 260px;
 }
 
 .notification-content h3 {
-    margin: 0 0 8px;
-    color: #c62828;
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
 }
 
 .notification-content p {
-    margin: 8px 0;
-    font-size: 16px;
+  margin: 6px 0 10px 0;
+  font-size: 14px;
+  color: var(--bn-text-secondary);
+  line-height: 1.5;
 }
 
 .notification-content small {
-    color: #777;
+  color: var(--bn-text-muted);
+  font-size: 12px;
 }
 
-.notification-card button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background: #c62828;
-    color: white;
-    cursor: pointer;
+/* ==========================================================================
+   BUTTONS & BADGES
+   ========================================================================== */
+.view-request-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--bn-primary-gradient);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--bn-radius-sm);
+  color: #FFFFFF;
+  font-family: var(--bn-font-heading);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  transition: all var(--bn-transition-fast);
+  box-shadow: 0 2px 10px var(--bn-primary-glow);
 }
 
-.notification-card button:hover {
-    background: #a61f1f;
+.view-request-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--bn-primary-glow);
 }
 
+.mark-read-btn {
+  padding: 8px 16px;
+  border-radius: var(--bn-radius-sm);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34D399;
+  font-family: var(--bn-font-heading);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.mark-read-btn:hover {
+  background: #10B981;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.read-label {
+  font-size: 12px;
+  color: var(--bn-text-muted);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   EMPTY / LOADING / ERROR STATES
+   ========================================================================== */
 .empty,
 .loading,
 .error {
-    text-align: center;
-    padding: 40px;
-    background: white;
-    border-radius: 10px;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  color: var(--bn-text-secondary);
+  font-size: 15px;
+}
+
+.error {
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .notification-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

@@ -1,222 +1,123 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Emergency Blood Request | BloodNeed AI Network</title>
 
-```
-<meta charset="UTF-8">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <!-- CSS System -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="../src/assets/css/request.css">
 
-<title>Create Blood Request</title>
-
-<link
-    rel="stylesheet"
-    href="../src/assets/css/common.css"
->
-
-<link
-    rel="stylesheet"
-    href="../src/assets/css/request.css"
->
-
-<!-- Leaflet Map CSS -->
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
->
-```
-
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 
 <body>
+    <!-- Lightweight Preloader -->
+    <div id="bnPreloader">
+        <div class="bn-preloader-content">
+            <div class="bn-preloader-emblem">
+                <div class="bn-preloader-ring"></div>
+                <div class="bn-preloader-drop">🩸</div>
+            </div>
+            <div class="bn-preloader-title">Blood<span>Need</span></div>
+            <div class="bn-preloader-subtitle">Emergency Request</div>
+        </div>
+    </div>
 
-```
-<main class="request-page">
+    <main class="request-page">
+        <section class="request-card">
+            <h1><i class="fas fa-hand-holding-droplet"></i> Create Blood Request</h1>
+            <p>Submit emergency transfusion parameters for automated AI donor dispatch</p>
 
-    <section class="request-card">
+            <form id="requestForm">
+                <label for="blood_group"><i class="fas fa-droplet"></i> Required Blood Group</label>
+                <select id="blood_group" required>
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+ (A Positive)</option>
+                    <option value="A-">A- (A Negative)</option>
+                    <option value="B+">B+ (B Positive)</option>
+                    <option value="B-">B- (B Negative)</option>
+                    <option value="AB+">AB+ (AB Positive)</option>
+                    <option value="AB-">AB- (AB Negative)</option>
+                    <option value="O+">O+ (O Positive)</option>
+                    <option value="O-">O- (O Negative)</option>
+                </select>
 
-        <h1>Create Blood Request</h1>
+                <label for="units_needed"><i class="fas fa-cubes"></i> Units Needed</label>
+                <input
+                    type="number"
+                    id="units_needed"
+                    min="1"
+                    value="1"
+                    placeholder="Number of blood units"
+                    required
+                >
 
-        <p>
-            Enter the details to request blood.
-        </p>
+                <label for="emergency_level"><i class="fas fa-triangle-exclamation"></i> Emergency Priority Level</label>
+                <select id="emergency_level" required>
+                    <option value="">Select Emergency Level</option>
+                    <option value="LOW">Low — Scheduled surgery / within 24 hours</option>
+                    <option value="MEDIUM">Medium — Needed within 12 hours</option>
+                    <option value="HIGH">High — Needed within 4 hours</option>
+                    <option value="CRITICAL">Critical — Immediate transfusion / under 1 hour</option>
+                </select>
 
-        <form id="requestForm">
+                <label for="hospital_name"><i class="fas fa-hospital"></i> Hospital / Medical Center Name</label>
+                <input
+                    type="text"
+                    id="hospital_name"
+                    placeholder="e.g. St. Jude Memorial Hospital"
+                    required
+                >
 
-            <label>
-                Blood Group
-            </label>
+                <!-- LOCATION MAP -->
+                <label><i class="fas fa-map-location-dot"></i> Select Hospital Location on Map</label>
+                <p class="map-help-text">
+                    <i class="fas fa-circle-info"></i> Click anywhere on the map to pin the hospital receiving coordinates.
+                </p>
 
-            <select
-                id="blood_group"
-                required
-            >
+                <div id="hospitalMap"></div>
 
-                <option value="">
-                    Select Blood Group
-                </option>
+                <!-- Hidden coordinate fields consumed by JS -->
+                <input type="hidden" id="hospital_latitude" required>
+                <input type="hidden" id="hospital_longitude" required>
 
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
+                <p id="selectedLocation" class="selected-location">
+                    Please click on the map to place the hospital pin.
+                </p>
 
-            </select>
+                <label for="notes"><i class="fas fa-notes-medical"></i> Clinical Notes & Special Instructions</label>
+                <textarea
+                    id="notes"
+                    rows="3"
+                    placeholder="Doctor contact, specific ward number, patient condition..."
+                ></textarea>
 
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i> Dispatch AI Blood Request
+                </button>
 
-            <label>
-                Units Needed
-            </label>
+                <p id="requestMessage"></p>
+            </form>
 
-            <input
-                type="number"
-                id="units_needed"
-                min="1"
-                value="1"
-                required
-            >
-
-
-            <label>
-                Emergency Level
-            </label>
-
-            <select
-                id="emergency_level"
-                required
-            >
-
-                <option value="">
-                    Select Emergency Level
-                </option>
-
-                <option value="LOW">
-                    Low
-                </option>
-
-                <option value="MEDIUM">
-                    Medium
-                </option>
-
-                <option value="HIGH">
-                    High
-                </option>
-
-                <option value="CRITICAL">
-                    Critical
-                </option>
-
-            </select>
-
-
-            <label>
-                Hospital Name
-            </label>
-
-            <input
-                type="text"
-                id="hospital_name"
-                required
-            >
-
-
-            <!-- =============================== -->
-            <!-- LOCATION MAP -->
-            <!-- =============================== -->
-
-            <label>
-                Select Hospital Location
-            </label>
-
-            <p class="map-help-text">
-
-                Click on the map to select the hospital location.
-
-            </p>
-
-
-            <div
-                id="hospitalMap"
-            ></div>
-
-
-            <!-- Hidden coordinate fields -->
-
-            <input
-                type="hidden"
-                id="hospital_latitude"
-                required
-            >
-
-
-            <input
-                type="hidden"
-                id="hospital_longitude"
-                required
-            >
-
-
-            <p
-                id="selectedLocation"
-                class="selected-location"
-            >
-
-                Please select the hospital location on the map.
-
-            </p>
-
-
-            <label>
-                Notes
-            </label>
-
-            <textarea
-                id="notes"
-                rows="4"
-            ></textarea>
-
-
-            <button
-                type="submit"
-            >
-
-                Submit Blood Request
-
+            <button type="button" onclick="window.location.href='patient-dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Return to Patient Dashboard
             </button>
+        </section>
+    </main>
 
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-            <p
-                id="requestMessage"
-            ></p>
-
-        </form>
-
-    </section>
-
-</main>
-
-
-<!-- Leaflet Map JS -->
-
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-></script>
-
-
-<script
-    src="../src/js/request-blood.js"
-></script>
-```
-
+    <!-- App Shell & Custom JS -->
+    <script src="../src/assets/js/app-shell.js"></script>
+    <script src="../src/js/request-blood.js"></script>
 </body>
 
 </html>

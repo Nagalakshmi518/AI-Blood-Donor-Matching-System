@@ -2,787 +2,295 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Donor Matching Map</title>
-
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    >
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-
-            margin: 0;
-
-            font-family: Arial, sans-serif;
-
-            background: #f5f6f8;
-
-        }
-
-        .map-page {
-
-            max-width: 1200px;
-
-            margin: auto;
-
-            padding: 20px;
-
-        }
-
-        .map-header {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 18px;
-
-        }
-
-        .map-header h1 {
-
-            margin: 0;
-
-            color: #b91c1c;
-
-            font-size: 28px;
-
-        }
-
-        .back-button {
-
-            padding: 10px 18px;
-
-            border: none;
-
-            border-radius: 7px;
-
-            background: #b91c1c;
-
-            color: white;
-
-            cursor: pointer;
-
-            font-size: 14px;
-
-        }
-
-        .back-button:hover {
-
-            background: #991b1b;
-
-        }
-
-        .request-info {
-
-            background: white;
-
-            padding: 18px 20px;
-
-            border-radius: 10px;
-
-            margin-bottom: 18px;
-
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-
-        }
-
-        .request-info h2 {
-
-            margin-top: 0;
-
-            margin-bottom: 12px;
-
-            color: #333;
-
-        }
-
-        .request-summary {
-
-            display: grid;
-
-            grid-template-columns: repeat(
-                auto-fit,
-                minmax(160px, 1fr)
-            );
-
-            gap: 12px;
-
-        }
-
-        .summary-item {
-
-            padding: 12px;
-
-            border-radius: 8px;
-
-            background: #f8f8f8;
-
-        }
-
-        .summary-item strong {
-
-            display: block;
-
-            color: #666;
-
-            font-size: 13px;
-
-            margin-bottom: 5px;
-
-        }
-
-        .summary-item span {
-
-            font-weight: bold;
-
-            color: #333;
-
-        }
-
-        #donorMap {
-
-            width: 100%;
-
-            height: 450px;
-
-            border-radius: 12px;
-
-            overflow: hidden;
-
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
-
-        }
-
-        .legend {
-
-            background: white;
-
-            padding: 14px 18px;
-
-            margin-top: 15px;
-
-            border-radius: 10px;
-
-            display: flex;
-
-            gap: 25px;
-
-            flex-wrap: wrap;
-
-        }
-
-        .legend-item {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            font-size: 14px;
-
-        }
-
-        .legend-marker {
-
-            width: 14px;
-
-            height: 14px;
-
-            border-radius: 50%;
-
-        }
-
-        .hospital-marker {
-
-            background: #2563eb;
-
-        }
-
-        .donor-marker {
-
-            background: #16a34a;
-
-        }
-
-        .error-message {
-
-            color: #b91c1c;
-
-            font-weight: bold;
-
-        }
-
-        @media (max-width: 600px) {
-
-            .map-page {
-
-                padding: 12px;
-
-            }
-
-            .map-header h1 {
-
-                font-size: 22px;
-
-            }
-
-            #donorMap {
-
-                height: 380px;
-
-            }
-
-        }
-
-    </style>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Donor Radar & Tactical Map — BloodNeed</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Design System & Map CSS -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="../src/assets/css/common.css">
+    <link rel="stylesheet" href="../src/assets/css/donor-map.css">
 </head>
-
 
 <body>
 
+    <!-- ======================================================================
+         LIGHTWEIGHT AI PRELOADER
+         ====================================================================== -->
+    <div id="bn-preloader" class="bn-preloader">
+        <div class="bn-preloader-content">
+            <div class="bn-blood-pulse">
+                <div class="bn-pulse-ring"></div>
+                <div class="bn-pulse-ring-outer"></div>
+                <div class="bn-drop-core">
+                    <i class="fa-solid fa-crosshairs"></i>
+                </div>
+            </div>
+            <div class="bn-preloader-brand">Blood<span>Need</span></div>
+            <div class="bn-preloader-text">Calibrating Geospatial Radar...</div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="bn-toast-container" class="bn-toast-container"></div>
 
     <main class="map-page">
 
-
         <header class="map-header">
-
             <h1>
-                🗺️ Donor Matching Map
+                <i class="fa-solid fa-map-location-dot" style="color: var(--bn-ai-cyan);"></i>
+                AI Donor Dispatch Radar
             </h1>
 
-
-            <button
-                class="back-button"
-                onclick="history.back()"
-            >
-
-                ← Back
-
+            <button class="back-button" onclick="history.back()">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
             </button>
-
         </header>
 
-
-        <section
-            id="requestInfo"
-            class="request-info"
-        >
-
-            Loading request details...
-
+        <section id="requestInfo" class="request-info">
+            <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                <i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 8px;"></i> Loading emergency dispatch telemetry...
+            </div>
         </section>
 
-
-        <div
-            id="donorMap"
-        ></div>
-
+        <div id="donorMap"></div>
 
         <div class="legend">
-
-
             <div class="legend-item">
-
-                <span
-                    class="legend-marker hospital-marker"
-                ></span>
-
-                🏥 Hospital
-
+                <span class="legend-marker hospital-marker"></span>
+                <span><i class="fa-solid fa-hospital" style="color: #EF4444; margin-right: 4px;"></i> Emergency Hospital Hub</span>
             </div>
 
-
             <div class="legend-item">
-
-                <span
-                    class="legend-marker donor-marker"
-                ></span>
-
-                🩸 Matched Donor
-
+                <span class="legend-marker donor-marker"></span>
+                <span><i class="fa-solid fa-user-shield" style="color: #10B981; margin-right: 4px;"></i> Top Ranked Primary Donor</span>
             </div>
 
-
+            <div class="legend-item">
+                <span class="legend-marker" style="background: #3B82F6; color: #3B82F6;"></span>
+                <span><i class="fa-solid fa-user-check" style="color: #3B82F6; margin-right: 4px;"></i> Secondary Standby Donors</span>
+            </div>
         </div>
-
 
     </main>
 
+    <!-- App Shell & Core Utilities -->
+    <script src="../src/assets/js/app-shell.js"></script>
 
-    <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    ></script>
-
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+        const RENDER_FALLBACK_URL = "https://ai-blood-donor-matching-system.onrender.com";
 
-
-       const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
-
-        const token =
-            localStorage.getItem("token");
-
-
-        const requestId =
-            localStorage.getItem(
-                "selected_request_id"
-            );
-
-
-        const requestInfo =
-            document.getElementById(
-                "requestInfo"
-            );
-
-
-        if (!token || !requestId) {
-
-            window.location.href =
-                "login.html";
-
+        function resolveApiUrl() {
+            if (
+                window.location.hostname === "localhost" ||
+                window.location.hostname === "127.0.0.1"
+            ) {
+                if (window.location.port === "5000") {
+                    return window.location.origin;
+                }
+                return "http://127.0.0.1:5000";
+            }
+            if (window.location.origin.includes("onrender.com")) {
+                return window.location.origin;
+            }
+            return RENDER_FALLBACK_URL;
         }
 
+        const API_URL = resolveApiUrl();
+        const token = localStorage.getItem("token");
+        const requestId = localStorage.getItem("selected_request_id");
+        const requestInfo = document.getElementById("requestInfo");
+
+        if (!token || !requestId) {
+            window.location.href = "login.html";
+        }
 
         async function loadMap() {
-
             try {
+                const response = await fetch(`${API_URL}/api/patients/requests`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-                const response =
-                    await fetch(
-
-                        `${API_URL}/api/patients/requests`,
-
-                        {
-
-                            method: "GET",
-
-                            headers: {
-
-                                Authorization:
-                                    `Bearer ${token}`
-
-                            }
-
-                        }
-
-                    );
-
-
-                const requests =
-                    await response.json();
-
+                const requests = await response.json();
 
                 if (!response.ok) {
-
-                    throw new Error(
-
-                        requests.message ||
-
-                        "Failed to load requests"
-
-                    );
-
+                    throw new Error(requests.message || "Failed to load requests");
                 }
 
-
-                const bloodRequest =
-                    requests.find(
-
-                        (item) =>
-
-                            String(
-                                item.request_id
-                            ) ===
-
-                            String(
-                                requestId
-                            )
-
-                    );
-
+                const bloodRequest = requests.find(
+                    (item) => String(item.request_id) === String(requestId)
+                );
 
                 if (!bloodRequest) {
-
-                    throw new Error(
-
-                        "Blood request not found"
-
-                    );
-
+                    throw new Error("Emergency blood request record not found");
                 }
 
+                const donors = bloodRequest.matched_donors || [];
+                const validDonors = donors.filter(
+                    (donor) => donor.latitude !== null && donor.longitude !== null
+                );
 
-                const donors =
-                    bloodRequest.matched_donors || [];
-
-
-                const validDonors =
-                    donors.filter(
-
-                        (donor) =>
-
-                            donor.latitude !== null &&
-
-                            donor.longitude !== null
-
-                    );
-
+                const emergencyBadgeColor = 
+                    bloodRequest.emergency_level === "CRITICAL" ? "#EF4444" :
+                    bloodRequest.emergency_level === "HIGH" ? "#F97316" :
+                    bloodRequest.emergency_level === "MEDIUM" ? "#38BDF8" : "#10B981";
 
                 requestInfo.innerHTML = `
-
                     <h2>
-
-                        Request #${bloodRequest.request_id}
-
+                        <i class="fa-solid fa-file-medical" style="color: var(--bn-primary);"></i>
+                        Emergency Request #${bloodRequest.request_id} Overview
                     </h2>
 
-
-                    <div
-                        class="request-summary"
-                    >
-
-                        <div
-                            class="summary-item"
-                        >
-
-                            <strong>
-                               🩸 Blood Group
-                            </strong>
-
-                            <span>
-                                ${bloodRequest.blood_group}
-                            </span>
-
+                    <div class="request-summary">
+                        <div class="summary-item">
+                            <strong><i class="fa-solid fa-droplet" style="color: var(--bn-primary);"></i> Blood Group</strong>
+                            <span class="bn-blood-badge" style="display: inline-block; margin-top: 4px;">${bloodRequest.blood_group}</span>
                         </div>
 
-
-                        <div
-                            class="summary-item"
-                        >
-
-                            <strong>
-                                🏥 Hospital
-                            </strong>
-
-                            <span>
-                                ${bloodRequest.hospital_name}
-                            </span>
-
+                        <div class="summary-item">
+                            <strong><i class="fa-solid fa-hospital" style="color: #38BDF8;"></i> Hospital Facility</strong>
+                            <span>${bloodRequest.hospital_name || "Emergency Center"}</span>
                         </div>
 
-
-                        <div
-                            class="summary-item"
-                        >
-
-                            <strong>
-                              🚨 Emergency
-                            </strong>
-
-                            <span>
-                                ${bloodRequest.emergency_level}
-                            </span>
-
+                        <div class="summary-item">
+                            <strong><i class="fa-solid fa-triangle-exclamation" style="color: ${emergencyBadgeColor};"></i> Priority Level</strong>
+                            <span style="color: ${emergencyBadgeColor};">${bloodRequest.emergency_level}</span>
                         </div>
 
-
-                        <div
-                            class="summary-item"
-                        >
-
-                            <strong>
-                               👥 Total Matched Donors
-                            </strong>
-
-                            <span>
-                                ${donors.length}
-                            </span>
-
+                        <div class="summary-item">
+                            <strong><i class="fa-solid fa-users" style="color: #10B981;"></i> Matched Responders</strong>
+                            <span>${donors.length} Verified Donors</span>
                         </div>
-
-
                     </div>
-
                 `;
 
-
-                const hospitalLat =
-                    Number(
-                        bloodRequest.hospital_latitude
-                    );
-
-
-                const hospitalLng =
-                    Number(
-                        bloodRequest.hospital_longitude
-                    );
-
-
-                const hasHospitalLocation =
-                    Number.isFinite(hospitalLat) &&
-
-                    Number.isFinite(hospitalLng);
-
+                const hospitalLat = Number(bloodRequest.hospital_latitude);
+                const hospitalLng = Number(bloodRequest.hospital_longitude);
+                const hasHospitalLocation = Number.isFinite(hospitalLat) && Number.isFinite(hospitalLng);
 
                 let mapCenter;
-
-
                 if (hasHospitalLocation) {
-
-                    mapCenter = [
-
-                        hospitalLat,
-
-                        hospitalLng
-
-                    ];
-
+                    mapCenter = [hospitalLat, hospitalLng];
+                } else if (validDonors.length > 0) {
+                    mapCenter = [validDonors[0].latitude, validDonors[0].longitude];
+                } else {
+                    mapCenter = [16.3067, 80.4365];
                 }
 
-                else if (validDonors.length > 0) {
+                const map = L.map("donorMap").setView(mapCenter, 12);
 
-                    mapCenter = [
-
-                        validDonors[0].latitude,
-
-                        validDonors[0].longitude
-
-                    ];
-
-                }
-
-                else {
-
-                    mapCenter = [
-
-                        16.3067,
-
-                        80.4365
-
-                    ];
-
-                }
-
-
-                const map =
-                    L.map(
-
-                        "donorMap"
-
-                    ).setView(
-
-                        mapCenter,
-
-                        12
-
-                    );
-
-
-                L.tileLayer(
-
-                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-
-                    {
-
-                        attribution:
-
-                            "&copy; OpenStreetMap contributors"
-
-                    }
-
-                ).addTo(map);
-
+                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    attribution: "&copy; OpenStreetMap contributors"
+                }).addTo(map);
 
                 const markerLocations = [];
 
-
                 if (hasHospitalLocation) {
+                    const hospitalIcon = L.icon({
+                        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+                        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41]
+                    });
 
-
-                   const hospitalIcon = L.icon({
-
-    iconUrl:
-        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-
-    shadowUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-
-    iconSize: [25,41],
-
-    iconAnchor: [12,41]
-
-});
-
-const hospitalMarker =
-    L.marker(
-
-        [
-
-            hospitalLat,
-
-            hospitalLng
-
-        ],
-
-        {
-
-            icon: hospitalIcon
-
-        }
-
-    ).addTo(map);
-
+                    const hospitalMarker = L.marker([hospitalLat, hospitalLng], {
+                        icon: hospitalIcon
+                    }).addTo(map);
 
                     hospitalMarker.bindPopup(`
-
-                        <strong>
-                            🏥 Hospital
-                        </strong>
-
+                        <b>🏥 Destination Hospital</b>
                         <br>
+                        <strong>${bloodRequest.hospital_name}</strong>
+                        <br>
+                        Units Requested: ${bloodRequest.units_needed || 1}
+                    `).openPopup();
 
-                        ${bloodRequest.hospital_name}
-
-                    `);
-
-
-                    markerLocations.push(
-
-                        [
-
-                            hospitalLat,
-
-                            hospitalLng
-
-                        ]
-
-                    );
-                   
-
-
+                    markerLocations.push([hospitalLat, hospitalLng]);
                 }
 
-
-                const donorIcon = L.icon({
-
-    iconUrl:
-        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
-
-    shadowUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-
-    iconSize: [25,41],
-
-    iconAnchor: [12,41]
-
-});
-
-
-
                 validDonors.forEach((donor, index) => {
+                    const latitude = Number(donor.latitude);
+                    const longitude = Number(donor.longitude);
 
-    const latitude = Number(donor.latitude);
-    const longitude = Number(donor.longitude);
+                    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+                        console.warn("Skipping donor with invalid location:", donor);
+                        return;
+                    }
 
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-        console.warn("Skipping donor with invalid location:", donor);
-        return;
-    }
+                    const isTopMatch = index === 0;
+                    const donorIcon = L.icon({
+                        iconUrl: isTopMatch
+                            ? "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png"
+                            : "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+                        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41]
+                    });
 
-    const donorIcon = L.icon({
+                    const donorMarker = L.marker([donor.latitude, donor.longitude], {
+                        icon: donorIcon
+                    }).addTo(map);
 
-        iconUrl:
-            index === 0
-                ? "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png"
-                : "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+                    donorMarker.bindPopup(`
+                        <b>🩸 Donor #${donor.donor_id} ${isTopMatch ? '<span style="color:#10B981;">(Top AI Match)</span>' : ''}</b>
+                        <br><br>
+                        <strong>Blood Group:</strong> ${donor.blood_group}
+                        <br>
+                        <strong>Distance:</strong> ${donor.distance_km != null ? Number(donor.distance_km).toFixed(2) : "N/A"} km
+                        <br>
+                        <strong>AI Ranking Score:</strong> ${donor.ranking_score || "N/A"}
+                        <br>
+                        <strong>Status:</strong> ${donor.donor_response || "Pending"}
+                    `);
 
-        shadowUrl:
-            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+                    if (hasHospitalLocation) {
+                        L.polyline(
+                            [
+                                [hospitalLat, hospitalLng],
+                                [donor.latitude, donor.longitude]
+                            ],
+                            {
+                                color: isTopMatch ? "#10B981" : "#3B82F6",
+                                weight: isTopMatch ? 4 : 2,
+                                opacity: 0.8,
+                                dashArray: isTopMatch ? null : "6, 8"
+                            }
+                        ).addTo(map);
+                    }
 
-        iconSize: [25, 41],
+                    markerLocations.push([donor.latitude, donor.longitude]);
+                });
 
-        iconAnchor: [12, 41]
+                if (markerLocations.length > 0) {
+                    const bounds = L.latLngBounds(markerLocations);
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                }
 
-    });
-
-    const donorMarker = L.marker(
-        [
-            donor.latitude,
-            donor.longitude
-        ],
-        {
-            icon: donorIcon
-        }
-    ).addTo(map);
-
-    donorMarker.bindPopup(`
-        <b>🩸 Donor #${donor.donor_id}</b>
-        <br><br>
-        Blood Group : ${donor.blood_group}
-        <br>
-        Distance : ${Number(donor.distance_km).toFixed(2)} km
-        <br>
-        Ranking Score : ${donor.ranking_score}
-        <br>
-        Response : ${donor.donor_response}
-    `);
-
-    if (hasHospitalLocation) {
-
-        L.polyline(
-            [
-                [hospitalLat, hospitalLng],
-                [donor.latitude, donor.longitude]
-            ],
-            {
-                color: index === 0 ? "green" : "blue",
-                weight: 4,
-                opacity: 0.7
+            } catch (error) {
+                requestInfo.innerHTML = `<div class="error-message"><i class="fa-solid fa-triangle-exclamation"></i> Error: ${error.message}</div>`;
+                console.error(error);
             }
-        ).addTo(map);
-
-    }
-
-    markerLocations.push([
-        donor.latitude,
-        donor.longitude
-    ]);
-
-});
-
-            if (markerLocations.length > 0) {
-                const bounds = L.latLngBounds(markerLocations);
-                map.fitBounds(bounds, { padding: [50, 50] });
-            }
-
-        } catch (error) {
-            requestInfo.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-            console.error(error);
         }
-    }
 
-    // Initialize map
-    loadMap();
-
+        // Initialize tactical map
+        loadMap();
     </script>
 
 </body>

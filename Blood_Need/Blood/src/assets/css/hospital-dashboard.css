@@ -1,503 +1,504 @@
-/* =========================================
-   HOSPITAL DASHBOARD - BLOODNEED
-========================================= */
+/* ==========================================================================
+   HOSPITAL DASHBOARD STYLESHEET — Clinical Tech & Inventory Control
+   ========================================================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+@import url("./design-system.css");
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
-    color: #1f2937;
+  background-color: var(--bn-bg-base);
+  color: var(--bn-text-primary);
+  min-height: 100vh;
 }
 
-
-/* =========================================
+/* ==========================================================================
    DASHBOARD LAYOUT
-========================================= */
-
+   ========================================================================== */
 .dashboard-layout {
-    display: flex;
-    min-height: 100vh;
+  display: flex;
+  min-height: 100vh;
 }
 
-
-/* =========================================
+/* ==========================================================================
    SIDEBAR
-========================================= */
-
+   ========================================================================== */
 .sidebar {
-    width: 250px;
-    min-height: 100vh;
-    background: linear-gradient(180deg, #b91c1c, #7f1d1d);
-    color: white;
-    padding: 30px 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
+  width: 260px;
+  min-height: 100vh;
+  background: var(--bn-bg-surface);
+  border-right: 1px solid var(--bn-border-subtle);
+  color: var(--bn-text-primary);
+  padding: 30px 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-logo {
-    font-size: 25px;
-    font-weight: bold;
-    margin-bottom: 8px;
+  font-family: var(--bn-font-heading);
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-logo span {
+  color: var(--bn-primary);
 }
 
 .sidebar-role {
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    opacity: 0.75;
-    margin-bottom: 40px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--bn-ai-cyan);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  padding-left: 2px;
 }
 
-
-/* =========================================
+/* ==========================================================================
    SIDEBAR NAVIGATION
-========================================= */
-
+   ========================================================================== */
 .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .nav-link {
-    color: white;
-    text-decoration: none;
-    padding: 14px 16px;
-    border-radius: 10px;
-    font-size: 16px;
-    transition: 0.3s;
+  color: var(--bn-text-secondary);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: var(--bn-radius-sm);
+  font-family: var(--bn-font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  transition: all var(--bn-transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid transparent;
 }
 
 .nav-link:hover {
-    background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+  border-color: var(--bn-border-subtle);
 }
 
 .nav-link.active {
-    background: white;
-    color: #b91c1c;
-    font-weight: bold;
+  background: rgba(225, 29, 72, 0.12);
+  color: #FB7185;
+  border-color: rgba(225, 29, 72, 0.35);
+  font-weight: 700;
+  box-shadow: 0 0 15px rgba(225, 29, 72, 0.1);
 }
 
+#logoutBtn {
+  margin-top: auto;
+  color: #F87171;
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.06);
+}
 
-/* =========================================
+#logoutBtn:hover {
+  background: #EF4444;
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+}
+
+/* ==========================================================================
    MAIN CONTENT
-========================================= */
-
+   ========================================================================== */
 .main-content {
-    margin-left: 250px;
-    width: calc(100% - 250px);
-    padding: 35px 45px;
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  padding: 36px 44px 80px 44px;
 }
 
-
-/* =========================================
+/* ==========================================================================
    DASHBOARD HEADER
-========================================= */
-
+   ========================================================================== */
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 24px 30px;
+  background: var(--bn-bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-lg);
+  box-shadow: var(--bn-shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--bn-primary-gradient);
 }
 
 .dashboard-header h1 {
-    font-size: 32px;
-    margin-bottom: 8px;
-    color: #111827;
+  font-size: 26px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
 }
 
 .dashboard-header p {
-    color: #6b7280;
-    font-size: 16px;
+  color: var(--bn-text-secondary);
+  font-size: 14px;
+  margin: 0;
 }
 
-
-/* =========================================
-   HOSPITAL STATUS
-========================================= */
-
+/* HOSPITAL STATUS PILL */
 .hospital-status {
-    background: #dcfce7;
-    color: #15803d;
-    padding: 10px 16px;
-    border-radius: 25px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34D399;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .status-dot {
-    width: 9px;
-    height: 9px;
-    background: #22c55e;
-    border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  background: #10B981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #10B981;
 }
 
-
-/* =========================================
+/* ==========================================================================
    DASHBOARD SECTIONS
-========================================= */
-
+   ========================================================================== */
 .dashboard-section {
-    margin-bottom: 32px;
+  margin-bottom: 32px;
 }
 
 .dashboard-section > h2 {
-    font-size: 23px;
-    margin-bottom: 18px;
-    color: #1f2937;
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
 }
 
-
-/* =========================================
+/* ==========================================================================
    HOSPITAL PROFILE
-========================================= */
-
+   ========================================================================== */
 .profile-card {
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 24px 28px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  box-shadow: var(--bn-shadow-md);
 }
 
 .profile-item {
-    background: #f9fafb;
-    padding: 16px;
-    border-radius: 10px;
-    border: 1px solid #eef0f3;
+  background: var(--bn-bg-surface-elevated);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-sm);
+  padding: 14px 18px;
+  transition: all var(--bn-transition-fast);
+}
+
+.profile-item:hover {
+  border-color: rgba(6, 182, 212, 0.3);
 }
 
 .profile-item span {
-    display: block;
-    color: #6b7280;
-    font-size: 13px;
-    margin-bottom: 7px;
+  display: block;
+  color: var(--bn-text-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
 }
 
 .profile-item strong {
-    font-size: 16px;
-    color: #1f2937;
+  font-size: 15px;
+  color: #FFFFFF;
 }
 
 .full-width {
-    grid-column: span 2;
+  grid-column: span 2;
 }
 
-
-/* =========================================
-   INVENTORY STATS
-========================================= */
-
+/* ==========================================================================
+   INVENTORY STATS CARDS (3-Grid)
+   ========================================================================== */
 .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
 }
 
 .stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-    transition: 0.25s;
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 24px;
+  text-align: center;
+  box-shadow: var(--bn-shadow-md);
+  transition: all var(--bn-transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--bn-primary-gradient);
 }
 
 .stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  border-color: rgba(225, 29, 72, 0.4);
+  box-shadow: var(--bn-shadow-lg), 0 0 20px var(--bn-primary-glow);
 }
 
 .stat-label {
-    color: #6b7280;
-    font-size: 15px;
+  color: var(--bn-text-muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
 .stat-card h2 {
-    margin-top: 10px;
-    font-size: 32px;
-    color: #b91c1c;
-}
-/* =========================================
-   NOTIFICATIONS
-========================================= */
-
-.notifications-section {
-    margin-top: 32px;
+  margin-top: 10px;
+  margin-bottom: 0;
+  font-family: var(--bn-font-heading);
+  font-size: 34px;
+  font-weight: 800;
+  color: #FFFFFF;
 }
 
-.notifications-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.notification-card {
-    background: white;
-    border-radius: 14px;
-    padding: 18px 20px;
-    border-left: 5px solid #b91c1c;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-    transition: 0.25s;
-}
-
-.notification-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.10);
-}
-
-.notification-card.unread {
-    background: #fff7f7;
-}
-
-.notification-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.notification-title {
-    font-size: 17px;
-    font-weight: bold;
-    color: #991b1b;
-}
-
-.notification-time {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.notification-message {
-    color: #374151;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.no-notifications {
-    background: white;
-    padding: 25px;
-    border-radius: 14px;
-    text-align: center;
-    color: #6b7280;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-}
-
-/* =========================================
-   INVENTORY ACTIONS
-========================================= */
-
+/* ==========================================================================
+   INVENTORY ACTION CARDS
+   ========================================================================== */
 .inventory-actions {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
 }
 
 .action-card {
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 26px 28px;
+  box-shadow: var(--bn-shadow-md);
 }
 
 .action-card h3 {
-    margin-bottom: 20px;
-    font-size: 19px;
-    color: #1f2937;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-
-
-/* =========================================
-   INPUTS
-========================================= */
 
 .action-card select,
 .action-card input {
-    width: 100%;
-    padding: 13px 14px;
-    margin-bottom: 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 9px;
-    font-size: 15px;
-    background: white;
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--bn-border-medium);
+  border-radius: var(--bn-radius-sm);
+  font-size: 14px;
+  background: var(--bn-bg-surface-elevated);
+  color: #FFFFFF;
+  outline: none;
+  transition: all var(--bn-transition-fast);
 }
 
 .action-card select:focus,
 .action-card input:focus {
-    outline: none;
-    border-color: #b91c1c;
-    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1);
+  border-color: var(--bn-primary);
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
 }
 
-
-/* =========================================
-   BUTTONS
-========================================= */
-
 .action-card button {
-    width: 100%;
-    padding: 13px;
-    border: none;
-    border-radius: 9px;
-    background: #b91c1c;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.25s;
+  width: 100%;
+  padding: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--bn-radius-sm);
+  background: var(--bn-primary-gradient);
+  color: #FFFFFF;
+  font-family: var(--bn-font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+  box-shadow: 0 4px 14px var(--bn-primary-glow);
 }
 
 .action-card button:hover {
-    background: #991b1b;
-    transform: translateY(-2px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px var(--bn-primary-glow);
 }
 
-/* Use button different color */
-
 #useUnitsBtn {
-    background: #374151;
+  background: linear-gradient(135deg, #374151 0%, #1F2937 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
 #useUnitsBtn:hover {
-    background: #111827;
+  background: linear-gradient(135deg, #4B5563 0%, #374151 100%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
-
-/* =========================================
+/* ==========================================================================
    INVENTORY TABLE
-========================================= */
-
+   ========================================================================== */
 .table-container {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    overflow-x: auto;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 16px 20px;
+  overflow-x: auto;
+  box-shadow: var(--bn-shadow-md);
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 thead {
-    background: #f9fafb;
+  background: var(--bn-bg-surface-elevated);
 }
 
 th {
-    text-align: left;
-    padding: 15px;
-    color: #4b5563;
-    font-size: 14px;
-    font-weight: 600;
+  text-align: left;
+  padding: 14px 16px;
+  color: var(--bn-text-muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid var(--bn-border-medium);
 }
 
 td {
-    padding: 16px 15px;
-    border-top: 1px solid #eef0f3;
-    color: #374151;
+  padding: 16px;
+  border-bottom: 1px solid var(--bn-border-subtle);
+  color: var(--bn-text-secondary);
+  font-size: 14px;
 }
 
 tbody tr {
-    transition: 0.2s;
+  transition: background-color var(--bn-transition-fast);
 }
 
 tbody tr:hover {
-    background: #f9fafb;
+  background: rgba(255, 255, 255, 0.03);
 }
 
+tbody tr:last-child td {
+  border-bottom: none;
+}
 
-/* =========================================
-   INVENTORY STATUS
-========================================= */
-
+/* ==========================================================================
+   INVENTORY STATUS BADGES
+   ========================================================================== */
 .inventory-status {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: bold;
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .inventory-status.success {
-    background: #dcfce7;
-    color: #15803d;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34D399;
 }
 
 .inventory-status.warning {
-    background: #fef3c7;
-    color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #FBBF24;
 }
 
 .inventory-status.danger {
-    background: #fee2e2;
-    color: #dc2626;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #F87171;
 }
 
-
-/* =========================================
+/* ==========================================================================
    RESPONSIVE DESIGN
-========================================= */
-
-@media (max-width: 1000px) {
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .inventory-actions {
-        grid-template-columns: 1fr;
-    }
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .inventory-actions {
+    grid-template-columns: 1fr;
+  }
 }
-
 
 @media (max-width: 768px) {
-
-    .sidebar {
-        width: 210px;
-    }
-
-    .main-content {
-        margin-left: 210px;
-        width: calc(100% - 210px);
-        padding: 25px 20px;
-    }
-
-    .profile-card {
-        grid-template-columns: 1fr;
-    }
-
-    .full-width {
-        grid-column: span 1;
-    }
-
-    .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-}
-
-
-@media (max-width: 600px) {
-
-    .sidebar {
-        display: none;
-    }
-
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        padding: 20px;
-    }
+  .sidebar {
+    width: 72px;
+    padding: 20px 10px;
+  }
+  .sidebar-logo, .sidebar-role, .nav-link span {
+    display: none;
+  }
+  .main-content {
+    margin-left: 72px;
+    width: calc(100% - 72px);
+    padding: 24px 18px;
+  }
+  .profile-card {
+    grid-template-columns: 1fr;
+  }
+  .full-width {
+    grid-column: span 1;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

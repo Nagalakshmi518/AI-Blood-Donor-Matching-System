@@ -2,229 +2,180 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Command Center — BloodNeed AI</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Donor Dashboard</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link rel="stylesheet"
-          href="../src/assets/css/common.css">
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <link rel="stylesheet"
-          href="../src/assets/css/donor-dashboard.css">
-
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
+    <!-- Design System & Dashboard CSS -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="../src/assets/css/common.css">
+    <link rel="stylesheet" href="../src/assets/css/donor-dashboard.css">
 </head>
 
 <body>
 
-<main class="donor-dashboard">
-
-    <!-- ========================= -->
-    <!-- HEADER -->
-    <!-- ========================= -->
-
-    <header class="dashboard-header">
-
-        <div>
-
-            <h1>🩸 Donor Dashboard</h1>
-
-            <p>
-                Help Save Lives By Responding To Blood Requests
-            </p>
-
+    <!-- ======================================================================
+         LIGHTWEIGHT AI PRELOADER
+         ====================================================================== -->
+    <div id="bn-preloader" class="bn-preloader">
+        <div class="bn-preloader-content">
+            <div class="bn-blood-pulse">
+                <div class="bn-pulse-ring"></div>
+                <div class="bn-pulse-ring-outer"></div>
+                <div class="bn-drop-core">
+                    <i class="fa-solid fa-droplet"></i>
+                </div>
+            </div>
+            <div class="bn-preloader-brand">Blood<span>Need</span></div>
+            <div class="bn-preloader-text">Loading Donor Hub & Radar...</div>
         </div>
-
-        <div class="dashboard-actions">
-
-            <button type="button"
-                    class="secondary-action"
-                    onclick="window.location.href='donor-profile.html'">
-
-                My Profile
-
-            </button>
-
-            <button id="notificationsButton"
-                    class="primary-action"
-                    onclick="window.location.href='notifications.html'">
-
-                🔔 Notifications
-
-            </button>
-
-            <button id="logoutButton"
-                    class="danger-action">
-
-                Logout
-
-            </button>
-
-        </div>
-
-    </header>
-
-
-    <!-- ========================= -->
-    <!-- DONOR PROFILE -->
-    <!-- ========================= -->
-
-    <section class="donor-info-card">
-
-        <h2>My Donor Profile</h2>
-
-        <div id="donorInfo">
-
-            Loading Profile...
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- SUMMARY CARDS -->
-    <!-- ========================= -->
-
-    <section class="dashboard-cards">
-
-        <div class="info-card">
-
-            <h3>🏅 Badge</h3>
-
-            <p id="badgeCard">
-
-                Loading...
-
-            </p>
-
-        </div>
-
-        <div class="info-card">
-
-            <h3>⭐ Reward Points</h3>
-
-            <p id="pointsCard">
-
-                Loading...
-
-            </p>
-
-        </div>
-
-        <div class="info-card">
-
-            <h3>📅 Next Eligible Date</h3>
-
-            <p id="eligibleCard">
-
-                Loading...
-
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- AVAILABILITY -->
-    <!-- ========================= -->
-
-    <section class="availability-section">
-
-        <div id="availabilityControl">
-
-            Loading...
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- PERFORMANCE -->
-    <!-- ========================= -->
-
-    <section class="performance-section">
-
-        <div id="performanceStats">
-
-            Loading Performance...
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- REWARDS -->
-    <!-- ========================= -->
-
-    <section class="reward-section">
-
-        <div id="rewardStats">
-
-            Loading Rewards...
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- RECENT DONATIONS -->
-    <!-- ========================= -->
-
-    <section class="recent-donations">
-
-        <h2>
-
-            ❤️ Recent Donations
-
-        </h2>
-
-        <div id="recentDonations">
-
-            No Donations Yet.
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- BLOOD REQUESTS -->
-    <!-- ========================= -->
-
-    <section class="requests-section">
-
-        <h2>
-
-            🚨 Incoming Blood Requests
-
-        </h2>
-
-        <div id="requestsContainer">
-
-            Loading Requests...
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<script src="../src/js/donor-dashboard.js"></script>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="bn-toast-container" class="bn-toast-container"></div>
+
+    <main class="donor-dashboard">
+
+        <!-- ========================= -->
+        <!-- HEADER -->
+        <!-- ========================= -->
+        <header class="dashboard-header">
+            <div>
+                <h1><i class="fa-solid fa-heart-pulse" style="color: var(--bn-primary); margin-right: 8px;"></i> Donor Command Center</h1>
+                <p>Real-Time AI Emergency Dispatch & Contribution Tracking</p>
+            </div>
+
+            <div class="dashboard-actions">
+                <button type="button"
+                        class="secondary-action"
+                        onclick="window.location.href='donor-profile.html'">
+                    <i class="fa-solid fa-user-pen"></i> My Profile
+                </button>
+
+                <button id="notificationsButton"
+                        class="primary-action"
+                        onclick="window.location.href='notifications.html'">
+                    <i class="fa-solid fa-bell"></i> Notifications
+                </button>
+
+                <button id="logoutButton"
+                        class="danger-action">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- ========================= -->
+        <!-- DONOR PROFILE -->
+        <!-- ========================= -->
+        <section class="donor-info-card">
+            <h2><i class="fa-solid fa-id-card-clip" style="color: var(--bn-ai-cyan); margin-right: 6px;"></i> My Donor Profile</h2>
+            <div id="donorInfo">
+                <div style="padding: 20px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 8px;"></i> Loading Profile Data...
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- SUMMARY RECOGNITION CARDS -->
+        <!-- ========================= -->
+        <section class="dashboard-cards">
+            <div class="info-card">
+                <h3><i class="fa-solid fa-medal" style="color: #F59E0B; margin-right: 6px;"></i> Active Honor Badge</h3>
+                <p id="badgeCard">Loading...</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-star" style="color: #38BDF8; margin-right: 6px;"></i> Reward Points</h3>
+                <p id="pointsCard">Loading...</p>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fa-solid fa-calendar-check" style="color: #10B981; margin-right: 6px;"></i> Next Eligible Date</h3>
+                <p id="eligibleCard">Loading...</p>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- AVAILABILITY CONTROLS -->
+        <!-- ========================= -->
+        <section class="availability-section">
+            <div id="availabilityControl">
+                <div style="color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Initializing availability radar...
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- PERFORMANCE STATS -->
+        <!-- ========================= -->
+        <section class="performance-section">
+            <div id="performanceStats">
+                <div style="color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Calculating donor performance metrics...
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- REWARDS & ACHIEVEMENTS -->
+        <!-- ========================= -->
+        <section class="reward-section">
+            <div id="rewardStats">
+                <div style="color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Loading rewards & milestones...
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- RECENT DONATIONS -->
+        <!-- ========================= -->
+        <section class="recent-donations">
+            <h2><i class="fa-solid fa-hand-holding-heart" style="color: var(--bn-primary); margin-right: 6px;"></i> Recent Donations</h2>
+            <div id="recentDonations">
+                <p style="color: var(--bn-text-muted);">No donations recorded yet.</p>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- BLOOD REQUESTS -->
+        <!-- ========================= -->
+        <section class="requests-section">
+            <h2>
+                <i class="fa-solid fa-tower-broadcast" style="color: #EF4444; animation: bn-radar-sweep 2s infinite linear;"></i>
+                Incoming AI-Matched Blood Requests
+            </h2>
+            <div id="requestsContainer">
+                <div style="padding: 30px; text-align: center; color: var(--bn-text-muted);">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 8px;"></i> Scanning real-time emergency requests...
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- App Shell & Core Utilities -->
+    <script src="../src/assets/js/app-shell.js"></script>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Donor Dashboard JS (Existing Logic Fully Preserved) -->
+    <script src="../src/js/donor-dashboard.js"></script>
 
 </body>
 

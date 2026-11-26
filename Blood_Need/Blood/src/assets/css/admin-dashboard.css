@@ -1,415 +1,431 @@
-/* ==========================================
-   ADMIN DASHBOARD
-========================================== */
+/* ==========================================================================
+   ADMIN COMMAND CENTER STYLESHEET — Tactical Medical-Tech Control Matrix
+   ========================================================================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+@import url("./design-system.css");
+
+body {
+  background-color: var(--bn-bg-base);
+  color: var(--bn-text-primary);
+  min-height: 100vh;
 }
 
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f5f7fb;
-    color:#333;
+.dashboard {
+  width: 95%;
+  max-width: 1560px;
+  margin: 30px auto 80px auto;
 }
 
-.dashboard{
-    width:95%;
-    max-width:1500px;
-    margin:30px auto;
-}
-
-/* ==========================================
+/* ==========================================================================
    HEADER
-========================================== */
-
-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#fff;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-    margin-bottom:30px;
+   ========================================================================== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  background: var(--bn-bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 24px 32px;
+  border-radius: var(--bn-radius-lg);
+  border: 1px solid var(--bn-border-subtle);
+  box-shadow: var(--bn-shadow-md);
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
 }
 
-header h1{
-    color:#c62828;
+header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--bn-primary) 0%, var(--bn-ai-cyan) 100%);
 }
 
-#logoutBtn{
-    background:#c62828;
-    color:#fff;
-    border:none;
-    padding:10px 20px;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
+header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.5px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-#logoutBtn:hover{
-    background:#a61f1f;
+header div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* ==========================================
+#refreshBtn {
+  background: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  color: var(--bn-ai-cyan);
+  padding: 10px 20px;
+  border-radius: var(--bn-radius-sm);
+  cursor: pointer;
+  font-family: var(--bn-font-heading);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--bn-transition-fast);
+}
+
+#refreshBtn:hover {
+  background: var(--bn-ai-cyan);
+  color: #070B14;
+  box-shadow: 0 4px 16px var(--bn-ai-glow);
+  transform: translateY(-2px);
+}
+
+#logoutBtn {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #F87171;
+  padding: 10px 20px;
+  border-radius: var(--bn-radius-sm);
+  cursor: pointer;
+  font-family: var(--bn-font-heading);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--bn-transition-fast);
+}
+
+#logoutBtn:hover {
+  background: #EF4444;
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   NAVIGATION JUMP DOCK
+   ========================================================================== */
+.admin-jump-dock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 12px 16px;
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+}
+
+.jump-link {
+  color: var(--bn-text-secondary);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--bn-bg-surface-elevated);
+  border: 1px solid var(--bn-border-subtle);
+  transition: all var(--bn-transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.jump-link:hover {
+  color: #FFFFFF;
+  border-color: var(--bn-ai-cyan);
+  background: rgba(6, 182, 212, 0.1);
+}
+
+/* ==========================================================================
    SECTIONS
-========================================== */
-
-section{
-    background:#fff;
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:25px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+   ========================================================================== */
+section {
+  background: var(--bn-bg-surface);
+  padding: 26px 30px;
+  border-radius: var(--bn-radius-lg);
+  margin-bottom: 28px;
+  border: 1px solid var(--bn-border-subtle);
+  box-shadow: var(--bn-shadow-md);
+  position: relative;
 }
 
-section h2{
-    color:#c62828;
-    margin-bottom:18px;
+section h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-top: 0;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.3px;
 }
 
-/* ==========================================
-   SUMMARY CARDS
-========================================== */
-
-.summary-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
+/* ==========================================================================
+   SUMMARY & METRIC CARDS
+   ========================================================================== */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
 }
 
-.summary-card{
-    background:#fafafa;
-    border-left:6px solid #c62828;
-    padding:20px;
-    border-radius:10px;
-    text-align:center;
+.card,
+.summary-card {
+  background: var(--bn-bg-surface-elevated);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 22px 20px;
+  text-align: center;
+  transition: all var(--bn-transition-normal);
+  position: relative;
+  overflow: hidden;
 }
 
-.summary-card h3{
-    color:#666;
-    margin-bottom:10px;
+.card::before,
+.summary-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--bn-primary-gradient);
 }
 
-.summary-card h2{
-    font-size:34px;
-    color:#c62828;
+.card:nth-child(even)::before {
+  background: var(--bn-ai-gradient);
 }
 
-/* ==========================================
-   TABLES
-========================================== */
-
-.table-container{
-    overflow-x:auto;
+.card:hover,
+.summary-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(225, 29, 72, 0.4);
+  box-shadow: var(--bn-shadow-lg), 0 0 20px var(--bn-primary-glow);
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    min-width:900px;
-}
-
-thead{
-    background:#c62828;
-    color:white;
-}
-
-th,
-td{
-    padding:12px;
-    border-bottom:1px solid #ddd;
-    text-align:left;
-}
-
-tbody tr:nth-child(even){
-    background:#fafafa;
-}
-
-tbody tr:hover{
-    background:#f1f1f1;
-}
-
-/* ==========================================
-   BUTTONS
-========================================== */
-
-.action-btn{
-    border:none;
-    color:white;
-    padding:7px 12px;
-    border-radius:5px;
-    cursor:pointer;
-    margin:2px;
-    font-size:13px;
-}
-
-.delete-btn{
-    background:#d32f2f;
-}
-
-.block-btn{
-    background:#ff9800;
-}
-
-.unblock-btn{
-    background:#2e7d32;
-}
-
-.edit-btn{
-    background:#1976d2;
-}
-
-.action-btn:hover{
-    opacity:.9;
-}
-
-/* ==========================================
-   REPORT BUTTONS
-========================================== */
-
-.report-buttons{
-    display:flex;
-    flex-wrap:wrap;
-    gap:15px;
-}
-
-.report-buttons button,
-#downloadReportBtn{
-    background:#1976d2;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:15px;
-}
-
-.report-buttons button:hover,
-#downloadReportBtn:hover{
-    background:#125aa3;
-}
-
-/* ==========================================
-   ANALYTICS
-========================================== */
-
-.analytics-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
-}
-
-.analytics-card{
-    background:#fafafa;
-    padding:18px;
-    border-radius:10px;
-    border-left:5px solid #4caf50;
-    text-align:center;
-}
-
-.analytics-card h3{
-    color:#666;
-    margin-bottom:10px;
-}
-
-.analytics-card h2{
-    color:#2e7d32;
-    font-size:30px;
-}
-
-/* ==========================================
-   STATUS COLORS
-========================================== */
-
-.status-pending{
-    color:#ff9800;
-    font-weight:bold;
-}
-
-.status-accepted{
-    color:#2e7d32;
-    font-weight:bold;
-}
-
-.status-completed{
-    color:#1565c0;
-    font-weight:bold;
-}
-
-.status-cancelled{
-    color:#d32f2f;
-    font-weight:bold;
-}
-
-/* ==========================================
-   LOADING / EMPTY
-========================================== */
-
-.loading,
-.empty{
-    text-align:center;
-    color:#666;
-    padding:20px;
-    font-size:16px;
-}
-
-/* ==========================================
-   RESPONSIVE
-========================================== */
-
-@media(max-width:768px){
-
-    header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:15px;
-    }
-
-    .summary-grid{
-        grid-template-columns:1fr;
-    }
-
-    .analytics-grid{
-        grid-template-columns:1fr;
-    }
-
-    .report-buttons{
-        flex-direction:column;
-    }
-
-    .report-buttons button{
-        width:100%;
-    }
-
-    .table-container{
-        overflow-x:auto;
-    }
-
-    table{
-        min-width:900px;
-    }
-}
-/* ==========================================
-   REFRESH BUTTON
-========================================== */
-
-#refreshBtn{
-    background:#1976d2;
-    color:#fff;
-    border:none;
-    padding:10px 20px;
-    border-radius:6px;
-    cursor:pointer;
-    font-weight:bold;
-    margin-right:10px;
-}
-
-#refreshBtn:hover{
-    background:#125aa3;
-}
-
-/* ==========================================
-   SEARCH BOX
-========================================== */
-
-#searchUser{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:6px;
-    font-size:15px;
-    outline:none;
-}
-
-#searchUser:focus{
-    border-color:#1976d2;
-    box-shadow:0 0 5px rgba(25,118,210,.3);
-}
-
-/* ==========================================
-   NORMAL CARD (USED IN JS)
-========================================== */
-
-.card{
-    background:#fafafa;
-    border-left:6px solid #c62828;
-    padding:20px;
-    border-radius:10px;
-    text-align:center;
-}
-
-.card h3{
-    color:#666;
-    margin-bottom:10px;
+.card h3,
+.summary-card h3 {
+  color: var(--bn-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-top: 0;
+  margin-bottom: 8px;
 }
 
 .card h1,
-.card h2{
-    color:#c62828;
-    font-size:32px;
+.card h2,
+.summary-card h2 {
+  font-family: var(--bn-font-heading);
+  font-size: 30px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
 }
 
-/* ==========================================
-   ACTION BUTTONS
-========================================== */
-
-button{
-    padding:8px 14px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:14px;
-    font-weight:bold;
+/* ==========================================================================
+   LIVE SEARCH BAR
+   ========================================================================== */
+#searchUser {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--bn-bg-surface-elevated);
+  border: 1px solid var(--bn-border-medium);
+  border-radius: var(--bn-radius-md);
+  font-size: 14.5px;
+  color: #FFFFFF;
+  outline: none;
+  transition: all var(--bn-transition-fast);
 }
 
-button:hover{
-    opacity:.9;
+#searchUser:focus {
+  border-color: var(--bn-ai-cyan);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
 }
 
-.delete-btn{
-    background:#d32f2f;
-    color:white;
-}
-
-.block-btn{
-    background:#ff9800;
-    color:white;
-}
-
-.unblock-btn{
-    background:#2e7d32;
-    color:white;
-}
-
-.edit-btn{
-    background:#1976d2;
-    color:white;
-}
-
-/* ==========================================
-   FOOTER
-========================================== */
-
-footer{
-    text-align:center;
-    color:#666;
-    margin-top:30px;
-    padding:20px;
-    font-size:14px;
-}
-
-/* ==========================================
-   SCROLLABLE TABLE
-========================================== */
-
+/* ==========================================================================
+   TABLES & CONTROLS
+   ========================================================================== */
 #usersTable,
 #donorsTable,
 #patientsTable,
 #requestsTable,
 #donationsTable,
-#matchesTable{
-    overflow-x:auto;
+#matchesTable,
+#inventoryTable {
+  overflow-x: auto;
+  border-radius: var(--bn-radius-md);
+  border: 1px solid var(--bn-border-subtle);
+  background: var(--bn-bg-surface-elevated);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 850px;
+}
+
+thead,
+tr:first-child {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+th {
+  text-align: left;
+  padding: 14px 18px;
+  color: var(--bn-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid var(--bn-border-medium);
+}
+
+td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--bn-border-subtle);
+  color: var(--bn-text-secondary);
+  font-size: 13.5px;
+}
+
+tbody tr:hover,
+tr:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+tbody tr:last-child td,
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   ACTION BUTTONS
+   ========================================================================== */
+button {
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--bn-radius-sm);
+  cursor: pointer;
+  font-family: var(--bn-font-heading);
+  font-size: 12.5px;
+  font-weight: 700;
+  transition: all var(--bn-transition-fast);
+  margin: 2px;
+}
+
+.delete-btn {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #F87171;
+}
+
+.delete-btn:hover {
+  background: #EF4444;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.block-btn {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #FBBF24;
+}
+
+.block-btn:hover {
+  background: #F59E0B;
+  color: #070B14;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.unblock-btn {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34D399;
+}
+
+.unblock-btn:hover {
+  background: #10B981;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.edit-btn {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: #60A5FA;
+}
+
+.edit-btn:hover {
+  background: #3B82F6;
+  color: #FFFFFF;
+}
+
+/* ==========================================
+   REPORT EXPORT BUTTONS
+   ========================================== */
+.report-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.report-buttons button,
+#downloadReportBtn {
+  background: var(--bn-bg-surface-elevated);
+  border: 1px solid var(--bn-border-medium);
+  color: var(--bn-text-primary);
+  padding: 14px 20px;
+  border-radius: var(--bn-radius-sm);
+  cursor: pointer;
+  font-family: var(--bn-font-heading);
+  font-size: 13.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all var(--bn-transition-fast);
+}
+
+.report-buttons button:hover,
+#downloadReportBtn:hover {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: var(--bn-ai-cyan);
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px var(--bn-ai-glow);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+footer {
+  text-align: center;
+  color: var(--bn-text-muted);
+  margin-top: 40px;
+  padding: 24px;
+  font-size: 13px;
+  border-top: 1px solid var(--bn-border-subtle);
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    width: 100%;
+    padding: 12px;
+  }
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

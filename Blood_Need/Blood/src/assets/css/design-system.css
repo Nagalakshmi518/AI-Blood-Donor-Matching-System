@@ -1,0 +1,864 @@
+/* ==========================================================================
+   BLOODNEED DESIGN SYSTEM — Medical-Tech + AI Product Interface
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand Medical Crimson Palette */
+  --bn-primary: #E11D48;
+  --bn-primary-hover: #F43F5E;
+  --bn-primary-dark: #BE123C;
+  --bn-primary-deep: #881337;
+  --bn-primary-gradient: linear-gradient(135deg, #E11D48 0%, #BE123C 50%, #9F1239 100%);
+  --bn-primary-glow: rgba(225, 29, 72, 0.35);
+  --bn-primary-subtle: rgba(225, 29, 72, 0.12);
+
+  /* AI Tech Accents */
+  --bn-ai-cyan: #06B6D4;
+  --bn-ai-cyan-hover: #22D3EE;
+  --bn-ai-blue: #38BDF8;
+  --bn-ai-indigo: #6366F1;
+  --bn-ai-gradient: linear-gradient(135deg, #06B6D4 0%, #3B82F6 50%, #6366F1 100%);
+  --bn-ai-glow: rgba(6, 182, 212, 0.3);
+  --bn-ai-subtle: rgba(6, 182, 212, 0.12);
+
+  /* Dark Canvas & Elevation Surfaces */
+  --bn-bg-base: #070B14;
+  --bn-bg-surface: #0D1424;
+  --bn-bg-surface-elevated: #121B30;
+  --bn-bg-card: #152238;
+  --bn-bg-card-hover: #1A2B47;
+  --bn-bg-glass: rgba(18, 27, 48, 0.78);
+  --bn-bg-glass-strong: rgba(13, 20, 36, 0.92);
+
+  /* Borders & Dividers */
+  --bn-border-subtle: rgba(255, 255, 255, 0.08);
+  --bn-border-medium: rgba(255, 255, 255, 0.14);
+  --bn-border-accent: rgba(225, 29, 72, 0.35);
+  --bn-border-ai: rgba(6, 182, 212, 0.35);
+
+  /* Text & Typography */
+  --bn-font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --bn-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --bn-text-primary: #F8FAFC;
+  --bn-text-secondary: #94A3B8;
+  --bn-text-muted: #64748B;
+  --bn-text-dim: #475569;
+
+  /* Medical Emergency & Status Tokens */
+  --bn-status-critical: #EF4444;
+  --bn-status-critical-bg: rgba(239, 68, 68, 0.14);
+  --bn-status-warning: #F59E0B;
+  --bn-status-warning-bg: rgba(245, 158, 11, 0.14);
+  --bn-status-matched: #8B5CF6;
+  --bn-status-matched-bg: rgba(139, 92, 246, 0.14);
+  --bn-status-success: #10B981;
+  --bn-status-success-bg: rgba(16, 185, 129, 0.14);
+  --bn-status-info: #0EA5E9;
+  --bn-status-info-bg: rgba(14, 165, 233, 0.14);
+
+  /* Shadows & Depth */
+  --bn-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --bn-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --bn-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --bn-shadow-glow: 0 0 30px var(--bn-primary-glow);
+  --bn-shadow-ai-glow: 0 0 30px var(--bn-ai-glow);
+
+  /* Border Radii */
+  --bn-radius-xs: 6px;
+  --bn-radius-sm: 10px;
+  --bn-radius-md: 14px;
+  --bn-radius-lg: 20px;
+  --bn-radius-xl: 28px;
+  --bn-radius-full: 9999px;
+
+  /* Animations & Transitions */
+  --bn-transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --bn-transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --bn-transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Base Reset & Smooth Scroll */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--bn-font-body);
+  background-color: var(--bn-bg-base);
+  color: var(--bn-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle Ambient Gradient Background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(225, 29, 72, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.6) 0%, transparent 80%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bn-bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: var(--bn-radius-full);
+  border: 2px solid var(--bn-bg-base);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bn-primary-dark);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--bn-font-heading);
+  color: var(--bn-text-primary);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+a {
+  color: var(--bn-ai-cyan);
+  text-decoration: none;
+  transition: color var(--bn-transition-fast);
+}
+a:hover {
+  color: var(--bn-ai-cyan-hover);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* ==========================================================================
+   LIGHTWEIGHT PRELOADER (BloodNeed Neural AI Pulse)
+   ========================================================================== */
+#bnPreloader {
+  position: fixed;
+  inset: 0;
+  background: #070B14;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+#bnPreloader.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.bn-preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.bn-preloader-emblem {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bn-preloader-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(225, 29, 72, 0.2);
+  border-top-color: var(--bn-primary);
+  border-right-color: var(--bn-ai-cyan);
+  animation: bn-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.bn-preloader-drop {
+  font-size: 32px;
+  filter: drop-shadow(0 0 12px var(--bn-primary-glow));
+  animation: bn-pulse-drop 1.4s ease-in-out infinite alternate;
+}
+
+.bn-preloader-title {
+  font-family: var(--bn-font-heading);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bn-preloader-title span {
+  color: var(--bn-primary);
+}
+
+.bn-preloader-subtitle {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--bn-ai-cyan);
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+@keyframes bn-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes bn-pulse-drop {
+  0% { transform: scale(0.92); opacity: 0.85; }
+  100% { transform: scale(1.08); opacity: 1; }
+}
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+.bn-btn,
+button.primary-button,
+button.secondary-button,
+button.danger-action,
+button.primary-action,
+button.secondary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: var(--bn-radius-sm);
+  font-family: var(--bn-font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all var(--bn-transition-normal);
+  border: 1px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.bn-btn-primary,
+button.primary-button,
+button.primary-action {
+  background: var(--bn-primary-gradient);
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px var(--bn-primary-glow);
+}
+.bn-btn-primary:hover,
+button.primary-button:hover,
+button.primary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--bn-primary-glow);
+  filter: brightness(1.1);
+}
+.bn-btn-primary:active,
+button.primary-button:active {
+  transform: translateY(0);
+}
+
+.bn-btn-secondary,
+button.secondary-button,
+button.secondary-action {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bn-text-primary) !important;
+  border-color: var(--bn-border-medium);
+  backdrop-filter: blur(8px);
+}
+.bn-btn-secondary:hover,
+button.secondary-button:hover,
+button.secondary-action:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.bn-btn-danger,
+button.danger-action,
+button.cancel-button {
+  background: rgba(239, 68, 68, 0.12);
+  color: #F87171 !important;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.bn-btn-danger:hover,
+button.danger-action:hover,
+button.cancel-button:hover {
+  background: #EF4444;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+  transform: translateY(-2px);
+}
+
+.bn-btn-success,
+button.accept-button {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #FFFFFF !important;
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+.bn-btn-success:hover,
+button.accept-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  filter: brightness(1.1);
+}
+
+.bn-btn-outline {
+  background: transparent;
+  border-color: var(--bn-border-medium);
+  color: var(--bn-text-primary);
+}
+.bn-btn-outline:hover {
+  border-color: var(--bn-primary);
+  color: var(--bn-primary-hover);
+  background: var(--bn-primary-subtle);
+}
+
+.bn-btn:disabled,
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   CARDS & SURFACES
+   ========================================================================== */
+.bn-card,
+.card,
+.auth-card,
+.info-card,
+.request-card,
+.profile-card,
+.activity-card {
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 24px;
+  position: relative;
+  transition: all var(--bn-transition-normal);
+  box-shadow: var(--bn-shadow-md);
+}
+
+.bn-card-glass {
+  background: var(--bn-bg-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--bn-border-subtle);
+}
+
+.bn-card:hover,
+.card:hover,
+.info-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-3px);
+  box-shadow: var(--bn-shadow-lg);
+}
+
+/* ==========================================================================
+   STAT & KPI METRIC CARDS
+   ========================================================================== */
+.bn-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  border-radius: var(--bn-radius-md);
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.bn-stat-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--bn-primary-gradient);
+  opacity: 0.8;
+}
+
+.bn-stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--bn-radius-sm);
+  background: rgba(225, 29, 72, 0.12);
+  color: var(--bn-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.bn-stat-content h3 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--bn-text-muted);
+  margin-bottom: 4px;
+}
+
+.bn-stat-content h1,
+.bn-stat-content h2,
+.stat-number {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--bn-text-primary);
+  font-family: var(--bn-font-heading);
+  letter-spacing: -0.5px;
+}
+
+/* ==========================================================================
+   BLOOD GROUP BADGES
+   ========================================================================== */
+.bn-blood-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--bn-radius-full);
+  font-family: var(--bn-font-heading);
+  font-weight: 800;
+  font-size: 14px;
+  background: rgba(225, 29, 72, 0.16);
+  border: 1px solid rgba(225, 29, 72, 0.35);
+  color: #FB7185;
+}
+
+.bn-blood-badge::before {
+  content: "🩸";
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   STATUS & EMERGENCY BADGES
+   ========================================================================== */
+.bn-badge,
+.request-status,
+.response-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--bn-radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Emergency Levels */
+.bn-badge-critical,
+.emergency-critical {
+  background: var(--bn-status-critical-bg);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #F87171;
+}
+.bn-badge-high,
+.emergency-high {
+  background: rgba(249, 115, 22, 0.14);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  color: #FB923C;
+}
+.bn-badge-medium,
+.emergency-medium {
+  background: rgba(14, 165, 233, 0.14);
+  border: 1px solid rgba(14, 165, 233, 0.4);
+  color: #38BDF8;
+}
+.bn-badge-low,
+.emergency-low {
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34D399;
+}
+
+/* Statuses */
+.status-pending,
+.pending {
+  background: var(--bn-status-warning-bg);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #FBBF24;
+}
+.status-matched,
+.matched {
+  background: var(--bn-status-matched-bg);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #A78BFA;
+}
+.status-accepted,
+.accepted {
+  background: var(--bn-status-success-bg);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34D399;
+}
+.status-completed,
+.completed {
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60A5FA;
+}
+.status-cancelled,
+.status-rejected,
+.cancelled,
+.rejected {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #F87171;
+}
+
+/* ==========================================================================
+   AI DONOR MATCHING CARD (The Flagship Component)
+   ========================================================================== */
+.bn-ai-match-card,
+.donor-card {
+  background: var(--bn-bg-surface-elevated) !important;
+  border: 1px solid var(--bn-border-ai) !important;
+  border-radius: var(--bn-radius-md) !important;
+  padding: 22px !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all var(--bn-transition-normal);
+}
+
+.bn-ai-match-card::before,
+.donor-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--bn-ai-gradient);
+}
+
+.bn-ai-match-card:hover,
+.donor-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--bn-ai-cyan) !important;
+  box-shadow: 0 8px 30px var(--bn-ai-glow);
+}
+
+.bn-ai-rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--bn-radius-full);
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  color: var(--bn-ai-cyan);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   HOSPITAL INVENTORY FALLBACK CARD
+   ========================================================================== */
+.hospital-inventory-card,
+.bn-fallback-card {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  border-radius: var(--bn-radius-md);
+  padding: 22px;
+  margin-top: 18px;
+  position: relative;
+}
+
+.hospital-inventory-card h3 {
+  color: #34D399;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.inventory-status {
+  font-weight: 700;
+  color: #10B981;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.inventory-message {
+  color: var(--bn-text-secondary);
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.inventory-units {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.inventory-unit-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--bn-radius-xs);
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.inventory-unit-box strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--bn-text-muted);
+}
+
+.inventory-unit-box span {
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ==========================================================================
+   INPUTS & FORM CONTROLS
+   ========================================================================== */
+.form-group,
+.bn-input-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+label,
+.bn-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bn-text-secondary);
+  letter-spacing: 0.2px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+select,
+textarea,
+.bn-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-medium);
+  border-radius: var(--bn-radius-sm);
+  color: var(--bn-text-primary);
+  font-size: 14px;
+  transition: all var(--bn-transition-fast);
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.bn-input:focus {
+  border-color: var(--bn-primary);
+  box-shadow: 0 0 0 3px var(--bn-primary-subtle);
+  background: var(--bn-bg-surface-elevated);
+}
+
+input[readonly],
+input:disabled,
+select:disabled {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--bn-text-muted);
+  border-color: var(--bn-border-subtle);
+  cursor: not-allowed;
+}
+
+select option {
+  background: #0E1626;
+  color: #fff;
+  padding: 10px;
+}
+
+/* ==========================================================================
+   TABLES & DATAGRIDS
+   ========================================================================== */
+.table-container,
+.bn-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--bn-radius-md);
+  border: 1px solid var(--bn-border-subtle);
+  background: var(--bn-bg-surface);
+  box-shadow: var(--bn-shadow-md);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13.5px;
+}
+
+thead th {
+  background: var(--bn-bg-surface-elevated);
+  padding: 14px 18px;
+  font-family: var(--bn-font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--bn-text-muted);
+  border-bottom: 1px solid var(--bn-border-subtle);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--bn-border-subtle);
+  color: var(--bn-text-secondary);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr {
+  transition: background var(--bn-transition-fast);
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ==========================================================================
+   APP HEADER & NAVIGATION
+   ========================================================================== */
+.dashboard-header,
+.requests-header,
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 24px 30px;
+  background: var(--bn-bg-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-lg);
+  margin-bottom: 28px;
+  box-shadow: var(--bn-shadow-md);
+}
+
+.dashboard-header h1,
+.requests-header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+
+.dashboard-header p,
+.requests-header p {
+  color: var(--bn-text-muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   RESPONSE COUNTDOWN TIMER
+   ========================================================================== */
+.response-timer {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--bn-radius-sm);
+  padding: 10px 16px;
+  color: #FBBF24;
+  font-family: var(--bn-font-heading);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.response-timer strong {
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+.response-timer.expired {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #F87171;
+}
+
+/* ==========================================================================
+   RESPONSIVE UTILITIES
+   ========================================================================== */
+.bn-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header,
+  .requests-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 22px;
+  }
+  
+  .bn-card {
+    padding: 18px;
+  }
+}

@@ -95,6 +95,7 @@ def create_app():
     from app.dashboard.routes import dashboard_bp
     from app.analytics.routes import analytics_bp
     from app.admin.report_routes import report_bp
+    from app.ml_research.routes import ml_research_bp
 
 
     # ==========================================
@@ -131,6 +132,7 @@ def create_app():
     app.register_blueprint(analytics_bp)
     app.register_blueprint(report_bp)
     app.register_blueprint(hospital_bp, url_prefix="/api/hospitals")
+    app.register_blueprint(ml_research_bp)
 
     # ==========================================
     # SCHEDULER JOB

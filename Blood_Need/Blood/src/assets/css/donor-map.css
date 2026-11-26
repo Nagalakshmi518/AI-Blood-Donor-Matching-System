@@ -1,0 +1,263 @@
+/* ==========================================================================
+   DONOR MAP STYLESHEET — Tactical Medical GIS & AI Donor Radar
+   ========================================================================== */
+
+@import url("./design-system.css");
+
+body {
+  background-color: var(--bn-bg-base);
+  color: var(--bn-text-primary);
+  min-height: 100vh;
+}
+
+.map-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 30px 24px 60px 24px;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 22px 28px;
+  background: var(--bn-bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-lg);
+  box-shadow: var(--bn-shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.map-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--bn-ai-gradient);
+}
+
+.map-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.5px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--bn-radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bn-border-medium);
+  color: var(--bn-text-primary);
+  font-family: var(--bn-font-heading);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--bn-transition-fast);
+}
+
+.back-button:hover {
+  background: rgba(225, 29, 72, 0.15);
+  border-color: var(--bn-primary);
+  color: #FFFFFF;
+  transform: translateX(-3px);
+  box-shadow: 0 4px 14px var(--bn-primary-glow);
+}
+
+/* ==========================================================================
+   REQUEST INFO PANEL
+   ========================================================================== */
+.request-info {
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--bn-shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.request-info::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--bn-primary-gradient);
+}
+
+.request-info h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-top: 0;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.request-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.summary-item {
+  background: var(--bn-bg-surface-elevated);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-sm);
+  padding: 14px 18px;
+  transition: all var(--bn-transition-fast);
+}
+
+.summary-item:hover {
+  border-color: rgba(6, 182, 212, 0.3);
+  transform: translateY(-2px);
+}
+
+.summary-item strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--bn-text-muted);
+  margin-bottom: 6px;
+}
+
+.summary-item span {
+  font-family: var(--bn-font-heading);
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   MAP CONTAINER & LEAFLET ENHANCEMENT
+   ========================================================================== */
+#donorMap {
+  width: 100%;
+  height: 540px;
+  border-radius: var(--bn-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--bn-border-medium);
+  box-shadow: var(--bn-shadow-lg), 0 0 30px rgba(0, 0, 0, 0.5);
+  background: #0B1120;
+}
+
+/* Custom styling for Leaflet controls and popups in dark mode */
+.leaflet-container {
+  font-family: var(--bn-font-body) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #0F172A !important;
+  color: #F8FAFC !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: var(--bn-radius-sm) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(8px);
+}
+
+.leaflet-popup-tip {
+  background: #0F172A !important;
+}
+
+.leaflet-popup-content {
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  margin: 14px 18px !important;
+}
+
+.leaflet-popup-content b {
+  color: #38BDF8 !important;
+  font-family: var(--bn-font-heading);
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   LEGEND
+   ========================================================================== */
+.legend {
+  background: var(--bn-bg-surface);
+  border: 1px solid var(--bn-border-subtle);
+  border-radius: var(--bn-radius-md);
+  padding: 16px 24px;
+  margin-top: 20px;
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--bn-text-secondary);
+}
+
+.legend-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.hospital-marker {
+  background: #EF4444;
+  color: #EF4444;
+}
+
+.donor-marker {
+  background: #10B981;
+  color: #10B981;
+}
+
+.error-message {
+  color: #F87171;
+  font-weight: 700;
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--bn-radius-sm);
+}
+
+@media (max-width: 768px) {
+  .map-page {
+    padding: 16px;
+  }
+  
+  .map-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  #donorMap {
+    height: 400px;
+  }
+}

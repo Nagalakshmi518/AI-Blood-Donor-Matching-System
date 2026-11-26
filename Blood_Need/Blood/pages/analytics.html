@@ -2,75 +2,93 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Telemetry & Analytics — BloodNeed AI</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Analytics Dashboard</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <link
-        rel="stylesheet"
-        href="../src/assets/css/analytics.css"
-    >
-
+    <!-- Design System & Analytics CSS -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="../src/assets/css/common.css">
+    <link rel="stylesheet" href="../src/assets/css/analytics.css">
 </head>
 
 <body>
 
-<div class="analytics-page">
-
-    <header class="analytics-header">
-
-        <h1>
-            Blood Donation Analytics
-        </h1>
-
-        <div>
-
-            <button
-                id="backBtn"
-                onclick="window.location.href='admin-dashboard.html'"
-            >
-                Dashboard
-            </button>
-
-            <button
-                id="logoutBtn"
-            >
-                Logout
-            </button>
-
+    <!-- ======================================================================
+         LIGHTWEIGHT AI PRELOADER
+         ====================================================================== -->
+    <div id="bn-preloader" class="bn-preloader">
+        <div class="bn-preloader-content">
+            <div class="bn-blood-pulse">
+                <div class="bn-pulse-ring"></div>
+                <div class="bn-pulse-ring-outer"></div>
+                <div class="bn-drop-core">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+            </div>
+            <div class="bn-preloader-brand">Blood<span>Need</span></div>
+            <div class="bn-preloader-text">Aggregating System Telemetry...</div>
         </div>
+    </div>
 
-    </header>
+    <!-- Toast Notification Container -->
+    <div id="bn-toast-container" class="bn-toast-container"></div>
 
-    <section
-        id="analyticsContainer"
-    >
+    <div class="analytics-page">
 
-        Loading Analytics...
+        <header class="analytics-header">
+            <h1>
+                <i class="fa-solid fa-chart-pie" style="color: var(--bn-ai-cyan);"></i>
+                Blood Donation Intelligence & Analytics
+            </h1>
 
-    </section>
+            <div>
+                <button id="backBtn" onclick="window.location.href='admin-dashboard.html'">
+                    <i class="fa-solid fa-arrow-left"></i> Command Center
+                </button>
 
-</div>
+                <button id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </header>
 
-<script>
+        <section id="analyticsContainer">
+            <div style="padding: 40px; text-align: center; color: var(--bn-text-muted);">
+                <i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 8px;"></i>
+                Synthesizing analytics metrics...
+            </div>
+        </section>
 
-document.getElementById("logoutBtn").addEventListener("click", () => {
+        <section id="mlResearchSection" class="ml-research-section">
+            <div style="padding: 28px; text-align: center; color: var(--bn-text-muted);">
+                <i class="fa-solid fa-flask" style="margin-right: 8px;"></i>
+                Loading Academic Research ML Evaluation (UCI Blood Transfusion)...
+            </div>
+        </section>
 
-    localStorage.clear();
+    </div>
 
-    window.location.href = "login.html";
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.clear();
+            window.location.href = "login.html";
+        });
+    </script>
 
-});
+    <!-- App Shell & Core Utilities -->
+    <script src="../src/assets/js/app-shell.js"></script>
 
-</script>
-
-<script src="../src/js/analytics.js"></script>
+    <!-- Analytics JS -->
+    <script src="../src/js/analytics.js"></script>
 
 </body>
 

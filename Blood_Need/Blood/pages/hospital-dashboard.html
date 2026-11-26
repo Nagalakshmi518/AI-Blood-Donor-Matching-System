@@ -4,242 +4,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Center & Blood Bank — BloodNeed</title>
 
-    <title>Hospital Dashboard | BloodNeed</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Design System & Hospital CSS -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
+    <link rel="stylesheet" href="../src/assets/css/common.css">
     <link rel="stylesheet" href="../src/assets/css/hospital-dashboard.css">
 </head>
 
 <body>
 
+    <!-- ======================================================================
+         LIGHTWEIGHT AI PRELOADER
+         ====================================================================== -->
+    <div id="bn-preloader" class="bn-preloader">
+        <div class="bn-preloader-content">
+            <div class="bn-blood-pulse">
+                <div class="bn-pulse-ring"></div>
+                <div class="bn-pulse-ring-outer"></div>
+                <div class="bn-drop-core">
+                    <i class="fa-solid fa-hospital"></i>
+                </div>
+            </div>
+            <div class="bn-preloader-brand">Blood<span>Need</span></div>
+            <div class="bn-preloader-text">Loading Hospital Inventory Grid...</div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="bn-toast-container" class="bn-toast-container"></div>
+
     <div class="dashboard-layout">
 
         <!-- SIDEBAR -->
         <aside class="sidebar">
-
             <div class="sidebar-logo">
-                🩸 BloodNeed
+                <i class="fa-solid fa-droplet" style="color: var(--bn-primary);"></i>
+                Blood<span>Need</span>
             </div>
 
             <div class="sidebar-role">
-                HOSPITAL PORTAL
+                <i class="fa-solid fa-shield-halved" style="margin-right: 4px;"></i> Hospital Portal
             </div>
 
             <nav class="sidebar-nav">
-
                 <a href="hospital-dashboard.html" class="nav-link active">
-                    🏥 Dashboard
+                    <i class="fa-solid fa-hospital-user"></i>
+                    <span>Inventory Center</span>
                 </a>
 
                 <a href="notifications.html" class="nav-link">
-                    🔔 Notifications
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Notifications</span>
                 </a>
 
                 <a href="#" class="nav-link" id="logoutBtn">
-                    🚪 Logout
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Secure Logout</span>
                 </a>
-
             </nav>
-
         </aside>
-
 
         <!-- MAIN CONTENT -->
         <main class="main-content">
 
             <!-- HEADER -->
             <div class="dashboard-header">
-
                 <div>
-                    <h1>Hospital Dashboard</h1>
-                    <p>Manage hospital blood inventory</p>
+                    <h1><i class="fa-solid fa-square-h" style="color: var(--bn-primary); margin-right: 8px;"></i> Hospital Blood Bank Hub</h1>
+                    <p>Real-Time Reserve Depository & Emergency Inventory Allocation</p>
                 </div>
 
                 <div class="hospital-status">
                     <span class="status-dot"></span>
-                    Active
+                    <span>Facility Online & Synchronized</span>
                 </div>
-
             </div>
-
 
             <!-- HOSPITAL PROFILE -->
             <section class="dashboard-section">
-
-                <h2>🏥 Hospital Information</h2>
+                <h2><i class="fa-solid fa-circle-info" style="color: var(--bn-ai-cyan); margin-right: 6px;"></i> Facility Demographics</h2>
 
                 <div class="profile-card">
-
                     <div class="profile-item">
-                        <span>Hospital Name</span>
+                        <span>Hospital Facility Name</span>
                         <strong id="hospitalName">Loading...</strong>
                     </div>
 
                     <div class="profile-item">
-                        <span>City</span>
+                        <span>Registered City</span>
                         <strong id="hospitalCity">-</strong>
                     </div>
 
                     <div class="profile-item">
-                        <span>Phone</span>
+                        <span>Emergency Helpline Phone</span>
                         <strong id="hospitalPhone">-</strong>
                     </div>
 
                     <div class="profile-item">
-                        <span>Email</span>
+                        <span>Official Dispatch Email</span>
                         <strong id="hospitalEmail">-</strong>
                     </div>
 
                     <div class="profile-item full-width">
-                        <span>Address</span>
+                        <span>Campus Physical Address</span>
                         <strong id="hospitalAddress">-</strong>
                     </div>
-
                 </div>
-
             </section>
-
 
             <!-- INVENTORY SUMMARY -->
             <section class="dashboard-section">
-
-                <h2>🩸 Blood Inventory Overview</h2>
+                <h2><i class="fa-solid fa-boxes-stacked" style="color: var(--bn-primary); margin-right: 6px;"></i> Real-Time Reserve Telemetry</h2>
 
                 <div class="stats-grid">
-
                     <div class="stat-card">
-                        <span class="stat-label">Blood Groups</span>
+                        <span class="stat-label"><i class="fa-solid fa-dna" style="color: var(--bn-ai-cyan); margin-right: 6px;"></i> Tracked Blood Groups</span>
                         <h2 id="bloodGroupsCount">0</h2>
                     </div>
 
                     <div class="stat-card">
-                        <span class="stat-label">Total Units Available</span>
-                        <h2 id="totalUnits">0</h2>
+                        <span class="stat-label"><i class="fa-solid fa-vial-circle-check" style="color: #10B981; margin-right: 6px;"></i> Total Reserve Units</span>
+                        <h2 id="totalUnits" style="color: #10B981;">0</h2>
                     </div>
 
                     <div class="stat-card">
-                        <span class="stat-label">Low Stock Groups</span>
-                        <h2 id="lowStockCount">0</h2>
+                        <span class="stat-label"><i class="fa-solid fa-triangle-exclamation" style="color: #F59E0B; margin-right: 6px;"></i> Low Stock Warnings</span>
+                        <h2 id="lowStockCount" style="color: #F59E0B;">0</h2>
                     </div>
-
                 </div>
-
             </section>
 
-
-            <!-- INVENTORY ACTION -->
+            <!-- INVENTORY ACTIONS -->
             <section class="dashboard-section">
-
-                <h2>⚙️ Manage Blood Inventory</h2>
+                <h2><i class="fa-solid fa-sliders" style="color: var(--bn-ai-cyan); margin-right: 6px;"></i> Inventory Stock Operations</h2>
 
                 <div class="inventory-actions">
-
                     <!-- ADD UNITS -->
                     <div class="action-card">
-
-                        <h3>➕ Add Blood Units</h3>
+                        <h3><i class="fa-solid fa-circle-plus" style="color: #10B981;"></i> Deposit Blood Units</h3>
 
                         <select id="addBloodGroup">
-                            <option value="">Select Blood Group</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
+                            <option value="">Select Blood Group Target</option>
+                            <option value="A+">A+ (A Positive)</option>
+                            <option value="A-">A- (A Negative)</option>
+                            <option value="B+">B+ (B Positive)</option>
+                            <option value="B-">B- (B Negative)</option>
+                            <option value="AB+">AB+ (AB Positive)</option>
+                            <option value="AB-">AB- (AB Negative)</option>
+                            <option value="O+">O+ (O Positive)</option>
+                            <option value="O-">O- (O Negative)</option>
                         </select>
 
-                        <input
-                            type="number"
-                            id="addUnits"
-                            placeholder="Enter units"
-                            min="1"
-                        >
+                        <input type="number"
+                               id="addUnits"
+                               placeholder="Number of units to deposit..."
+                               min="1">
 
                         <button id="addUnitsBtn">
-                            Add Units
+                            <i class="fa-solid fa-box-archive"></i> Confirm Inflow Deposit
                         </button>
-
                     </div>
-
 
                     <!-- USE UNITS -->
                     <div class="action-card">
-
-                        <h3>➖ Use Blood Units</h3>
+                        <h3><i class="fa-solid fa-circle-minus" style="color: #EF4444;"></i> Dispense / Allocate Units</h3>
 
                         <select id="useBloodGroup">
-                            <option value="">Select Blood Group</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
+                            <option value="">Select Blood Group Target</option>
+                            <option value="A+">A+ (A Positive)</option>
+                            <option value="A-">A- (A Negative)</option>
+                            <option value="B+">B+ (B Positive)</option>
+                            <option value="B-">B- (B Negative)</option>
+                            <option value="AB+">AB+ (AB Positive)</option>
+                            <option value="AB-">AB- (AB Negative)</option>
+                            <option value="O+">O+ (O Positive)</option>
+                            <option value="O-">O- (O Negative)</option>
                         </select>
 
-                        <input
-                            type="number"
-                            id="useUnits"
-                            placeholder="Enter units"
-                            min="1"
-                        >
+                        <input type="number"
+                               id="useUnits"
+                               placeholder="Number of units to dispense..."
+                               min="1">
 
                         <button id="useUnitsBtn">
-                            Use Units
+                            <i class="fa-solid fa-truck-medical"></i> Log Outflow Allocation
                         </button>
-
                     </div>
-
                 </div>
-
             </section>
-
 
             <!-- INVENTORY TABLE -->
             <section class="dashboard-section">
-
-                <h2>📦 Current Blood Inventory</h2>
+                <h2><i class="fa-solid fa-clipboard-list" style="color: var(--bn-ai-cyan); margin-right: 6px;"></i> Active Reserve Inventory Table</h2>
 
                 <div class="table-container">
-
                     <table>
-
                         <thead>
                             <tr>
                                 <th>Blood Group</th>
-                                <th>Available Units</th>
-                                <th>Last Updated</th>
-                                <th>Status</th>
+                                <th>Available Stock Units</th>
+                                <th>Last Recorded Update</th>
+                                <th>Availability Status</th>
                             </tr>
                         </thead>
-
                         <tbody id="inventoryTableBody">
-
                             <tr>
-                                <td colspan="4">
-                                    Loading inventory...
+                                <td colspan="4" style="text-align: center; padding: 30px; color: var(--bn-text-muted);">
+                                    <i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 8px;"></i> Loading active inventory records...
                                 </td>
                             </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </section>
 
         </main>
 
     </div>
 
+    <!-- App Shell & Core Utilities -->
+    <script src="../src/assets/js/app-shell.js"></script>
 
+    <!-- Hospital Dashboard JavaScript -->
     <script src="../src/js/hospital-dashboard.js"></script>
 
 </body>

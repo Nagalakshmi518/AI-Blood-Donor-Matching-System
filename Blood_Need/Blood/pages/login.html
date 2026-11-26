@@ -3,99 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | BloodNeed AI Donor Network</title>
 
-    <title>Login | Blood Donor Matching System</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-   <link rel="stylesheet" href="../src/assets/css/common.css">
+    <!-- CSS System -->
+    <link rel="stylesheet" href="../src/assets/css/design-system.css">
     <link rel="stylesheet" href="../src/assets/css/auth.css">
 </head>
 
 <body>
+    <!-- Lightweight Preloader -->
+    <div id="bnPreloader">
+        <div class="bn-preloader-content">
+            <div class="bn-preloader-emblem">
+                <div class="bn-preloader-ring"></div>
+                <div class="bn-preloader-drop">🩸</div>
+            </div>
+            <div class="bn-preloader-title">Blood<span>Need</span></div>
+            <div class="bn-preloader-subtitle">AI Dispatch Network</div>
+        </div>
+    </div>
 
     <main class="auth-page">
-
         <section class="auth-card">
-
             <div class="auth-header">
                 <div class="blood-icon">🩸</div>
-
                 <h1>Welcome Back</h1>
-
-                <p>
-                    Login to your blood donor matching account
-                </p>
+                <p>Log in to your intelligent blood matching portal</p>
             </div>
 
             <form id="loginForm" novalidate>
-
                 <div class="form-group">
-
-                    <label for="email">
-                        Email Address
-                    </label>
-
+                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        placeholder="Enter your email"
+                        placeholder="name@hospital.org / donor@email.com"
+                        autocomplete="email"
                         required
                     >
-
                 </div>
-                <br>
 
                 <div class="form-group">
-
-                    <label for="password">
-                        Password
-                    </label>
-
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
                     <div style="display:flex; gap:8px; align-items:center;">
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            placeholder="Enter your password"
+                            placeholder="Enter account password"
+                            autocomplete="current-password"
                             required
                             style="flex:1;"
                         >
-                        <button type="button" id="togglePassword" class="secondary-button" style="min-width:120px;">Show</button>
+                        <button type="button" id="togglePassword" class="secondary-button" style="min-width:85px;">
+                            Show
+                        </button>
                     </div>
-
                 </div>
-<br>
+
+                <div class="forgot-password">
+                    <a href="forgot-password.html">Forgot Password?</a>
+                </div>
+
                 <button
                     type="submit"
                     class="primary-button"
                     id="loginButton"
                 >
-                    Login
+                    <i class="fas fa-arrow-right-to-bracket"></i> Login to Portal
                 </button>
 
                 <p id="loginMessage" class="form-message" role="alert" aria-live="polite"></p>
-
-                <div class="forgot-password">
-                    <a href="forgot-password.html">Forgot Password?</a>
-                </div>
             </form>
 
             <div class="auth-footer">
-
                 <p>
                     Don't have an account?
                     <a href="register.html">
                         Create Account
                     </a>
                 </p>
-
             </div>
-
         </section>
-
     </main>
 
-   <script src="../src/js/auth.js"></script>
-
+    <script src="../src/assets/js/app-shell.js"></script>
+    <script src="../src/js/auth.js"></script>
 </body>
 </html>

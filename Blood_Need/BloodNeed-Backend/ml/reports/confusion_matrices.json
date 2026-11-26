@@ -1,0 +1,78 @@
+{
+  "logistic_regression_baseline": {
+    "name": "Logistic Regression (Baseline)",
+    "matrix": [
+      [
+        111,
+        3
+      ],
+      [
+        32,
+        4
+      ]
+    ],
+    "breakdown": {
+      "true_negative": 111,
+      "false_positive": 3,
+      "false_negative": 32,
+      "true_positive": 4
+    }
+  },
+  "logistic_regression_balanced": {
+    "name": "Logistic Regression (Class-Balanced)",
+    "matrix": [
+      [
+        78,
+        36
+      ],
+      [
+        6,
+        30
+      ]
+    ],
+    "breakdown": {
+      "true_negative": 78,
+      "false_positive": 36,
+      "false_negative": 6,
+      "true_positive": 30
+    }
+  },
+  "random_forest_default": {
+    "name": "Random Forest Classifier (Comparison)",
+    "matrix": [
+      [
+        103,
+        11
+      ],
+      [
+        20,
+        16
+      ]
+    ],
+    "breakdown": {
+      "true_negative": 103,
+      "false_positive": 11,
+      "false_negative": 20,
+      "true_positive": 16
+    }
+  },
+  "random_forest_balanced": {
+    "name": "Random Forest Classifier (Class-Balanced)",
+    "matrix": [
+      [
+        84,
+        30
+      ],
+      [
+        10,
+        26
+      ]
+    ],
+    "breakdown": {
+      "true_negative": 84,
+      "false_positive": 30,
+      "false_negative": 10,
+      "true_positive": 26
+    }
+  }
+}
