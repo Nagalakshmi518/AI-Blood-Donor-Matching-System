@@ -1,4 +1,6 @@
+import math
 import random
+import re
 from datetime import datetime, timedelta
 
 from flask import jsonify
@@ -38,6 +40,30 @@ def send_verification_code(email, otp, subject=None):
         return False
 
 
+def _is_valid_phone(phone_value, max_length=20):
+    raw = str(phone_value or "").strip()
+    if not raw or len(raw) > max_length:
+        return False
+    if not re.fullmatch(r"[+\d\s()-]+", raw):
+        return False
+    digits = re.sub(r"\D", "", raw)
+    return 7 <= len(digits) <= 15
+
+
+def _parse_coordinate(value, min_val, max_val):
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, str) and value.strip() == "":
+        return None
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(parsed) or parsed < min_val or parsed > max_val:
+        return None
+    return parsed
+
+
 def register_user(data):
     required_fields = [
         "full_name",
@@ -47,59 +73,151 @@ def register_user(data):
     ]
 
     for field in required_fields:
-        if not data.get(field):
+        val = data.get(field)
+        if val is None or str(val).strip() == "":
             return {
                 "success": False,
+                "field": field,
                 "message": f"{field} is required."
             }
 
-    role = data.get("role", "PATIENT").upper()
+    full_name = str(data.get("full_name")).strip()
+    email = str(data.get("email")).strip()
+    phone = str(data.get("phone")).strip()
+    password = str(data.get("password"))
+
+    if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email):
+        return {
+            "success": False,
+            "field": "email",
+            "message": "Please enter a valid email address."
+        }
+
+    if not _is_valid_phone(phone, max_length=20):
+        return {
+            "success": False,
+            "field": "phone",
+            "message": "Please enter a valid phone number (7-15 digits)."
+        }
+
+    if len(password) < 6:
+        return {
+            "success": False,
+            "field": "password",
+            "message": "Password must be at least 6 characters long."
+        }
+
+    role = str(data.get("role", "PATIENT")).strip().upper()
 
     if role not in ["ADMIN", "DONOR", "PATIENT", "HOSPITAL"]:
         return {
             "success": False,
+            "field": "role",
             "message": "Invalid role."
         }
-    
-    if role == "HOSPITAL":
-        hospital_fields = [
-            "hospital_name",
-            "address",
-            "latitude",
-            "longitude",
-            "city",
-            "state",
-            "pincode"
-        ]
 
-        for field in hospital_fields:
-            if not data.get(field):
+    hospital_name = None
+    hospital_address = None
+    hospital_city = None
+    hospital_state = None
+    hospital_phone = None
+    hospital_email = None
+    hospital_pincode = None
+    hospital_lat = None
+    hospital_lng = None
+
+    if role == "HOSPITAL":
+        hospital_name = str(data.get("hospital_name") or "").strip()
+        hospital_address = str(data.get("address") or data.get("hospital_address") or "").strip()
+        hospital_city = str(data.get("city") or data.get("hospital_city") or "").strip()
+        hospital_state = str(data.get("state") or data.get("hospital_state") or "").strip()
+        hospital_phone = str(data.get("hospital_phone") or phone).strip()
+        hospital_email = str(data.get("hospital_email") or email).strip()
+        raw_pincode = data.get("pincode")
+        hospital_pincode = str(raw_pincode).strip() if raw_pincode is not None and str(raw_pincode).strip() != "" else None
+
+        required_hospital_values = [
+            ("hospital_name", hospital_name),
+            ("address", hospital_address),
+            ("city", hospital_city),
+            ("state", hospital_state),
+        ]
+        for field_name, field_val in required_hospital_values:
+            if not field_val:
                 return {
                     "success": False,
-                    "message": f"{field} is required for hospital registration."
+                    "field": field_name,
+                    "message": f"{field_name} is required for hospital registration."
                 }
+
+        if not _is_valid_phone(hospital_phone, max_length=15):
+            return {
+                "success": False,
+                "field": "hospital_phone",
+                "message": "Please enter a valid hospital desk phone number (7-15 digits, max 15 characters)."
+            }
+
+        if hospital_pincode is not None and len(hospital_pincode) > 10:
+            return {
+                "success": False,
+                "field": "pincode",
+                "message": "Pincode must be 10 characters or fewer."
+            }
+
+        raw_lat = data.get("latitude")
+        if raw_lat is None or (isinstance(raw_lat, str) and raw_lat.strip() == ""):
+            return {
+                "success": False,
+                "field": "latitude",
+                "message": "latitude is required for hospital registration."
+            }
+        hospital_lat = _parse_coordinate(raw_lat, -90.0, 90.0)
+        if hospital_lat is None:
+            return {
+                "success": False,
+                "field": "latitude",
+                "message": "Hospital latitude must be a valid number between -90 and 90."
+            }
+
+        raw_lng = data.get("longitude")
+        if raw_lng is None or (isinstance(raw_lng, str) and raw_lng.strip() == ""):
+            return {
+                "success": False,
+                "field": "longitude",
+                "message": "longitude is required for hospital registration."
+            }
+        hospital_lng = _parse_coordinate(raw_lng, -180.0, 180.0)
+        if hospital_lng is None:
+            return {
+                "success": False,
+                "field": "longitude",
+                "message": "Hospital longitude must be a valid number between -180 and 180."
+            }
+
     existing_user = User.query.filter(
-        (User.email == data["email"]) | (User.phone == data["phone"])
+        (User.email == email) | (User.phone == phone)
     ).first()
 
     if existing_user:
-        if existing_user.email == data["email"]:
+        if existing_user.email == email:
             return {
                 "success": False,
+                "field": "email",
                 "message": "Email already exists."
             }
         return {
             "success": False,
+            "field": "phone",
             "message": "Phone number already exists."
         }
 
     try:
         # create user with hashed password and unverified email
         user = User(
-            full_name=data["full_name"],
-            email=data["email"],
-            phone=data["phone"],
-            password=hash_password(data["password"]),
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            password=hash_password(password),
             role=role,
             active=True,
             is_email_verified=False
@@ -130,33 +248,17 @@ def register_user(data):
             patient = Patient(user_id=user.user_id)
             db.session.add(patient)
         if role == "HOSPITAL":
-            required_hospital_fields = [
-                "hospital_name",
-                "address",
-                "latitude",
-                "longitude"
-            ]
-
-            for field in required_hospital_fields:
-                if data.get(field) is None or data.get(field) == "":
-                    db.session.rollback()
-
-                    return {
-                        "success": False,
-                        "message": f"{field} is required for hospital registration."
-                    }
-
             hospital = Hospital(
                 user_id=user.user_id,
-                hospital_name=data.get("hospital_name"),
-                address=data.get("address"),
-                latitude=data.get("latitude"),
-                longitude=data.get("longitude"),
-                phone=data.get("hospital_phone") or data.get("phone"),
-                email=data.get("hospital_email") or data.get("email"),
-                city=data.get("city"),
-                state=data.get("state"),
-                pincode=data.get("pincode"),
+                hospital_name=hospital_name,
+                address=hospital_address,
+                latitude=hospital_lat,
+                longitude=hospital_lng,
+                phone=hospital_phone,
+                email=hospital_email,
+                city=hospital_city,
+                state=hospital_state,
+                pincode=hospital_pincode,
                 is_active=True
             )
 

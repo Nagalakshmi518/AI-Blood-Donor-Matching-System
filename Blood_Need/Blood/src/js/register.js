@@ -1,4 +1,22 @@
-const API_URL = "https://ai-blood-donor-matching-system.onrender.com";
+const RENDER_FALLBACK_URL = "https://ai-blood-donor-matching-system.onrender.com";
+
+function resolveApiUrl() {
+  if (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+  ) {
+    if (window.location.port === "5000") {
+      return window.location.origin;
+    }
+    return "http://127.0.0.1:5000";
+  }
+  if (window.location.origin.includes("onrender.com")) {
+    return window.location.origin;
+  }
+  return RENDER_FALLBACK_URL;
+}
+
+const API_URL = resolveApiUrl();
 
 const registerForm = document.getElementById("registerForm");
 const roleSelect = document.getElementById("role");
@@ -7,6 +25,7 @@ const donorFields = document.getElementById("donorFields");
 const hospitalFields = document.getElementById("hospitalFields");
 
 const locationMessage = document.getElementById("locationMessage");
+const hospitalLocationMessage = document.getElementById("hospitalLocationMessage");
 
 const getLocationButton = document.getElementById("getLocation");
 const retryLocationButton = document.getElementById("retryLocation");
@@ -66,8 +85,8 @@ function clearFieldErrors() {
     "hospital_phone",
     "hospital_email",
     "hospital_address",
-    "city",
-    "state",
+    "hospital_city",
+    "hospital_state",
     "pincode",
     "hospital_latitude",
     "hospital_longitude",
@@ -101,11 +120,13 @@ function setLoading(isLoading) {
 
   submitButton.disabled = isLoading;
 
-  submitButton.textContent = isLoading ? "Creating account..." : "Register";
+  submitButton.textContent = isLoading
+    ? "Creating account..."
+    : "Complete Registration";
 }
 
 // =====================================================
-// DONOR LOCATION MESSAGE
+// DONOR & HOSPITAL LOCATION MESSAGES
 // =====================================================
 
 function setLocationMessage(message, tone = "info") {
@@ -114,6 +135,14 @@ function setLocationMessage(message, tone = "info") {
   locationMessage.textContent = message || "";
 
   locationMessage.className = `location-message ${tone}`;
+}
+
+function setHospitalLocationMessage(message, tone = "info") {
+  if (!hospitalLocationMessage) return;
+
+  hospitalLocationMessage.textContent = message || "";
+
+  hospitalLocationMessage.className = `location-message ${tone}`;
 }
 
 // =====================================================
@@ -255,10 +284,15 @@ function getCurrentLocation() {
 
 function getHospitalLocation() {
   if (!navigator.geolocation) {
-    alert("Location is not supported by this browser.");
+    setHospitalLocationMessage(
+      "Location is not supported by this browser.",
+      "error",
+    );
 
     return;
   }
+
+  setHospitalLocationMessage("Fetching hospital location...", "info");
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -274,12 +308,16 @@ function getHospitalLocation() {
         longitudeInput.value = position.coords.longitude;
       }
 
-      alert("Hospital location captured successfully.");
+      setHospitalLocationMessage(
+        "Hospital location captured successfully.",
+        "success",
+      );
     },
 
     () => {
-      alert(
+      setHospitalLocationMessage(
         "Unable to get location. Please enter latitude and longitude manually.",
+        "error",
       );
     },
 
@@ -465,11 +503,11 @@ function validateRegistrationForm() {
     const hospitalAddress =
       document.getElementById("hospital_address")?.value.trim() || "";
 
-    const city = document.getElementById("city")?.value.trim() || "";
+    const city =
+      document.getElementById("hospital_city")?.value.trim() || "";
 
-    const state = document.getElementById("state")?.value.trim() || "";
-
-    const pincode = document.getElementById("pincode")?.value.trim() || "";
+    const state =
+      document.getElementById("hospital_state")?.value.trim() || "";
 
     const latitude =
       document.getElementById("hospital_latitude")?.value.trim() || "";
@@ -490,31 +528,47 @@ function validateRegistrationForm() {
     }
 
     if (!city) {
-      setFieldError("city", "City is required.");
+      setFieldError("hospital_city", "City is required.");
 
       isValid = false;
     }
 
     if (!state) {
-      setFieldError("state", "State is required.");
-
-      isValid = false;
-    }
-
-    if (!pincode) {
-      setFieldError("pincode", "Pincode is required.");
+      setFieldError("hospital_state", "State is required.");
 
       isValid = false;
     }
 
     if (!latitude) {
-      setFieldError("hospital_latitude", "Hospital location is required.");
+      setFieldError("hospital_latitude", "Hospital latitude is required.");
+
+      isValid = false;
+    } else if (
+      !Number.isFinite(Number(latitude)) ||
+      Number(latitude) < -90 ||
+      Number(latitude) > 90
+    ) {
+      setFieldError(
+        "hospital_latitude",
+        "Latitude must be a valid number between -90 and 90.",
+      );
 
       isValid = false;
     }
 
     if (!longitude) {
-      setFieldError("hospital_longitude", "Hospital location is required.");
+      setFieldError("hospital_longitude", "Hospital longitude is required.");
+
+      isValid = false;
+    } else if (
+      !Number.isFinite(Number(longitude)) ||
+      Number(longitude) < -180 ||
+      Number(longitude) > 180
+    ) {
+      setFieldError(
+        "hospital_longitude",
+        "Longitude must be a valid number between -180 and 180.",
+      );
 
       isValid = false;
     }
@@ -651,19 +705,17 @@ if (registerForm) {
           .getElementById("hospital_address")
           .value.trim();
 
-        const city = document.getElementById("city").value.trim();
+        const city =
+          document.getElementById("hospital_city")?.value.trim() || "";
 
-        const state = document.getElementById("state").value.trim();
+        const state =
+          document.getElementById("hospital_state")?.value.trim() || "";
 
-        const pincode = document.getElementById("pincode").value.trim();
+        const latitude =
+          document.getElementById("hospital_latitude")?.value.trim() || "";
 
-        const latitude = document
-          .getElementById("hospital_latitude")
-          .value.trim();
-
-        const longitude = document
-          .getElementById("hospital_longitude")
-          .value.trim();
+        const longitude =
+          document.getElementById("hospital_longitude")?.value.trim() || "";
 
         userData.hospital_name = hospitalName;
 
@@ -677,11 +729,9 @@ if (registerForm) {
 
         userData.state = state;
 
-        userData.pincode = pincode;
+        userData.latitude = latitude ? Number(latitude) : null;
 
-        userData.latitude = Number(latitude);
-
-        userData.longitude = Number(longitude);
+        userData.longitude = longitude ? Number(longitude) : null;
       }
 
       console.log("Registration Data:", userData);
@@ -761,6 +811,11 @@ if (registerForm) {
           result.message ||
           result.error ||
           "Registration failed. Please try again.";
+
+        // Highlight the specific field reported by the backend
+        if (result.field) {
+          setFieldError(result.field, backendMessage);
+        }
 
         setFormMessage(backendMessage, "error");
       } catch (error) {
